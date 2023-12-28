@@ -1,0 +1,8 @@
+#main {
+    padding: 2rem;
+}
+
+.mat-elevation-z8 mat-header-cell {
+    background-color: #7743DB;
+    color: #ffffff;
+}

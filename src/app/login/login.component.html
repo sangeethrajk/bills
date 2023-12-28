@@ -1,0 +1,40 @@
+<section class="main">
+    <div class="login">
+        <div style="display: flex;justify-content: center;">
+            <img src="../../assets/images/tnhb_logo.png" alt="" style="width: 80%;">
+        </div>
+        <h2 style="text-align: center; font-weight: bold; font-size: x-large; margin: 1rem 0;">Employee - Login</h2>
+
+        <div class="login-form">
+            <section [formGroup]="form" style="padding: 0 3rem;">
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-bold">Email</label>
+                    <input type="text" class="form-control" id="username" formControlName="username" required>
+                    <div *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')"
+                        class="text-danger">
+                        Email is required
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-bold">Password</label>
+                    <input type="password" class="form-control" id="password" formControlName="password_encrypted"
+                        required>
+                    <div *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')"
+                        class="text-danger">
+                        Password is required
+                    </div>
+                    <div *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')"
+                        class="text-danger">
+                        Password must be at least 6 characters long
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <a href="" style="text-decoration: none;">Forgot Password?</a>
+                </div>
+                <div class="mb-2">
+                    <button type="submit" class="btn btn-primary" (click)="checkLogin()">Login</button>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>

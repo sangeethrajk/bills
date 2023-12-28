@@ -1,0 +1,1126 @@
+<main id="main">
+
+    <button mat-raised-button id="pdf-btn" (click)="generatePDF()"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+            height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path
+                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+            <path
+                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+        </svg><span class="ms-1" style="font-size: 1rem;">PDF</span>
+    </button>
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-12">
+
+
+                <div style="margin-bottom: 10px;"
+                    *ngIf="showAE || showAEE || showEE || showAssistant || showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Vendor
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <h2> Work Description</h2>
+                            <form [formGroup]="applicationForm">
+
+                                <div class="mb-3 row">
+                                    <label for="nameOfWork" class="col-3 col-form-label">Name of the Work</label>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="nameOfWork"
+                                            [value]="applicationForm.get('nameOfWork')?.value || ''" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="nameOfContractor" class="col-3 col-form-label">Name of
+                                        Contractor</label>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="nameOfContractor"
+                                            [value]="applicationForm.get('nameOfContractor')?.value || ''" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="invoice" class="col-3 col-form-label">Invoice PDF</label>
+                                    <div class="col-6">
+                                        <a class="btn btn-primary" id="invoice" [href]="openFile(this.fileurl)"
+                                            target="_blank">Click here
+                                            to view Invoice PDF</a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div style="margin-bottom: 10px;"
+                    *ngIf="showAE || showAEE || showEE || showAssistant || showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Assistant Engineer
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <h2 style="font-weight: bold;">Part – I Work Description</h2>
+                            <form [formGroup]="AEpart1Form">
+
+                                <div class="mb-3 row">
+                                    <label for="nameOfWork" class="col-3 col-form-label"><span
+                                            class="me-1">1.</span>Name of
+                                        work</label>
+                                    <div class="col-auto">
+                                        <input value="AEpart1Form.get('nameOfWork')?.value === ''" class="form-control"
+                                            id="nameOfWork" formControlName="nameOfWork" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="nameOfContractor" class="col-3 col-form-label"><span
+                                            class="me-1">2.</span>Name of
+                                        Contractor</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="nameOfContractor"
+                                            formControlName="nameOfContractor" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="estimateNo" class="col-3 col-form-label"><span
+                                            class="me-1">3.</span>Estimate
+                                        No</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="estimateNo" formControlName="estimateNo"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="mainAgreementNo" class="col-3 col-form-label"><span
+                                            class="me-1">4.</span>Main
+                                        Agreement
+                                        No</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="mainAgreementNo"
+                                            formControlName="mainAgreementNo" placeholder="Number" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="mainAgreementValue"
+                                            formControlName="mainAgreementValue" placeholder="Value" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="wc79OrderNo" class="col-3 col-form-label"><span
+                                            class="me-1">5.</span>WC-79 Order No &
+                                        Date</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="wc79OrderNo" formControlName="wc79OrderNo"
+                                            placeholder="Number" readonly>
+                                    </div>
+                                    <div class="col-auto" style="width: 14.5rem;">
+                                        <input type="date" class="form-control" id="wc79OrderDate"
+                                            formControlName="wc79OrderDate" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="wc79OrderValue" formControlName="wc79OrderValue"
+                                            placeholder="Value" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="supplementAgreementNo" class="col-3 col-form-label"><span
+                                            class="me-1">6.</span>Supplement
+                                        Agreement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="supplementAgreementNo"
+                                            formControlName="supplementAgreementNo" readonly>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="supplementAgreementNo"
+                                            formControlName="supplementAgreementValue" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="totalValue" class="col-3 col-form-label"><span
+                                            class="me-1">7.</span>Total
+                                        value</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="totalValue" formControlName="totalValue"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="dateOfCommencement" class="col-3 col-form-label"><span
+                                            class="me-1">8.</span>Date of
+                                        commencement</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="dateOfCommencement"
+                                            formControlName="dateOfCommencement" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="dueDateOfCompletion" class="col-3 col-form-label"><span
+                                            class="me-1">9.</span>Due date of
+                                        completion</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="dueDateOfCompletion"
+                                            formControlName="dueDateOfCompletion" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="actualDateOfCompletion" class="col-3 col-form-label"><span
+                                            class="me-1">10.</span>Actual
+                                        date of completion</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="actualDateOfCompletion"
+                                            formControlName="actualDateOfCompletion" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="finalBillCompletionReportEnclosed" class="col-3 col-form-label"><span
+                                            class="me-1">11.</span>Does
+                                        final bill, completion report enclosed?</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control" id="finalBillCompletionReportEnclosed"
+                                            formControlName="finalBillCompletionReportEnclosed" readonly>
+                                    </div>
+                                </div>
+
+                            </form>
+                            <h2 style="font-weight: bold;">Part-II Bill details</h2>
+                            <form [formGroup]="AEpart2Form">
+
+                                <div class="mb-3 row">
+                                    <label for="partIIDateOfMeasurement" class="col-3 col-form-label"><span
+                                            class="me-1">12.</span>Date of
+                                        measurement</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="partIIDateOfMeasurement"
+                                            formControlName="partIIDateOfMeasurement" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="mb-3 row">
+                                    <label for="dateOfCheckMeasurement" class="col-3 col-form-label"><span
+                                            class="me-1">13.</span>Date of
+                                        check measurement</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="dateOfCheckMeasurement"
+                                            formControlName="dateOfCheckMeasurement" readonly>
+                                    </div>
+                                </div> -->
+
+                                <p><span class="me-1">14.</span>Whether
+                                    work carried out at specified rate of speed</p>
+                                <div class="ms-3 mb-3 row">
+                                    <label for="physicalAchievement" class="col-3 col-form-label">Physical progress
+                                        (%)</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="physicalAchievement"
+                                            formControlName="physicalAchievement" readonly>
+                                    </div>
+                                </div>
+                                <div class="ms-3 mb-3 row">
+                                    <label for="actualPercentage" class="col-3 col-form-label">Actual progress
+                                        (%)</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="actualPercentage"
+                                            formControlName="actualPercentage" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <span class="col-3">15.<span class="ms-1">Extension of time (EOT)</span></span>
+                                    <span class="col-auto">
+                                        <input class="form-control" id="extensionOfTime"
+                                            formControlName="extensionOfTime" readonly>
+                                        <!-- <select class="form-select" formControlName="extensionOfTime">
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select> -->
+                                    </span>
+                                </div>
+                                <div class="ms-3 mb-3 row" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                                    <label for="extensionOfTimeOrderNo" class="col-3 col-form-label">Order
+                                        Number</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="extensionOfTimeOrderNo"
+                                            formControlName="extensionOfTimeOrderNo" readonly>
+                                    </div>
+                                </div>
+                                <div class="ms-3 mb-3 row" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                                    <label for="extensionOfTimeDate" class="col-3 col-form-label">Date</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="extensionOfTimeDate"
+                                            formControlName="extensionOfTimeDate" readonly>
+                                    </div>
+                                </div>
+                                <div class="ms-3 mb-3 row" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                                    <label for="extensionOfTimeFineAmount" class="col-3 col-form-label">Fine
+                                        Amount</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="extensionOfTimeFineAmount"
+                                            formControlName="extensionOfTimeFineAmount" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="liquidatedDamagesOrLumpSumFine" class="col-3 col-form-label">
+                                        <span class="me-1">16.</span>Liquidated damages / Lump sum fine
+                                    </label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="liquidatedDamagesOrLumpSumFine"
+                                            formControlName="liquidatedDamagesOrLumpSumFine" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="itemsCoveredInAgreement" class="col-6 col-form-label"><span
+                                            class="me-1">17.</span>Whether
+                                        all items covered in original or supplemental agreement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="itemsCoveredInAgreement"
+                                            formControlName="itemsCoveredInAgreement" readonly>
+                                        <!-- <select class="form-select" formControlName="itemsCoveredInAgreement">
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select> -->
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <span class="col-6">18.<span class="ms-1">Whether quantities in the bill are as per
+                                            estimate</span></span>
+                                    <span class="col-auto">
+                                        <input class="form-control" id="quantitiesInBillAsPerEstimate"
+                                            formControlName="quantitiesInBillAsPerEstimate" readonly>
+                                        <!-- <select class="form-select" formControlName="quantitiesInBillAsPerEstimateApproval">
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </select> -->
+                                    </span>
+                                </div>
+                                <div class="ms-3 mb-3 row"
+                                    *ngIf="AEpart2Form.get('quantitiesInBillAsPerEstimate')?.value === 'No'">
+                                    <label for="actionTakenForExcess" class="col-6 col-form-label">Specify action taken
+                                        to regularize such
+                                        excess</label>
+                                    <div class="col-auto" style="margin-left: -1rem;">
+                                        <input class="form-control" id="actionTakenForExcess"
+                                            formControlName="actionTakenToRegularizeExcess" readonly>
+                                        <!-- <select class="form-select" formControlName="actionTakenToRegularizeExcess">
+                          <option value="Excess Approved">Excess Approved</option>
+                          <option value="Excess Not Approved">Excess Not Approved</option>
+                        </select> -->
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="itemsOmittedOrPartlyDone" class="col-3 col-form-label"><span
+                                            class="me-1">19.</span>Have
+                                        any items of work in the agreement being omitted or partly done</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="itemsOmittedOrPartlyDone"
+                                            formControlName="itemsOmittedOrPartlyDone" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="partRatePaidInAgreement" class="col-3 col-form-label"><span
+                                            class="me-1">20.</span>Whether
+                                        part rate is paid</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="partRatePaidInAgreement"
+                                            formControlName="partRatePaidInAgreement" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="mb-3 row">
+                                    <label for="allWorksCheckedByAEE" class="col-3 col-form-label"><span
+                                            class="me-1">21.</span>Whether
+                                        all the works have been check measured by AEE and date of check
+                                        measurement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="allWorksCheckedByAEE"
+                                            formControlName="allWorksCheckedByAEE" readonly>
+                                    </div>
+                                </div> -->
+
+                                <div class="mb-3 row">
+                                    <label for="computerizedMeasurementBookSubmitted" class="col-3 col-form-label"><span
+                                            class="me-1">22.</span>Whether computerized measurement book
+                                        submitted?</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="computerizedMeasurementBookSubmitted"
+                                            formControlName="computerizedMeasurementBookSubmitted" readonly>
+                                    </div>
+                                </div>
+
+                                <!-- <div class="mb-3 row">
+                                    <label for="preMeasurementsTaken" class="col-3 col-form-label"><span
+                                            class="me-1">23.</span>Whether
+                                        pre measurements were taken wherever necessary and check measured by AEE and
+                                        reference to pre measurement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="preMeasurementsTaken"
+                                            formControlName="preMeasurementsTaken" readonly>
+                                    </div>
+                                </div> -->
+
+                            </form>
+
+                            <h2 style="font-weight: bold;">Part-III Payment details</h2>
+                            <form [formGroup]="AEpart3Form">
+
+                                <div class="mb-3 row">
+                                    <label for="valueOfAgreement" class="col-3 col-form-label"><span
+                                            class="me-1">24.</span>Value of
+                                        agreement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="valueOfAgreement"
+                                            formControlName="valueOfAgreement" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="amountReleasedUptoPreviousBill" class="col-3 col-form-label"><span
+                                            class="me-1">25.</span>Amount
+                                        released upto previous bill</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="amountReleasedUptoPreviousBill"
+                                            formControlName="amountReleasedUptoPreviousBill" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="balance" class="col-3 col-form-label"><span
+                                            class="me-1">26.</span>Balance</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="balance" formControlName="balance" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="amountRaisedInThisBill" class="col-3 col-form-label"><span
+                                            class="me-1">27.</span>Amount
+                                        raised in this bill</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="amountRaisedInThisBill"
+                                            formControlName="amountRaisedInThisBill" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="certificate" class="col-3 col-form-label"><span
+                                            class="me-1">28.</span>Certificate</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="certificate" formControlName="certificate"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="signatureWithDate" class="col-3 col-form-label"><span
+                                            class="me-1">29.</span>Signature
+                                        with date</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="signatureWithDate"
+                                            formControlName="signatureWithDate" readonly>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div style="margin-bottom: 10px;" *ngIf="showAEE || showEE || showAssistant || showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Assistant Executive Engineer
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="AEEForm">
+
+                                <div class="mb-3 row">
+                                    <label for="allWorksCheckedByAEE" class="col-3 col-form-label"><span
+                                            class="me-1">21.</span>Whether
+                                        all the works have been check measured by AEE and date of check
+                                        measurement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="allWorksCheckedByAEE"
+                                            formControlName="allWorksCheckedByAEE" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="preMeasurementsTaken" class="col-3 col-form-label"><span
+                                            class="me-1">23.</span>Whether
+                                        pre measurements were taken wherever necessary and check measured by AEE and
+                                        reference to pre measurement</label>
+                                    <div class="col-auto">
+                                        <input class="form-control" id="preMeasurementsTaken"
+                                            formControlName="preMeasurementsTaken" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="dateOfCheckMeasurement" class="col-3 col-form-label">Date of Check
+                                        measurement</label>
+                                    <div class="col-auto">
+                                        <input readonly type="date" class="form-control" id="dateOfCheckMeasurement"
+                                            formControlName="dateOfCheckMeasurement">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="certificate" class="col-3 col-form-label">Certificate</label>
+                                    <div class="col-auto">
+                                        <textarea readonly class="form-control" formControlName="certificate"
+                                            id="certificate" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="" class="col-3 col-form-label">Signature</label>
+                                    <div class="col-auto">
+                                        <input readonly type="text" class="form-control" id="signature"
+                                            formControlName="signature">
+                                    </div>
+                                    <div class="col-auto">
+                                        <input readonly type="date" class="form-control" id="date"
+                                            formControlName="date">
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+
+                <!-- <div style="margin-bottom: 10px;" *ngIf="showEE || showAssistant || showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Executive Engineer
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="EEForm">
+
+                                <div class="mb-3 row">
+                                    <label for="dateOfCheckMeasurement" class="col-3 col-form-label">Date of super
+                                        check</label>
+                                    <div class="col-auto">
+                                        <input readonly type="date" class="form-control" id="dateOfCheckMeasurement"
+                                            formControlName="dateOfCheckMeasurement">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="eeFormCertificate" class="col-3 col-form-label">Remarks</label>
+                                    <div class="col-auto">
+                                        <textarea readonly class="form-control" formControlName="certificate"
+                                            id="eeFormCertificate" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="signatureWithDate" class="col-3 col-form-label">Signature</label>
+                                    <div class="col-auto">
+                                        <input readonly type="text" class="form-control" id="signatureWithDate"
+                                            formControlName="signatureWithDate">
+                                    </div>
+                                </div>
+
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div> -->
+
+                <!-- <div style="margin-bottom: 10px;" *ngIf="showAssistant || showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Assistant
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form action="" [formGroup]="AssistantForm">
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>1.</span>Value of work done</h3>
+                                    <div class="mb-3 row">
+                                        <label for="valueOfWorkDoneAsReportedByAEAEE"
+                                            class="col-sm-2 col-form-label"><span>a.</span>Reported by AE &
+                                            AEE<span class="ms-1">(Amount in &#8377;)</span></label>
+                                        <div class="col-auto">
+                                            <input readonly class="form-control" id="valueOfWorkDoneAsReportedByAEAEE"
+                                                formControlName="valueOfWorkDoneAsReportedByAEAEE">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="correctedValue"
+                                            class="col-sm-2 col-form-label"><span>b.</span>Corrected
+                                            Value<span class="ms-1">(Amount in &#8377;)</span></label>
+                                        <div class="col-auto">
+                                            <input readonly class="form-control" id="correctedValue"
+                                                formControlName="correctedValue">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>2.</span>Less GST</h3>
+                                    <div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">GST Percentage</label>
+
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" formControlName="gst_Percentage"
+                                                readonly>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" formControlName="gstamount"
+                                                readonly>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>3.</span>Base value</h3>
+                                    <div class="mb-3 row">
+                                        <label for="baseValue" class="col-sm-2 col-form-label">Base Value</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="baseValue" formControlName="baseValue"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>4.</span>RMD</h3>
+                                    <div class="mb-3 row">
+                                        <label for="rmd" class="col-sm-2 col-form-label">RMD 5%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="rmd" formControlName="rmd" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>5.</span>IT</h3>
+                                    <div class="mb-3 row">
+                                        <label for="it" class="col-sm-2 col-form-label">IT 2%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="it" formControlName="it" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>6.</span>EC</h3>
+                                    <div class="mb-3 row">
+                                        <label for="ec" class="col-sm-2 col-form-label">EC 0.066%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="ec" formControlName="ec" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>7.</span>SGST</h3>
+                                    <div class="mb-3 row">
+                                        <label for="sgst" class="col-sm-2 col-form-label">SGST 1%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="sgst" formControlName="sgst" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>7.</span>CGST</h3>
+                                    <div class="mb-3 row">
+                                        <label for="cgst" class="col-sm-2 col-form-label">CGST 1%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="cgst" formControlName="cgst" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>8.</span>Steel Recovery</h3>
+                                    <div class="mb-3 row">
+                                        <label for="steelRecovery" class="col-sm-2 col-form-label">Steel
+                                            Recovery</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="steelRecovery"
+                                                formControlName="steelRecovery" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>9.</span>Mobilization</h3>
+                                    <div class="mb-3 row">
+                                        <label for="mobilization" class="col-sm-2 col-form-label">Mobilization</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="mobilization" formControlName="mobilization"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>10.</span>Withheld amount</h3>
+                                    <div class="mb-3 row">
+                                        <label for="withheldAmount" class="col-sm-2 col-form-label">Withheld
+                                            amount</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="withheldAmount"
+                                                formControlName="withheldAmount" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>11.</span>EOT fine</h3>
+                                    <div class="mb-3 row">
+                                        <label for="eotfine" class="col-sm-2 col-form-label">EOT fine</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="eotfine" formControlName="eotfine" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>12.</span>Other Recoveries (if any)</h3>
+                                    <div class="mb-3 row">
+                                        <label for="otherRecoveries" class="col-sm-2 col-form-label">Other
+                                            Recoveries</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="eotFine" formControlName="otherRecoveries"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>13.</span>Total Deduction</h3>
+                                    <div class="mb-3 row">
+                                        <label for="totalDeduction" class="col-sm-2 col-form-label">Total
+                                            Deduction</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="totalDeduction"
+                                                formControlName="totalDeduction" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>14.</span>Net Total</h3>
+                                    <div class="mb-3 row">
+                                        <label for="netTotal" class="col-sm-2 col-form-label">Net Total</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="totalDeduction" formControlName="netTotal"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>15.</span>Detailed project ledger (DPL)</h3>
+                                    <div class="mb-3 row">
+                                        <label for="dplpageNo" class="col-sm-2 col-form-label">Page No</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="dplpageNo" formControlName="dplpageNo"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="dpldate" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-auto">
+                                            <input type="date" class="form-control" id="dpldate"
+                                                formControlName="dpldate" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>16.</span>Bill register</h3>
+                                    <div class="mb-3 row">
+                                        <label for="billRegisterPageNo" class="col-sm-2 col-form-label">Page No</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="billRegisterPageNo"
+                                                formControlName="billRegisterPageNo" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="billRegisterDate" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-auto">
+                                            <input type="date" class="form-control" id="billRegisterDate"
+                                                formControlName="billRegisterDate" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div> -->
+
+                <div style="margin-bottom: 10px;" *ngIf="showDA || showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Divisional Accountant
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form action="" [formGroup]="AssistantForm">
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>1.</span>Value of work done</h3>
+                                    <div class="mb-3 row">
+                                        <label for="valueOfWorkDoneAsReportedByAEAEE"
+                                            class="col-sm-2 col-form-label"><span>a.</span>Reported by AE &
+                                            AEE<span class="ms-1">(Amount in &#8377;)</span></label>
+                                        <div class="col-auto">
+                                            <input readonly class="form-control" id="valueOfWorkDoneAsReportedByAEAEE"
+                                                formControlName="valueOfWorkDoneAsReportedByAEAEE">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="correctedValue"
+                                            class="col-sm-2 col-form-label"><span>b.</span>Corrected
+                                            Value<span class="ms-1">(Amount in &#8377;)</span></label>
+                                        <div class="col-auto">
+                                            <input readonly class="form-control" id="correctedValue"
+                                                formControlName="correctedValue">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>2.</span>Less GST</h3>
+                                    <div class="mb-3 row">
+                                        <label class="col-sm-2 col-form-label">GST Percentage</label>
+
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" formControlName="gst_Percentage"
+                                                readonly>
+                                        </div>
+
+                                        <div class="col-auto">
+                                            <input type="text" class="form-control" formControlName="gstamount"
+                                                readonly>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>3.</span>Base value</h3>
+                                    <div class="mb-3 row">
+                                        <label for="baseValue" class="col-sm-2 col-form-label">Base Value</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="baseValue" formControlName="baseValue"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>4.</span>RMD</h3>
+                                    <div class="mb-3 row">
+                                        <label for="rmd" class="col-sm-2 col-form-label">RMD 5%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="rmd" formControlName="rmd" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>5.</span>IT</h3>
+                                    <div class="mb-3 row">
+                                        <label for="it" class="col-sm-2 col-form-label">IT 2%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="it" formControlName="it" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>6.</span>EC</h3>
+                                    <div class="mb-3 row">
+                                        <label for="ec" class="col-sm-2 col-form-label">EC 0.066%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="ec" formControlName="ec" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>7.</span>SGST</h3>
+                                    <div class="mb-3 row">
+                                        <label for="sgst" class="col-sm-2 col-form-label">SGST 1%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="sgst" formControlName="sgst" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>7.</span>CGST</h3>
+                                    <div class="mb-3 row">
+                                        <label for="cgst" class="col-sm-2 col-form-label">CGST 1%</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="cgst" formControlName="cgst" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>8.</span>Steel Recovery</h3>
+                                    <div class="mb-3 row">
+                                        <label for="steelRecovery" class="col-sm-2 col-form-label">Steel
+                                            Recovery</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="steelRecovery"
+                                                formControlName="steelRecovery" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>9.</span>Mobilization</h3>
+                                    <div class="mb-3 row">
+                                        <label for="mobilization" class="col-sm-2 col-form-label">Mobilization</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="mobilization" formControlName="mobilization"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>10.</span>Withheld amount</h3>
+                                    <div class="mb-3 row">
+                                        <label for="withheldAmount" class="col-sm-2 col-form-label">Withheld
+                                            amount</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="withheldAmount"
+                                                formControlName="withheldAmount" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>11.</span>EOT fine</h3>
+                                    <div class="mb-3 row">
+                                        <label for="eotfine" class="col-sm-2 col-form-label">EOT fine</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="eotfine" formControlName="eotfine" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>12.</span>Other Recoveries (if any)</h3>
+                                    <div class="mb-3 row">
+                                        <label for="otherRecoveries" class="col-sm-2 col-form-label">Other
+                                            Recoveries</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="eotFine" formControlName="otherRecoveries"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>13.</span>Total Deduction</h3>
+                                    <div class="mb-3 row">
+                                        <label for="totalDeduction" class="col-sm-2 col-form-label">Total
+                                            Deduction</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="totalDeduction"
+                                                formControlName="totalDeduction" readonly>
+                                        </div>
+                                        <!-- <div class="col-auto">
+                          <button class="btn btn-primary" (click)="calculateTotalDeduction()">Calculate</button>
+                        </div> -->
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>14.</span>Net Total</h3>
+                                    <div class="mb-3 row">
+                                        <label for="netTotal" class="col-sm-2 col-form-label">Net Total</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="totalDeduction" formControlName="netTotal"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>15.</span>Detailed project ledger (DPL)</h3>
+                                    <div class="mb-3 row">
+                                        <label for="dplpageNo" class="col-sm-2 col-form-label">Page No</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="dplpageNo" formControlName="dplpageNo"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="dpldate" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-auto">
+                                            <input type="date" class="form-control" id="dpldate"
+                                                formControlName="dpldate" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 style="font-weight: bold;"><span>16.</span>Bill register</h3>
+                                    <div class="mb-3 row">
+                                        <label for="billRegisterPageNo" class="col-sm-2 col-form-label">Page No</label>
+                                        <div class="col-auto">
+                                            <input class="form-control" id="billRegisterPageNo"
+                                                formControlName="billRegisterPageNo" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="billRegisterDate" class="col-sm-2 col-form-label">Date</label>
+                                        <div class="col-auto">
+                                            <input type="date" class="form-control" id="billRegisterDate"
+                                                formControlName="billRegisterDate" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                            <form [formGroup]="DivisionalAccountantForm">
+
+                                <div class="mb-3 row">
+                                    <label for="DACertificate" class="col-3 col-form-label">Remarks</label>
+                                    <div class="col-auto">
+                                        <textarea readonly class="form-control" formControlName="certificate"
+                                            id="DACertificate" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="billPassedFor" class="col-3 col-form-label">Bill passed for</label>
+                                    <div class="col-auto">
+                                        <input readonly type="text" class="form-control" id="billPassedFor"
+                                            formControlName="billPassedFor">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="billPayFor" class="col-3 col-form-label">Bill pay for</label>
+                                    <div class="col-auto">
+                                        <input readonly type="text" class="form-control" id="billPayFor"
+                                            formControlName="billPayFor">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="signatureWithDate" class="col-3 col-form-label">Signature</label>
+                                    <div class="col-auto">
+                                        <input readonly type="date" class="form-control" id="signatureWithDate"
+                                            formControlName="signatureWithDate">
+                                    </div>
+                                </div>
+
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <div style="margin-bottom: 10px;" *ngIf="showEEstage2">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Executive Engineer
+                                </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <form [formGroup]="EEForm">
+
+                                <div class="mb-3 row">
+                                    <label for="dateOfCheckMeasurement" class="col-3 col-form-label">Date of super
+                                        check</label>
+                                    <div class="col-auto">
+                                        <input readonly type="date" class="form-control" id="dateOfCheckMeasurement"
+                                            formControlName="dateOfCheckMeasurement">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="eeFormCertificate" class="col-3 col-form-label">Remarks</label>
+                                    <div class="col-auto">
+                                        <textarea readonly class="form-control" formControlName="certificate"
+                                            id="eeFormCertificate" maxlength="1000"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="signatureWithDate" class="col-3 col-form-label">Signature</label>
+                                    <div class="col-auto">
+                                        <input readonly type="text" class="form-control" id="signatureWithDate"
+                                            formControlName="signatureWithDate">
+                                    </div>
+                                </div>
+
+                            </form>
+                            <form [formGroup]="EEForm1">
+
+                                <div class="mb-3 row">
+                                    <label for="billPassedFor" class="col-3 col-form-label">Bill passed for</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control" id="billPassedFor"
+                                            formControlName="billPassedFor" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="billPayFor" class="col-3 col-form-label">Bill pay for</label>
+                                    <div class="col-auto">
+                                        <input type="text" class="form-control" id="billPayFor"
+                                            formControlName="billPayFor" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <label for="signatureWithDate" class="col-3 col-form-label">Signature</label>
+                                    <div class="col-auto">
+                                        <input type="date" class="form-control" id="signatureWithDate"
+                                            formControlName="signatureWithDate" readonly>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+                <br>
+                <div class="example-button-row" style="text-align: right;">
+                    <h3>Reviewed on {{revieweddate}}</h3>
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+</main>

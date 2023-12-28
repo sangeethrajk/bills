@@ -1,0 +1,76 @@
+<main id="main">
+
+    <div class="welcome-msg">
+        <h5>Welcome, {{ username }}</h5>
+    </div>
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="row">
+
+                    <!-- Right Card - Small Boxes -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Total Applications Box -->
+                                    <div class="col-auto">
+                                        <div class="svg-container">
+                                            <img src="../../assets/images/folder-blue.svg" alt="Folder Icon"
+                                                class="svg-image">
+                                            <div class="text-overlay">
+                                                <p class="content">Total Bills</p>
+                                                <p class="content">{{totalBillsLength}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- All Applications Box -->
+                                    <div class="col-auto" *ngIf="!hidemenu">
+                                        <div class="svg-container">
+                                            <img src="../../assets/images/folder-pink.svg" alt="Folder Icon"
+                                                class="svg-image">
+                                            <div class="text-overlay">
+                                                <p class="content">All Bills</p>
+                                                <p class="content">{{allBillsLength}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pending Applications Box -->
+                                    <div class="col-auto">
+                                        <div class="svg-container">
+                                            <img src="../../assets/images/folder-green.svg" alt="Folder Icon"
+                                                class="svg-image">
+                                            <div class="text-overlay">
+                                                <p class="content">Pending Bills</p>
+                                                <p class="content">{{pendingBillsLength}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reviewed Applications Box -->
+                                    <div class="col-auto">
+                                        <div class="svg-container">
+                                            <img src="../../assets/images/folder-yellow.svg" alt="Folder Icon"
+                                                class="svg-image">
+                                            <div class="text-overlay">
+                                                <p class="content">Reviewed Bills</p>
+                                                <p class="content">{{reviewedBillsLength}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </section>
+
+</main>

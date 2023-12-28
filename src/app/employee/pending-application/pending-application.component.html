@@ -1,0 +1,1016 @@
+<main id="main">
+    <button mat-raised-button id="pdf-btn" (click)="generatePDF()"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+            height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+            <path
+                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+            <path
+                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+        </svg><span class="ms-1" style="font-size: 1rem;">PDF</span>
+    </button>
+    <section class="section dashboard">
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Vendor Details
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <h2> Work Description</h2>
+                    <form [formGroup]="applicationForm" class="form-group">
+
+                        <div class="mb-3">
+                            <label for="division" class="form-label">Division</label>
+                            <input type="text" class="form-control" id="division"
+                                [value]="applicationForm.get('division')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3 nameOfContractor">
+                            <label for="nameOfContractor" class="form-label">Name of the Contractor</label>
+                            <input type="text" class="form-control" id="nameOfContractor"
+                                [value]="applicationForm.get('nameOfContractor')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3 nameOfWork">
+                            <label for="nameOfWork" class="form-label">Name of the Work</label>
+                            <input type="text" class="form-control" id="nameOfWork"
+                                [value]="applicationForm.get('nameOfWork')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="agreementNo" class="form-label">Agreement Number</label>
+                            <input type="text" class="form-control" id="agreementNo"
+                                [value]="applicationForm.get('agreementNo')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="agreementDate" class="form-label">Agreement Date</label>
+                            <input type="text" class="form-control" id="agreementDate"
+                                [value]="applicationForm.get('agreementDate')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dateOfCommencement" class="form-label">Date of Commencement</label>
+                            <input type="text" class="form-control" id="dateOfCommencement"
+                                [value]="applicationForm.get('dateOfCommencement')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="agreementValue" class="form-label">Agreement Value</label>
+                            <input type="text" class="form-control" id="agreementValue"
+                                [value]="applicationForm.get('agreementValue')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="invoiceNo" class="form-label">Invoice Number</label>
+                            <input type="text" class="form-control" id="invoiceNo"
+                                [value]="applicationForm.get('invoiceNo')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billNo" class="form-label">Bill Number</label>
+                            <input type="text" class="form-control" id="billNo"
+                                [value]="applicationForm.get('billNo')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billValue" class="form-label">Bill Value</label>
+                            <input type="text" class="form-control" id="billValue"
+                                [value]="applicationForm.get('billValue')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pan" class="form-label">PAN</label>
+                            <input type="text" class="form-control" id="pan"
+                                [value]="applicationForm.get('pan')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tan" class="form-label">TAN</label>
+                            <input type="text" class="form-control" id="tan"
+                                [value]="applicationForm.get('tan')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="gst" class="form-label">GST</label>
+                            <input type="text" class="form-control" id="gst"
+                                [value]="applicationForm.get('gst')?.value || ''" readonly>
+                        </div>
+                    </form>
+                    <div style="display: flex;flex-wrap: wrap;column-gap: 1rem;">
+                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">Invoice PDF</a>
+                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">PAN
+                            PDF</a>
+                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">TAN
+                            PDF</a>
+                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">GST
+                            PDF</a>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Assistant Engineer
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <h2 style="font-weight: bold;">Part – I Work Description</h2>
+                    <form [formGroup]="AEpart1Form" class="AEpart1Form">
+
+                        <div class="mb-3 nameOfWork">
+                            <label for="nameOfWork" class="form-label"><span class="me-1">1.</span>Name of
+                                work</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="nameOfWork"
+                                formControlName="nameOfWork">
+                        </div>
+
+                        <div class="mb-3 nameOfContractor">
+                            <label for="nameOfContractor" class="form-label"><span class="me-1">2.</span>Name
+                                of
+                                Contractor</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="nameOfContractor"
+                                formControlName="nameOfContractor">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="estimateNo" class="form-label"><span class="me-1">3.</span>Estimate
+                                No</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="estimateNo"
+                                formControlName="estimateNo">
+                        </div>
+
+                        <div class="mb-3 mainAgreement">
+                            <label class="form-label"><span class="me-1">4.</span>Main
+                                Agreement No</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="mainAgreementNo"
+                                    formControlName="mainAgreementNo" placeholder="Number">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="mainAgreementNo"
+                                    formControlName="mainAgreementValue" placeholder="Value"
+                                    (keyup)="calculateTotalValue()">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 wc79Order">
+                            <label class="form-label"><span class="me-1">5.</span>WC-79
+                                Order No &
+                                Date</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="wc79OrderNo"
+                                    formControlName="wc79OrderNo" placeholder="Number">
+                                <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="wc79OrderDate"
+                                    formControlName="wc79OrderDate">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="wc79OrderValue"
+                                    formControlName="wc79OrderValue" placeholder="Value"
+                                    (keyup)="calculateTotalValue()">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 supplementAgreement">
+                            <label class="form-label"><span class="me-1">6.</span>Supplement
+                                Agreement</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="supplementAgreementNo" formControlName="supplementAgreementNo"
+                                    placeholder="Number">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="supplementAgreementNo" formControlName="supplementAgreementValue"
+                                    placeholder="Value" (keyup)="calculateTotalValue()">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="totalValue" class="form-label"><span class="me-1">7.</span>Total
+                                value</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="totalValue"
+                                formControlName="totalValue" readonly>
+                        </div>
+
+                        <div class="mb-3 dateOfCommencement">
+                            <label for="dateOfCommencement" class="form-label"><span class="me-1">8.</span>Date of
+                                commencement</label>
+                            <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="dateOfCommencement"
+                                formControlName="dateOfCommencement" (change)="calculatePhysicalAchievement()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dueDateOfCompletion" class="form-label"><span class="me-1">9.</span>Due date of
+                                completion</label>
+                            <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="dueDateOfCompletion"
+                                formControlName="dueDateOfCompletion" (change)="calculatePhysicalAchievement()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="actualDateOfCompletion" class="form-label"><span class="me-1">10.</span>Actual
+                                date of completion</label>
+                            <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
+                                id="actualDateOfCompletion" formControlName="actualDateOfCompletion"
+                                (change)="calculatePhysicalAchievement()">
+                        </div>
+
+                        <div class="mb-3" *ngIf="!AEFormReadOnly">
+                            <label for="finalBillCompletionReportEnclosed" class="form-label"><span
+                                    class="me-1">11.</span>Does
+                                final bill, completion report enclosed?</label>
+                            <select class="form-select" formControlName="finalBillCompletionReportEnclosed">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" *ngIf="AEFormReadOnly">
+                            <label for="finalBillCompletionReportEnclosed" class="form-label"><span
+                                    class="me-1">11.</span>Does
+                                final bill, completion report enclosed?</label>
+                            <input [readOnly]="AEFormReadOnly" class="form-control"
+                                id="finalBillCompletionReportEnclosed"
+                                formControlName="finalBillCompletionReportEnclosed">
+                        </div>
+
+                    </form>
+
+                    <h2 style="font-weight: bold;">Part-II Bill details</h2>
+                    <form [formGroup]="AEpart2Form" class="AEpart2Form">
+
+                        <div class="mb-3 partIIDateOfMeasurement">
+                            <label class="form-label"><span class="me-1">12.</span>Date of
+                                measurement</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
+                                    id="partIIDateOfMeasurement" formControlName="partIIDateOfMeasurement">
+                                <input type="file" class="form-control" id="DateOfMeasurementFile" accept=".pdf,.xlsx">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 AEpart2Form-progress">
+                            <p><span class="me-1">14.</span>Whether
+                                work carried out at specified rate of speed</p>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <div>
+                                    <label for="physicalAchievement" class="form-label">Physical progress (%)</label>
+                                    <div class="col-auto">
+                                        <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                            id="physicalAchievement" formControlName="physicalAchievement" readonly>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="actualPercentage" class="form-label">Actual progress (%)</label>
+                                    <div class="col-auto">
+                                        <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                            id="actualPercentage" formControlName="actualPercentage">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mb-3" *ngIf="!AEFormReadOnly">
+                            <span class="col-3">15.<span class="ms-1">Extension of time (EOT)</span></span>
+                            <span class="col-auto">
+                                <select class="form-select" formControlName="extensionOfTime">
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </span>
+                        </div>
+                        <div class="mb-3" *ngIf="AEFormReadOnly">
+                            <span class="col-3">15.<span class="ms-1">Extension of time (EOT)</span></span>
+                            <span class="col-auto">
+                                <input [readOnly]="AEFormReadOnly" class="form-control" id="extensionOfTime"
+                                    formControlName="extensionOfTime">
+                            </span>
+                        </div>
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                            <label for="extensionOfTimeOrderNo" class="form-label">Order Number</label>
+                            <div class="col-auto">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="extensionOfTimeOrderNo" formControlName="extensionOfTimeOrderNo">
+                            </div>
+                        </div>
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                            <label for="extensionOfTimeDate" class="form-label">Date</label>
+                            <div class="col-auto">
+                                <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
+                                    id="extensionOfTimeDate" formControlName="extensionOfTimeDate">
+                            </div>
+                        </div>
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                            <label for="extensionOfTimeFineAmount" class="form-label">Fine Amount</label>
+                            <div class="col-auto">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="extensionOfTimeFineAmount" formControlName="extensionOfTimeFineAmount">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 liquidatedDamagesOrLumpSumFine">
+                            <label for="liquidatedDamagesOrLumpSumFine" class="form-label"><span
+                                    class="me-1">16.</span>Liquidated damages / Lump sum fine</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="liquidatedDamagesOrLumpSumFine" formControlName="liquidatedDamagesOrLumpSumFine">
+                        </div>
+
+                        <div class="mb-3" *ngIf="!AEFormReadOnly">
+                            <label for="itemsCoveredInAgreement" class="form-label"><span class="me-1">17.</span>Whether
+                                all items covered in original or supplemental agreement</label>
+                            <select class="form-select" formControlName="itemsCoveredInAgreement">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 itemsCoveredInAgreement" *ngIf="AEFormReadOnly">
+                            <label for="itemsCoveredInAgreement" class="col-6 col-form-label"><span
+                                    class="me-1">17.</span>Whether
+                                all items covered in original or supplemental agreement</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="itemsCoveredInAgreement" formControlName="itemsCoveredInAgreement">
+                        </div>
+
+                        <div class="mb-3" *ngIf="!AEFormReadOnly">
+                            <span class="col-6">18.<span class="ms-1">Whether quantities in the bill are as per
+                                    estimate</span></span>
+                            <select class="form-select" formControlName="quantitiesInBillAsPerEstimate">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" *ngIf="AEFormReadOnly">
+                            <span class="col-6">18.<span class="ms-1">Whether quantities in the bill are as per
+                                    estimate</span></span>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="quantitiesInBillAsPerEstimate" formControlName="quantitiesInBillAsPerEstimate">
+                        </div>
+                        <div class="ms-3 mb-3"
+                            *ngIf="AEpart2Form.get('quantitiesInBillAsPerEstimate')?.value === 'No' && !AEFormReadOnly">
+                            <label for="actionTakenForExcess" class="col-6 col-form-label">Specify action taken to
+                                regularize such
+                                excess</label>
+                            <select class="form-select" formControlName="actionTakenToRegularizeExcess">
+                                <option value="Excess Approved">Excess Approved</option>
+                                <option value="Excess Not Approved">Excess Not Approved</option>
+                            </select>
+                        </div>
+                        <div class="ms-3 mb-3"
+                            *ngIf="AEpart2Form.get('quantitiesInBillAsPerEstimate')?.value === 'No' && AEFormReadOnly">
+                            <label for="actionTakenForExcess" class="col-6 col-form-label">Specify action taken to
+                                regularize such
+                                excess</label>
+                            <div class="col-auto" style="margin-left: -1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="actionTakenForExcess" formControlName="actionTakenToRegularizeExcess">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 itemsOmittedOrPartlyDone">
+                            <label for="itemsOmittedOrPartlyDone" class="form-label"><span class="me-1">19.</span>Have
+                                any items of work in the agreement being omitted or partly done</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="itemsOmittedOrPartlyDone" formControlName="itemsOmittedOrPartlyDone">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="partRatePaidInAgreement" class="form-label"><span class="me-1">20.</span>Whether
+                                part rate is paid</label>
+                            <div class="col-auto">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                    id="partRatePaidInAgreement" formControlName="partRatePaidInAgreement">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 computerizedMeasurementBookSubmitted" *ngIf="!AEFormReadOnly">
+                            <label for="computerizedMeasurementBookSubmitted" class="form-label"><span
+                                    class="me-1">22.</span>Whether computerized measurement book submitted?</label>
+                            <select class="form-select" formControlName="computerizedMeasurementBookSubmitted">
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 computerizedMeasurementBookSubmitted" *ngIf="AEFormReadOnly">
+                            <label for="computerizedMeasurementBookSubmitted" class="form-label"><span
+                                    class="me-1">22.</span>Whether computerized measurement book submitted?</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="computerizedMeasurementBookSubmitted"
+                                formControlName="computerizedMeasurementBookSubmitted">
+                        </div>
+
+                    </form>
+
+                    <h2 style="font-weight: bold;">Part-III Payment details</h2>
+                    <form [formGroup]="AEpart3Form" class="AEpart3Form">
+
+                        <div class="mb-3">
+                            <label for="valueOfAgreement" class="form-label"><span class="me-1">24.</span>Value of
+                                agreement</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="valueOfAgreement"
+                                formControlName="valueOfAgreement" (keyup)="calculateBalance()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="amountReleasedUptoPreviousBill" class="form-label"><span
+                                    class="me-1">25.</span>Amount
+                                released upto previous bill</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="amountReleasedUptoPreviousBill" formControlName="amountReleasedUptoPreviousBill"
+                                (keyup)="calculateBalance()">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="balance" class="form-label"><span class="me-1">26.</span>Balance</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="balance"
+                                formControlName="balance">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="amountRaisedInThisBill" class="form-label"><span class="me-1">27.</span>Amount
+                                raised in this bill</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="amountRaisedInThisBill" formControlName="amountRaisedInThisBill">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="certificate" class="form-label"><span class="me-1">28.</span>Certificate</label>
+                            <textarea [readOnly]="AEFormReadOnly" type="text" class="form-control" id="certificate"
+                                formControlName="certificate"></textarea>
+                        </div>
+
+                        <div class="mb-3" style="grid-column: span 2;">
+                            <label class="form-label">
+                                <span class="me-1">29.</span>Signature with date</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="signature"
+                                    formControlName="signature">
+                                <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="date"
+                                    formControlName="date">
+                            </div>
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Assistant Executive Engineer
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="AEEForm" class="AEEForm">
+
+                        <div class="mb-3 allWorksCheckedByAEE">
+                            <label for="allWorksCheckedByAEE" class="form-label">Whether
+                                all the works have been check measured by AEE and date of check measurement</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="allWorksCheckedByAEE" formControlName="allWorksCheckedByAEE">
+                        </div>
+
+                        <div class="mb-3 preMeasurementsTaken">
+                            <label for="preMeasurementsTaken" class="form-label">Whether
+                                pre measurements were taken wherever necessary and check measured by AEE and
+                                reference to pre measurement</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="preMeasurementsTaken" formControlName="preMeasurementsTaken">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dateOfCheckMeasurement" class="form-label">Date of Check
+                                measurement</label>
+                            <input [readOnly]="AEEFormReadOnly" type="date" class="form-control"
+                                id="dateOfCheckMeasurement" formControlName="dateOfCheckMeasurement">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="certificate" class="form-label">Certificate</label>
+                            <textarea [readOnly]="AEEFormReadOnly" class="form-control" formControlName="certificate"
+                                id="certificate" maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="signature" class="form-label">Signature</label>
+                            <input [readOnly]="AEEFormReadOnly" type="text" class="form-control" id="signature"
+                                formControlName="signature">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Divisional Accountant
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form action="" [formGroup]="AssistantForm" class="AssistantForm">
+
+                        <div class="correctedValue">
+                            <div class="mb-3">
+                                <label for="reportedbyaeandaee" class="form-label">Reported
+                                    by AE & AEE<span class="ms-1">(&#8377;)</span></label>
+                                <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                    id="reportedbyaeandaee" formControlName="valueOfWorkDoneAsReportedByAEAEE">
+                            </div>
+                            <div class="mb-3">
+                                <label for="correctedvalue" class="form-label">Corrected
+                                    Value<span class="ms-1">(&#8377;)</span></label>
+                                <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                    id="correctedvalue" formControlName="correctedValue">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 gstPercentage">
+                            <label class="form-label">GST Percentage</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <div *ngIf="!AssistantFormReadOnly">
+                                    <select id="dropdownSelect" class="form-select" (change)="calculateGST()"
+                                        formControlName="gst_Percentage">
+                                        <option>Select an option</option>
+                                        <option value="12">12</option>
+                                        <option value="18">18</option>
+                                    </select>
+                                </div>
+
+                                <div *ngIf="AssistantFormReadOnly">
+                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                        formControlName="gst_Percentage" readonly>
+                                </div>
+
+                                <div>
+                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                        formControlName="gstamount" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 baseValue">
+                            <label for="baseValue" class="form-label">Base Value</label>
+                            <input type="text" class="form-control" id="baseValue" formControlName="baseValue" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rmd" class="form-label">RMD 5%</label>
+                            <input type="text" class="form-control" id="rmd" formControlName="rmd" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="it" class="form-label">IT 2%</label>
+                            <input type="text" class="form-control" id="it" formControlName="it" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ec" class="form-label">EC 0.066%</label>
+                            <input type="text" class="form-control" id="ec" formControlName="ec" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sgst" class="form-label">SGST 1%</label>
+                            <input type="text" class="form-control" id="sgst" formControlName="sgst" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="cgst" class="form-label">CGST 1%</label>
+                            <input type="text" class="form-control" id="cgst" formControlName="cgst" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="steelRecovery" class="form-label">Steel Recovery</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                id="steelRecovery" formControlName="steelRecovery">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mobilization" class="form-label">Mobilization</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="mobilization"
+                                formControlName="mobilization">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="withheldAmount" class="form-label">Withheld amount</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                id="withheldAmount" formControlName="withheldAmount">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="eotfine" class="form-label">EOT fine</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
+                                formControlName="eotfine">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="otherRecoveries" class="form-label">Other Recoveries</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
+                                formControlName="otherRecoveries">
+                        </div>
+
+                        <div class="mb-3 totalDeduction">
+                            <label for="totalDeduction" class="form-label">Total Deduction</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <div>
+                                    <input type="text" class="form-control" id="totalDeduction"
+                                        formControlName="totalDeduction" readonly>
+                                </div>
+                                <div *ngIf="!AssistantFormReadOnly">
+                                    <button class="btn btn-primary"
+                                        (click)="calculateTotalDeduction()">Calculate</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="netTotal" class="form-label">Net Total</label>
+                            <input type="text" class="form-control" id="totalDeduction" formControlName="netTotal"
+                                readonly>
+                        </div>
+
+                        <div class="dpl">
+                            <h4 style="font-weight: bold;">Detailed project ledger (DPL)</h4>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <div class="mb-3">
+                                    <label for="dplpageNo" class="form-label">Page No</label>
+                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                        id="dplpageNo" formControlName="dplpageNo">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dpldate" class="form-label">Date</label>
+                                    <input [readOnly]="AssistantFormReadOnly" type="date" class="form-control"
+                                        id="dpldate" formControlName="dpldate">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bill-register">
+                            <h3 style="font-weight: bold;">Bill register</h3>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <div class="mb-3">
+                                    <label for="billRegisterPageNo" class="form-label">Page No</label>
+                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                        id="billRegisterPageNo" formControlName="billRegisterPageNo">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="billRegisterDate" class="form-label">Date</label>
+                                    <input [readOnly]="AssistantFormReadOnly" type="date" class="form-control"
+                                        id="billRegisterDate" formControlName="billRegisterDate">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form [formGroup]="DivisionalAccountantForm" class="DivisionalAccountantForm">
+
+                        <div class="mb-3">
+                            <label for="DACertificate" class="form-label">Remarks</label>
+                            <textarea [readOnly]="DAFormReadOnly" class="form-control" formControlName="certificate"
+                                id="DACertificate" maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billPassedFor" class="form-label">Bill passed for</label>
+                            <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="billPassedFor"
+                                formControlName="billPassedFor" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billPayFor" class="form-label">Bill pay for</label>
+                            <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="billPayFor"
+                                formControlName="billPayFor" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="daSignature" class="form-label">Signature</label>
+                            <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="daSignature"
+                                formControlName="signatureWithDate">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Executive Engineer
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="EEForm" class="EEForm">
+
+                        <div class="mb-3" style="grid-column: span 2;">
+                            <label for="voucherNo" class="form-label">Voucher Number</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input readonly type="text" class="form-control" id="voucherNo"
+                                    formControlName="voucherNo">
+                                <button class="btn btn-primary" (click)="generateVoucherNo()">Generate</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="dateOfSuperCheck" class="form-label">Date of super check</label>
+                            <input [readOnly]="EEFormReadOnly" type="date" class="form-control" id="dateOfSuperCheck"
+                                formControlName="dateOfSuperCheck">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billPassedFor" class="form-label">Bill passed for</label>
+                            <input type="text" class="form-control" id="billPassedFor" formControlName="billPassedFor"
+                                readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="billPayFor" class="form-label">Bill pay for</label>
+                            <input type="text" class="form-control" id="billPayFor" formControlName="billPayFor"
+                                readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="eeRemarks" class="form-label">Remarks</label>
+                            <textarea [readOnly]="EEFormReadOnly" class="form-control" formControlName="remarks"
+                                id="eeRemarks" maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="eeSignature" class="form-label">Signature</label>
+                            <div class="col-auto">
+                                <input [readOnly]="EEFormReadOnly" type="text" class="form-control" id="eeSignature"
+                                    formControlName="signatureWithDate">
+                            </div>
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Superintending Engineer
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="SEForm" class="SEForm">
+
+                        <div class="mb-3" style="grid-column: span 2;">
+                            <label class="form-label">Date of Inspection</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input type="date" class="form-control" formControlName="dateOfInspection">
+                                <input type="file" class="form-control" multiple accept=".png,.jpg,.jpeg">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" formControlName="remarks" maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Superintending Engineer (HQ)
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="SEHQForm" class="SEHQForm">
+
+                        <div class="mb-3">
+                            <label class="form-label">Recommendation of LC</label>
+                            <input type="text" class="form-control" formControlName="recommendationOfLC">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea [readOnly]="EEFormReadOnly" class="form-control" formControlName="remarks"
+                                maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Chief Engineer
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="CEForm" class="CEForm">
+
+                        <div class="mb-3" style="grid-column: span 2;">
+                            <label class="form-label">Date of Inspection</label>
+                            <div style="display: flex;column-gap: 1rem;">
+                                <input type="date" class="form-control" formControlName="dateOfInspection">
+                                <input type="file" class="form-control" multiple accept=".png,.jpg,.jpeg">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Recommendation of LC</label>
+                            <input type="text" class="form-control" formControlName="recommendationOfLC">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" formControlName="remarks" maxlength="1000"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            DCAO
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="DCAOForm" class="DCAOForm">
+
+                        <div class="mb-3">
+                            <label class="form-label">Pass order for LC</label>
+                            <input type="text" class="form-control" formControlName="passOrderForLC">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Bank Account Number</label>
+                            <select class="form-select" aria-label="Bank account" formControlName="bankAccountNo">
+                                <option selected>Open this select menu</option>
+                                <option value="1">12344</option>
+                                <option value="2">22222</option>
+                                <option value="3">66666</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Financial Advisor
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="FAForm" class="FAForm">
+
+                        <div class="mb-3">
+                            <label class="form-label">Pass order for LC</label>
+                            <input type="text" class="form-control" formControlName="passOrderForLC">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Managing Director
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="MDForm" class="MDForm">
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="approvalStatus"
+                                    id="approve" value="approve">
+                                <label class="form-check-label" for="approve">
+                                    Approve
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="approvalStatus"
+                                    id="reject" value="reject" checked>
+                                <label class="form-check-label" for="reject">
+                                    Reject
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <input type="text" class="form-control" formControlName="remarks">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
+                            <input type="text" class="form-control" formControlName="signature">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                    </form>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            DCAO
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form [formGroup]="DCAOForm2" class="DCAOForm2">
+                        <div class="mb-3">
+                            <label class="form-label">LC Format</label>
+                            <input type="text" class="form-control" formControlName="lcFormat">
+                        </div>
+                    </form>
+                    <div class="mb-3">
+                        <button mat-raised-button style="background-color: #304D30;color: #ffffff;">Pay Vendor</button>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+
+        <br>
+        <div style="text-align: right;">
+            <button mat-raised-button style="background-color: #0802A3;color: #ffffff;"
+                (click)="saveNewBill()">Update</button>
+        </div>
+    </section>
+</main>

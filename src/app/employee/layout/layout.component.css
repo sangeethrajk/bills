@@ -1,0 +1,85 @@
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.layout-toolbar {
+    background-color: #ffffff;
+    padding: 5px 10px 5px 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.layout-is-mobile .layout-toolbar {
+    position: fixed;
+    z-index: 2;
+}
+
+.layout-sidenav-container {
+    flex: 1;
+}
+
+.layout-is-mobile .layout-sidenav-container {
+    flex: 1 0 auto;
+}
+
+mat-sidenav {
+    background-color: #2B3499;
+    width: 15%;
+}
+
+mat-sidenav-content {
+    background-color: #D2DE32;
+}
+
+.sidenav-btn {
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-btn button {
+    width: 100%;
+    text-align: start;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.sidenav-btn button:hover {
+    background-color: #7B66FF;
+}
+
+.sidenav-btn li {
+    margin: 0;
+    padding: 0;
+}
+
+.sidenav-btn li ul {
+    display: none;
+    padding: 5px;
+    list-style: none;
+}
+
+.sidenav-btn li ul li::before {
+    content: "\2022";
+    color: #ffffff;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: 1em;
+}
+
+.sidenav-btn li ul li a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.sidenav-btn li:hover ul {
+    display: block;
+}

@@ -1,0 +1,48 @@
+<div class="layout-container" [class.layout-is-mobile]="mobileQuery.matches">
+    <mat-toolbar color="primary" class="layout-toolbar">
+        <div style="display: flex;align-items: center;">
+            <button mat-icon-button (click)="snav.toggle()" style="color: black;"><mat-icon>menu</mat-icon></button>
+            <img src="../../../assets/images/tnhb_logo.png" alt="TNHB Logo" style="height: 3rem;">
+        </div>
+        <div style="display: flex;align-items: center;">
+            <h4 style="color: black;font-size: 1rem;">{{ username }}</h4>
+            <img src="../../../assets/images/person.png" alt="" style="height: 1.5rem;margin-left: 1rem;">
+        </div>
+    </mat-toolbar>
+
+    <mat-sidenav-container class="layout-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+            fixedTopGap="56" [opened]="true">
+            <ul class="sidenav-btn">
+                <li><button routerLink="/employee/home" class="btn mb-2">Home</button></li>
+                <li>
+                    <div>
+                        <button class="btn mb-2">Action<span class="dropdown-toggle"
+                                style="float: right;"></span></button>
+                        <ul>
+                            <li><a routerLink="/employee/pending-list">Pending
+                                    Payments</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <button class="btn mb-2">View<span class="dropdown-toggle"
+                                style="float: right;"></span></button>
+                        <ul>
+                            <li><a routerLink="/employee/reviewed-list">Reviewed
+                                    Payments</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><button routerLink="" class="btn mb-2">Bank Account</button></li>
+                <li><button routerLink="" class="btn mb-2">Vendor Verification</button></li>
+                <li><button routerLink="" class="btn mb-2">Logout</button></li>
+            </ul>
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

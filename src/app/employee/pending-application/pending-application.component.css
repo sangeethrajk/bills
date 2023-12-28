@@ -1,0 +1,90 @@
+#main {
+    padding: 2rem;
+}
+
+#pdf-btn {
+    background-color: #9A4444;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.form-group,
+.AEpart1Form,
+.AEpart2Form,
+.AEEForm {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 1rem;
+}
+
+.AEpart3Form,
+.DivisionalAccountantForm,
+.EEForm,
+.SEForm,
+.SEHQForm,
+.CEForm,
+.DCAOForm,
+.FAForm,
+.MDForm,
+.DCAOForm2 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1rem;
+}
+
+.AssistantForm {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 1rem;
+}
+
+.nameOfContractor,
+.nameOfWork,
+.AEpart1Form.nameOfWork,
+.AEpart1Form.nameOfContractor,
+.allWorksCheckedByAEE,
+.preMeasurementsTaken {
+    grid-column: span 2;
+}
+
+.mainAgreement,
+.supplementAgreement,
+.partIIDateOfMeasurement,
+.itemsOmittedOrPartlyDone,
+.computerizedMeasurementBookSubmitted,
+.itemsCoveredInAgreement {
+    grid-column: span 2;
+}
+
+.wc79Order {
+    grid-column: span 3;
+}
+
+.dateOfCommencement,
+.liquidatedDamagesOrLumpSumFine {
+    grid-column: 1/2;
+}
+
+.AEpart2Form-progress {
+    grid-column: span 5;
+}
+
+.correctedValue {
+    display: flex;
+    column-gap: 1rem;
+    grid-column: span 2;
+}
+
+.gstPercentage,
+.baseValue,
+.totalDeduction {
+    grid-column: span 2;
+}
+
+.dpl {
+    grid-column: 1/3;
+}
+
+.bill-register {
+    grid-column: span 2;
+}

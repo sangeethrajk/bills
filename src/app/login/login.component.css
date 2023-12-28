@@ -1,0 +1,37 @@
+/* Base styles for larger screens */
+.main {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    background-image: url('../../assets/images/login-image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login {
+    width: 30%;
+    margin-right: 10rem;
+}
+
+.login-form {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: #CD8D7A;
+}
+
+.form-label {
+    color: #000000;
+}
+
+/* Responsive styles for smaller screens */
+@media only screen and (max-width: 768px) {
+    .login-form {
+        width: 80%;
+        /* Adjust width for smaller screens */
+    }
+}
