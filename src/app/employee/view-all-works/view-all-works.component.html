@@ -1,0 +1,43 @@
+<main id="main">
+    <h4 class="heading">All Works</h4>
+    <section>
+        <div class="mb-3">
+            <button mat-raised-button id="button" routerLink="/employee/add-work">Add Work</button>
+        </div>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="nameOfWork">
+                <th mat-header-cell *matHeaderCellDef> Name of the Work </th>
+                <td mat-cell *matCellDef="let workDetail"> {{ workDetail.nameOfWork }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="agreementNumber">
+                <th mat-header-cell *matHeaderCellDef> Agreement Number </th>
+                <td mat-cell *matCellDef="let workDetail"> {{ workDetail.agreementNumber }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="agreementValue">
+                <th mat-header-cell *matHeaderCellDef> Agreement Value (incl. GST) </th>
+                <td mat-cell *matCellDef="let workDetail"> {{ workDetail.agreementValue }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="agreementDate">
+                <th mat-header-cell *matHeaderCellDef> Agreement Date </th>
+                <td mat-cell *matCellDef="let workDetail"> {{ workDetail.agreementDate }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateOfCommencement">
+                <th mat-header-cell *matHeaderCellDef> Date of Commencement </th>
+                <td mat-cell *matCellDef="let workDetail"> {{ workDetail.dateOfCommencement }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="dateOfCompletion">
+                <th mat-header-cell *matHeaderCellDef> Date of Completion </th>
+                <td mat-cell *matCellDef="let workDetail">{{ workDetail.dateOfCompletion }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </section>
+</main>

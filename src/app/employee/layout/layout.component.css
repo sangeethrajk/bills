@@ -29,12 +29,12 @@
 }
 
 mat-sidenav {
-    background-color: #2B3499;
+    background-color: #161f6d;
     width: 15%;
 }
 
 mat-sidenav-content {
-    background-color: #D2DE32;
+    background-color: #FFF8E3;
 }
 
 .sidenav-btn {

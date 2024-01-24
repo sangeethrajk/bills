@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>{{ dialogData.accountNumber ? 'Edit' : 'Add' }} Bank Account</h2>
+<mat-dialog-content>
+    <form [formGroup]="bankDetailsForm">
+
+        <div class="mb-3">
+            <label for="accountNumber" class="form-label">Account Number</label>
+            <input type="text" class="form-control" id="accountNumber" formControlName="accountNumber">
+        </div>
+
+        <div class="mb-3">
+            <label for="accountHolder" class="form-label">Account Holder</label>
+            <input type="text" class="form-control" id="accountHolder" formControlName="accountHolder">
+        </div>
+
+        <div class="mb-3">
+            <label for="bankName" class="form-label">Bank Name</label>
+            <input type="text" class="form-control" id="bankName" formControlName="bankName">
+        </div>
+
+        <div class="mb-3">
+            <label for="bankBranch" class="form-label">Branch</label>
+            <input type="text" class="form-control" id="bankBranch" formControlName="bankBranch">
+        </div>
+
+        <div class="mb-3">
+            <label for="ifscCode" class="form-label">IFSC Code</label>
+            <input type="text" class="form-control" id="ifscCode" formControlName="ifscCode">
+        </div>
+
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button (click)="onSave()">Save</button>
+</mat-dialog-actions>

@@ -1,0 +1,50 @@
+<main id="main">
+    <h4 class="heading">Bank Accounts</h4>
+    <section>
+        <div class="mb-3">
+            <button mat-raised-button id="button" (click)="openBankDetailsDialog()">Add Bank Account</button>
+        </div>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="accountNumber">
+                <th mat-header-cell *matHeaderCellDef> Account Number </th>
+                <td mat-cell *matCellDef="let bankDetail"> {{ bankDetail.accountNumber }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="accountHolder">
+                <th mat-header-cell *matHeaderCellDef> Account Holder </th>
+                <td mat-cell *matCellDef="let bankDetail"> {{ bankDetail.accountHolder }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bankName">
+                <th mat-header-cell *matHeaderCellDef> Bank Name </th>
+                <td mat-cell *matCellDef="let bankDetail"> {{ bankDetail.bankName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ifscCode">
+                <th mat-header-cell *matHeaderCellDef> IFSC Code </th>
+                <td mat-cell *matCellDef="let bankDetail"> {{ bankDetail.ifscCode }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bankBranch">
+                <th mat-header-cell *matHeaderCellDef> Branch </th>
+                <td mat-cell *matCellDef="let bankDetail"> {{ bankDetail.bankBranch }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let bankDetail">
+                    <button mat-icon-button (click)="editBankDetails(bankDetail)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="deleteBankDetails(bankDetail)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </section>
+</main>

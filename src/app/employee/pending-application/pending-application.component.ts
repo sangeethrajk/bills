@@ -119,10 +119,14 @@ export class PendingApplicationComponent {
       agreementNo: [''],
       agreementDate: [''],
       dateOfCommencement: [''],
+      dateOfCompletion: [''],
       agreementValue: [''],
       invoiceNo: [''],
       billNo: [''],
-      billValue: [''],
+      billAmount: [''],
+      billGSTPercentage: [''],
+      billGSTAmount: [''],
+      billTotal: [''],
       pan: [''],
       tan: [''],
       gst: [''],
@@ -131,12 +135,18 @@ export class PendingApplicationComponent {
       tanurl: this.tanurl,
       panurl: this.panurl,
       gsturl: this.gsturl,
+      bankName: [''],
+      bankAccountNo: [''],
+      accountHolderName: [''],
+      ifscCode: [''],
+      branchName: ['']
     });
 
     this.AEpart1Form = this.formBuilder.group({
-      nameOfWork: [''],
-      nameOfContractor: [''],
+      expenditureTillPreviousBill: [''],
       estimateNo: [''],
+      fsValue: [''],
+      reraNo: [''],
       mainAgreementNo: [''],
       mainAgreementValue: [null],
       wc79OrderNo: [''],
@@ -189,12 +199,13 @@ export class PendingApplicationComponent {
     })
 
     this.AssistantForm = this.formBuilder.group({
-      valueOfWorkDoneAsReportedByAEAEE: [''],
+      valueOfWorkDoneAsReportedByAE: [''],
       correctedValue: [''],
       gstamount: [''],
       gst_Percentage: [''],
       baseValue: [''],
       rmd: [0],
+      labourFund: [0],
       it: [0],
       ec: [0],
       sgst: [0],
@@ -204,6 +215,7 @@ export class PendingApplicationComponent {
       withheldAmount: [''],
       eotfine: [''],
       otherRecoveries: [''],
+      otherRecoveriesRemarks: [''],
       totalDeduction: [0],
       netTotal: [''],
       dplpageNo: [''],
@@ -253,14 +265,16 @@ export class PendingApplicationComponent {
     this.DCAOForm = this.formBuilder.group({
       passOrderForLC: [''],
       bankAccountNo: [''],
+      remarks: [''],
       signature: [''],
       date: [''],
     })
 
     this.FAForm = this.formBuilder.group({
-      passOrderForLC: [''],
+      lcIssuedOrder: [''],
       signature: [''],
       date: [''],
+      remarks: ['']
     })
 
     this.MDForm = this.formBuilder.group({
@@ -304,8 +318,6 @@ export class PendingApplicationComponent {
           fileurl: this.viewModel.fileurl
         });
         this.AEpart1Form.patchValue({
-          nameOfWork: this.viewModel.nameOfWork,
-          nameOfContractor: this.viewModel.nameOfContractor,
           estimateNo: this.viewModel.estimateNo,
           mainAgreementNo: this.viewModel.mainAgreementNo,
           value: this.viewModel.value,
@@ -353,7 +365,7 @@ export class PendingApplicationComponent {
         })
 
         this.AssistantForm.patchValue({
-          valueOfWorkDoneAsReportedByAEAEE: this.viewModel.valueOfWorkDoneAsReportedByAEAEE,
+          valueOfWorkDoneAsReportedByAE: this.viewModel.valueOfWorkDoneAsReportedByAE,
           correctedValue: this.viewModel.correctedValue,
           gstamount: this.viewModel.gstamount,
           gst_Percentage: this.viewModel.gst_Percentage,
@@ -374,7 +386,6 @@ export class PendingApplicationComponent {
           dpldate: this.viewModel.dpldate,
           billRegisterPageNo: this.viewModel.billRegisterPageNo,
           billRegisterDate: this.viewModel.billRegisterDate,
-
         });
         this.DivisionalAccountantForm.patchValue({
           billPassedFor: this.viewModel.correctedValue,
@@ -458,8 +469,6 @@ export class PendingApplicationComponent {
               this.revieweddate = officerModel.approvalDate;
               break;
 
-
-
             default:
 
               break;
@@ -479,7 +488,8 @@ export class PendingApplicationComponent {
   }
 
   generateVoucherNo() {
-    const voucherNumber = this.voucherService.generateVoucherNumber();
+    const division = this.applicationForm.get('division')?.value;
+    const voucherNumber = this.voucherService.generateVoucherNumber(division);
     this.EEForm.get('voucherNo')?.setValue(voucherNumber);
   }
 
@@ -840,25 +850,36 @@ export class PendingApplicationComponent {
       let gstamount = (selectedValue / divideValue) * correctedValue;
       gstamount = parseFloat(gstamount.toFixed(2));
       let baseValue = correctedValue - gstamount;
-      let rmd = (5 / 100) * correctedValue;
+      let rmd = (5 / 100) * baseValue;
+      let labourFund = (1 / 100) * baseValue;
       let it = (2 / 100) * baseValue;
       let ec = (0.066 / 100) * it;
       let sgst = (1 / 100) * baseValue;
       let cgst = (1 / 100) * baseValue;
 
       this.AssistantForm.get('gstamount')?.setValue(gstamount);
+
       baseValue = parseFloat(baseValue.toFixed(2));
       this.AssistantForm.get('baseValue')?.setValue(baseValue);
-      rmd = parseFloat(rmd.toFixed(2));
+
+      rmd = Math.ceil(parseFloat(rmd.toFixed(2)) / 100) * 100;
       this.AssistantForm.get('rmd')?.setValue(rmd);
-      it = parseFloat(it.toFixed(2));
+
+      labourFund = Math.ceil(parseFloat(labourFund.toFixed(2)));
+      this.AssistantForm.get('labourFund')?.setValue(labourFund);
+
+      it = Math.ceil(parseFloat(it.toFixed(2)));
       this.AssistantForm.get('it')?.setValue(it);
-      ec = parseFloat(ec.toFixed(2));
+
+      ec = Math.ceil(parseFloat(ec.toFixed(2)));
       this.AssistantForm.get('ec')?.setValue(ec);
-      sgst = parseFloat(sgst.toFixed(2));
+
+      sgst = Math.ceil(parseFloat(sgst.toFixed(2)));
       this.AssistantForm.get('sgst')?.setValue(sgst);
-      cgst = parseFloat(cgst.toFixed(2));
+
+      cgst = Math.ceil(parseFloat(cgst.toFixed(2)));
       this.AssistantForm.get('cgst')?.setValue(cgst);
+
       // this.totalDeduction = parseFloat(this.totalDeduction.toFixed(2));
       // this.AssistantForm.get('totalDeduction')?.setValue(this.totalDeduction);
 
@@ -871,6 +892,7 @@ export class PendingApplicationComponent {
 
   calculateTotalDeduction() {
     const rmd = parseFloat(this.AssistantForm.get('rmd')?.value || '0');
+    const labourFund = parseFloat(this.AssistantForm.get('labourFund')?.value || '0');
     const it = parseFloat(this.AssistantForm.get('it')?.value || '0');
     const ec = parseFloat(this.AssistantForm.get('ec')?.value || '0');
     const sgst = parseFloat(this.AssistantForm.get('sgst')?.value || '0');
@@ -881,7 +903,7 @@ export class PendingApplicationComponent {
     const eotfine = parseFloat(this.AssistantForm.get('eotfine')?.value || '0');
     const otherRecoveries = parseFloat(this.AssistantForm.get('otherRecoveries')?.value || '0');
 
-    let totalDeduction = rmd + it + ec + sgst + cgst + steelRecovery + mobilization + withheldAmount + eotfine + otherRecoveries;
+    let totalDeduction = rmd + labourFund + it + ec + sgst + cgst + steelRecovery + mobilization + withheldAmount + eotfine + otherRecoveries;
     totalDeduction = parseFloat(totalDeduction.toFixed(2));
 
     this.AssistantForm.get('totalDeduction')?.setValue(totalDeduction);
@@ -889,6 +911,11 @@ export class PendingApplicationComponent {
     let netTotal = this.AssistantForm.get('baseValue')?.value - this.AssistantForm.get('totalDeduction')?.value;
     netTotal = parseFloat(netTotal.toFixed(2));
     this.AssistantForm.get('netTotal')?.setValue(netTotal);
+
+    const valueOfWorkDoneAsReportedByAE = this.AssistantForm.get('valueOfWorkDoneAsReportedByAE')?.value;
+    this.DivisionalAccountantForm.get('billPassedFor')?.setValue(valueOfWorkDoneAsReportedByAE);
+    this.DivisionalAccountantForm.get('billPayFor')?.setValue(netTotal);
+
   }
 
   calculateTotalValue() {
@@ -996,8 +1023,6 @@ export class PendingApplicationComponent {
     } else if (this.role == "AEE") {
 
       AEpart1Form = {
-        "Name of work": this.viewModel.nameOfWork,
-        "Name of Contractor": this.viewModel.nameOfContractor,
         "Estimate Number": this.viewModel.estimateNo,
         "Main Agreement Number": this.viewModel.mainAgreementNo,
         "WC-79 Order Number": this.viewModel.wc79OrderNo,
@@ -1125,8 +1150,6 @@ export class PendingApplicationComponent {
 
       if (this.statusofEE == "Approved by AEE") {
         AEpart1Form = {
-          "Name of work": this.viewModel.nameOfWork,
-          "Name of Contractor": this.viewModel.nameOfContractor,
           "Estimate Number": this.viewModel.estimateNo,
           "Main Agreement Number": this.viewModel.mainAgreementNo,
           "WC-79 Order Number": this.viewModel.wc79OrderNo,
@@ -1278,8 +1301,6 @@ export class PendingApplicationComponent {
         URL.revokeObjectURL(pdfUrl);
       } else {
         AEpart1Form = {
-          "Name of work": this.viewModel.nameOfWork,
-          "Name of Contractor": this.viewModel.nameOfContractor,
           "Estimate Number": this.viewModel.estimateNo,
           "Main Agreement Number": this.viewModel.mainAgreementNo,
           "WC-79 Order Number": this.viewModel.wc79OrderNo,
@@ -1336,7 +1357,7 @@ export class PendingApplicationComponent {
         };
 
         AssistantForm = {
-          "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAEAEE,
+          "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAE,
           "Corrected Value": this.viewModel.correctedValue,
           "GST Percentage": this.viewModel.gst_Percentage,
           "GST Amount": this.viewModel.gstamount,
@@ -1534,8 +1555,6 @@ export class PendingApplicationComponent {
     } else if (this.role == "Assistant") {
 
       AEpart1Form = {
-        "Name of work": this.viewModel.nameOfWork,
-        "Name of Contractor": this.viewModel.nameOfContractor,
         "Estimate Number": this.viewModel.estimateNo,
         "Main Agreement Number": this.viewModel.mainAgreementNo,
         "WC-79 Order Number": this.viewModel.wc79OrderNo,
@@ -1716,8 +1735,6 @@ export class PendingApplicationComponent {
     } else if (this.role == "DA") {
 
       AEpart1Form = {
-        "Name of work": this.viewModel.nameOfWork,
-        "Name of Contractor": this.viewModel.nameOfContractor,
         "Estimate Number": this.viewModel.estimateNo,
         "Main Agreement Number": this.viewModel.mainAgreementNo,
         "WC-79 Order Number": this.viewModel.wc79OrderNo,
@@ -1774,7 +1791,7 @@ export class PendingApplicationComponent {
       };
 
       AssistantForm = {
-        "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAEAEE,
+        "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAE,
         "Corrected Value": this.viewModel.correctedValue,
         "GST Percentage": this.viewModel.gst_Percentage,
         "GST Amount": this.viewModel.gstamount,

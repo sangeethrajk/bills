@@ -10,6 +10,12 @@ import { ReviewedListComponent } from './reviewed-list/reviewed-list.component';
 import { ReviewedApplicationComponent } from './reviewed-application/reviewed-application.component';
 import { PendingApplicationComponent } from './pending-application/pending-application.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { ProjectsListComponent } from './projects-list/projects-list.component';
+import { ProjectViewComponent } from './project-view/project-view.component';
+import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
+import { BankDetailsDialogComponent } from './bank-details-dialog/bank-details-dialog.component';
+import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
+import { AddWorkComponent } from './add-work/add-work.component';
 
 
 
@@ -23,6 +29,12 @@ import { DialogComponent } from './dialog/dialog.component';
     ReviewedApplicationComponent,
     PendingApplicationComponent,
     DialogComponent,
+    ProjectsListComponent,
+    ProjectViewComponent,
+    BankAccountsComponent,
+    BankDetailsDialogComponent,
+    ViewAllWorksComponent,
+    AddWorkComponent,
   ],
   imports: [
     CommonModule,

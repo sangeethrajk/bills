@@ -1,0 +1,71 @@
+<main id="main">
+
+    <h4 style="font-size: 1rem;font-weight: bold;">Verify Project</h4>
+
+    <form [formGroup]="projectForm" class="shadow verify-form">
+        <div class="mb-3">
+            <label for="division" class="form-label">Division</label>
+            <input type="text" class="form-control" id="division" formControlName="division" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="workName" class="form-label">Name of the Work</label>
+            <input type="text" class="form-control" id="workName" formControlName="workName" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="agreementNumber" class="form-label">Agreement Number</label>
+            <input type="text" class="form-control" id="agreementNumber" formControlName="agreementNumber" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="agreementValue" class="form-label">Agreement Value</label>
+            <input type="text" class="form-control" id="agreementValue" formControlName="agreementValue" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="agreementDate" class="form-label">Agreement Date</label>
+            <input type="date" class="form-control" id="agreementDate" formControlName="agreementDate" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="dateOfCommencement" class="form-label">Date of Commencement</label>
+            <input type="date" class="form-control" id="dateOfCommencement" formControlName="dateOfCommencement"
+                readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="dateOfCompletion" class="form-label">Date of Completion</label>
+            <input type="date" class="form-control" id="dateOfCompletion" formControlName="dateOfCompletion" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="bankName" class="form-label">Bank Name</label>
+            <input type="text" class="form-control" id="bankName" formControlName="bankName" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="accountNumber" class="form-label">Account Number</label>
+            <input type="text" class="form-control" id="accountNumber" formControlName="accountNumber" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="accountHolderName" class="form-label">Account Holder Name</label>
+            <input type="text" class="form-control" id="accountHolderName" formControlName="accountHolderName" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="ifscCode" class="form-label">IFSC Code</label>
+            <input type="text" class="form-control" id="ifscCode" formControlName="ifscCode" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="branchName" class="form-label">Branch Name</label>
+            <input type="text" class="form-control" id="branchName" formControlName="branchName" readonly>
+        </div>
+    </form>
+
+    <div>
+        <button mat-raised-button type="submit" id="verify-button">Verify Project</button>
+    </div>
+</main>

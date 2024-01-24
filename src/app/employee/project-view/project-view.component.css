@@ -1,0 +1,18 @@
+#main {
+    padding: 2rem;
+}
+
+.verify-form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+#verify-button {
+    background-color: #161f6d;
+    color: #ffffff;
+}

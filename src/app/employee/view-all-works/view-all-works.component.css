@@ -1,0 +1,14 @@
+#main {
+    padding: 2rem;
+}
+
+.heading {
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+#button {
+    background-color: #161f6d;
+    color: #ffffff;
+}

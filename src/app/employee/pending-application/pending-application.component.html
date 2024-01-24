@@ -57,7 +57,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="agreementValue" class="form-label">Agreement Value</label>
+                            <label for="dateOfCompletion" class="form-label">Date of Completion</label>
+                            <input type="text" class="form-control" id="dateOfCompletion"
+                                [value]="applicationForm.get('dateOfCompletion')?.value || ''" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="agreementValue" class="form-label">Agreement Value (incl. GST)</label>
                             <input type="text" class="form-control" id="agreementValue"
                                 [value]="applicationForm.get('agreementValue')?.value || ''" readonly>
                         </div>
@@ -74,10 +80,28 @@
                                 [value]="applicationForm.get('billNo')?.value || ''" readonly>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="billValue" class="form-label">Bill Value</label>
-                            <input type="text" class="form-control" id="billValue"
-                                [value]="applicationForm.get('billValue')?.value || ''" readonly>
+                        <div>
+                            <label class="form-label">Bill Amount</label>
+                            <input type="text" class="form-control" id="billAmount"
+                                [value]="applicationForm.get('billAmount')?.value || ''" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Bill GST Percentage</label>
+                            <input type="text" class="form-control"
+                                [value]="applicationForm.get('billGSTPercentage')?.value || ''" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Bill GST Amount</label>
+                            <input type="text" class="form-control"
+                                [value]="applicationForm.get('billGSTAmount')?.value || ''" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Bill Total</label>
+                            <input type="text" class="form-control" id="billTotal"
+                                [value]="applicationForm.get('billTotal')?.value || ''" readonly>
                         </div>
 
                         <div class="mb-3">
@@ -122,31 +146,32 @@
                     <h2 style="font-weight: bold;">Part – I Work Description</h2>
                     <form [formGroup]="AEpart1Form" class="AEpart1Form">
 
-                        <div class="mb-3 nameOfWork">
-                            <label for="nameOfWork" class="form-label"><span class="me-1">1.</span>Name of
-                                work</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="nameOfWork"
-                                formControlName="nameOfWork">
-                        </div>
-
-                        <div class="mb-3 nameOfContractor">
-                            <label for="nameOfContractor" class="form-label"><span class="me-1">2.</span>Name
-                                of
-                                Contractor</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="nameOfContractor"
-                                formControlName="nameOfContractor">
+                        <div class="mb-3 expenditureTillPreviousBill">
+                            <label for="expenditureTillPreviousBill" class="form-label">Expenditure accured till
+                                previous bill</label>
+                            <input readonly type="text" class="form-control" id="expenditureTillPreviousBill"
+                                formControlName="expenditureTillPreviousBill">
                         </div>
 
                         <div class="mb-3">
-                            <label for="estimateNo" class="form-label"><span class="me-1">3.</span>Estimate
-                                No</label>
+                            <label for="reraNo" class="form-label">RERA Number</label>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="reraNo"
+                                formControlName="reraNo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fsValue" class="form-label">FS Value</label>
+                            <input type="text" class="form-control" id="fsValue" formControlName="fsValue">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="estimateNo" class="form-label">Estimate Number</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="estimateNo"
                                 formControlName="estimateNo">
                         </div>
 
                         <div class="mb-3 mainAgreement">
-                            <label class="form-label"><span class="me-1">4.</span>Main
-                                Agreement No</label>
+                            <label class="form-label">Main Agreement No</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="mainAgreementNo"
                                     formControlName="mainAgreementNo" placeholder="Number">
@@ -157,9 +182,7 @@
                         </div>
 
                         <div class="mb-3 wc79Order">
-                            <label class="form-label"><span class="me-1">5.</span>WC-79
-                                Order No &
-                                Date</label>
+                            <label class="form-label">WC-79 Order No & Date</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="wc79OrderNo"
                                     formControlName="wc79OrderNo" placeholder="Number">
@@ -172,8 +195,7 @@
                         </div>
 
                         <div class="mb-3 supplementAgreement">
-                            <label class="form-label"><span class="me-1">6.</span>Supplement
-                                Agreement</label>
+                            <label class="form-label">Supplement Agreement</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                     id="supplementAgreementNo" formControlName="supplementAgreementNo"
@@ -185,37 +207,36 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="totalValue" class="form-label"><span class="me-1">7.</span>Total
+                            <label for="totalValue" class="form-label">Total
                                 value</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="totalValue"
                                 formControlName="totalValue" readonly>
                         </div>
 
                         <div class="mb-3 dateOfCommencement">
-                            <label for="dateOfCommencement" class="form-label"><span class="me-1">8.</span>Date of
+                            <label for="dateOfCommencement" class="form-label">Date of
                                 commencement</label>
-                            <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="dateOfCommencement"
+                            <input readonly type="date" class="form-control" id="dateOfCommencement"
                                 formControlName="dateOfCommencement" (change)="calculatePhysicalAchievement()">
                         </div>
 
                         <div class="mb-3">
-                            <label for="dueDateOfCompletion" class="form-label"><span class="me-1">9.</span>Due date of
+                            <label for="dueDateOfCompletion" class="form-label">Due date of
                                 completion</label>
-                            <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="dueDateOfCompletion"
+                            <input readonly type="date" class="form-control" id="dueDateOfCompletion"
                                 formControlName="dueDateOfCompletion" (change)="calculatePhysicalAchievement()">
                         </div>
 
                         <div class="mb-3">
-                            <label for="actualDateOfCompletion" class="form-label"><span class="me-1">10.</span>Actual
+                            <label for="actualDateOfCompletion" class="form-label">Actual
                                 date of completion</label>
                             <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
                                 id="actualDateOfCompletion" formControlName="actualDateOfCompletion"
                                 (change)="calculatePhysicalAchievement()">
                         </div>
 
-                        <div class="mb-3" *ngIf="!AEFormReadOnly">
-                            <label for="finalBillCompletionReportEnclosed" class="form-label"><span
-                                    class="me-1">11.</span>Does
+                        <div class="mb-3 finalBillCompletionReportEnclosed" *ngIf="!AEFormReadOnly">
+                            <label for="finalBillCompletionReportEnclosed" class="form-label">Does
                                 final bill, completion report enclosed?</label>
                             <select class="form-select" formControlName="finalBillCompletionReportEnclosed">
                                 <option value="Yes">Yes</option>
@@ -224,8 +245,7 @@
                         </div>
 
                         <div class="mb-3" *ngIf="AEFormReadOnly">
-                            <label for="finalBillCompletionReportEnclosed" class="form-label"><span
-                                    class="me-1">11.</span>Does
+                            <label for="finalBillCompletionReportEnclosed" class="form-label">Does
                                 final bill, completion report enclosed?</label>
                             <input [readOnly]="AEFormReadOnly" class="form-control"
                                 id="finalBillCompletionReportEnclosed"
@@ -238,7 +258,7 @@
                     <form [formGroup]="AEpart2Form" class="AEpart2Form">
 
                         <div class="mb-3 partIIDateOfMeasurement">
-                            <label class="form-label"><span class="me-1">12.</span>Date of
+                            <label class="form-label">Date of
                                 measurement</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
@@ -248,14 +268,13 @@
                         </div>
 
                         <div class="mb-3 AEpart2Form-progress">
-                            <p><span class="me-1">14.</span>Whether
-                                work carried out at specified rate of speed</p>
+                            <p>Whether work carried out at specified rate of speed</p>
                             <div style="display: flex;column-gap: 1rem;">
                                 <div>
                                     <label for="physicalAchievement" class="form-label">Physical progress (%)</label>
                                     <div class="col-auto">
-                                        <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                            id="physicalAchievement" formControlName="physicalAchievement" readonly>
+                                        <input readonly type="text" class="form-control" id="physicalAchievement"
+                                            formControlName="physicalAchievement" readonly>
                                     </div>
                                 </div>
                                 <div>
@@ -270,7 +289,7 @@
 
 
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
-                            <span class="col-3">15.<span class="ms-1">Extension of time (EOT)</span></span>
+                            <span class="col-3">Extension of time (EOT)</span>
                             <span class="col-auto">
                                 <select class="form-select" formControlName="extensionOfTime">
                                     <option value="Yes">Yes</option>
@@ -279,7 +298,7 @@
                             </span>
                         </div>
                         <div class="mb-3" *ngIf="AEFormReadOnly">
-                            <span class="col-3">15.<span class="ms-1">Extension of time (EOT)</span></span>
+                            <span class="col-3">Extension of time (EOT)</span>
                             <span class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" class="form-control" id="extensionOfTime"
                                     formControlName="extensionOfTime">
@@ -308,14 +327,14 @@
                         </div>
 
                         <div class="mb-3 liquidatedDamagesOrLumpSumFine">
-                            <label for="liquidatedDamagesOrLumpSumFine" class="form-label"><span
-                                    class="me-1">16.</span>Liquidated damages / Lump sum fine</label>
+                            <label for="liquidatedDamagesOrLumpSumFine" class="form-label">Liquidated damages / Lump sum
+                                fine</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="liquidatedDamagesOrLumpSumFine" formControlName="liquidatedDamagesOrLumpSumFine">
                         </div>
 
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
-                            <label for="itemsCoveredInAgreement" class="form-label"><span class="me-1">17.</span>Whether
+                            <label for="itemsCoveredInAgreement" class="form-label">Whether
                                 all items covered in original or supplemental agreement</label>
                             <select class="form-select" formControlName="itemsCoveredInAgreement">
                                 <option value="Yes">Yes</option>
@@ -324,24 +343,23 @@
                         </div>
 
                         <div class="mb-3 itemsCoveredInAgreement" *ngIf="AEFormReadOnly">
-                            <label for="itemsCoveredInAgreement" class="col-6 col-form-label"><span
-                                    class="me-1">17.</span>Whether
+                            <label for="itemsCoveredInAgreement" class="col-6 col-form-label">Whether
                                 all items covered in original or supplemental agreement</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="itemsCoveredInAgreement" formControlName="itemsCoveredInAgreement">
                         </div>
 
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
-                            <span class="col-6">18.<span class="ms-1">Whether quantities in the bill are as per
-                                    estimate</span></span>
+                            <span class="col-6">Whether quantities in the bill are as per
+                                estimate</span>
                             <select class="form-select" formControlName="quantitiesInBillAsPerEstimate">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
                         <div class="mb-3" *ngIf="AEFormReadOnly">
-                            <span class="col-6">18.<span class="ms-1">Whether quantities in the bill are as per
-                                    estimate</span></span>
+                            <span class="col-6">Whether quantities in the bill are as per
+                                estimate</span>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="quantitiesInBillAsPerEstimate" formControlName="quantitiesInBillAsPerEstimate">
                         </div>
@@ -367,14 +385,14 @@
                         </div>
 
                         <div class="mb-3 itemsOmittedOrPartlyDone">
-                            <label for="itemsOmittedOrPartlyDone" class="form-label"><span class="me-1">19.</span>Have
+                            <label for="itemsOmittedOrPartlyDone" class="form-label">Have
                                 any items of work in the agreement being omitted or partly done</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="itemsOmittedOrPartlyDone" formControlName="itemsOmittedOrPartlyDone">
                         </div>
 
                         <div class="mb-3">
-                            <label for="partRatePaidInAgreement" class="form-label"><span class="me-1">20.</span>Whether
+                            <label for="partRatePaidInAgreement" class="form-label">Whether
                                 part rate is paid</label>
                             <div class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
@@ -383,16 +401,16 @@
                         </div>
 
                         <div class="mb-3 computerizedMeasurementBookSubmitted" *ngIf="!AEFormReadOnly">
-                            <label for="computerizedMeasurementBookSubmitted" class="form-label"><span
-                                    class="me-1">22.</span>Whether computerized measurement book submitted?</label>
+                            <label for="computerizedMeasurementBookSubmitted" class="form-label">Whether computerized
+                                measurement book submitted?</label>
                             <select class="form-select" formControlName="computerizedMeasurementBookSubmitted">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
                         <div class="mb-3 computerizedMeasurementBookSubmitted" *ngIf="AEFormReadOnly">
-                            <label for="computerizedMeasurementBookSubmitted" class="form-label"><span
-                                    class="me-1">22.</span>Whether computerized measurement book submitted?</label>
+                            <label for="computerizedMeasurementBookSubmitted" class="form-label">Whether computerized
+                                measurement book submitted?</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="computerizedMeasurementBookSubmitted"
                                 formControlName="computerizedMeasurementBookSubmitted">
@@ -404,15 +422,14 @@
                     <form [formGroup]="AEpart3Form" class="AEpart3Form">
 
                         <div class="mb-3">
-                            <label for="valueOfAgreement" class="form-label"><span class="me-1">24.</span>Value of
+                            <label for="valueOfAgreement" class="form-label">Value of
                                 agreement</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="valueOfAgreement"
                                 formControlName="valueOfAgreement" (keyup)="calculateBalance()">
                         </div>
 
                         <div class="mb-3">
-                            <label for="amountReleasedUptoPreviousBill" class="form-label"><span
-                                    class="me-1">25.</span>Amount
+                            <label for="amountReleasedUptoPreviousBill" class="form-label">Amount
                                 released upto previous bill</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="amountReleasedUptoPreviousBill" formControlName="amountReleasedUptoPreviousBill"
@@ -420,27 +437,26 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="balance" class="form-label"><span class="me-1">26.</span>Balance</label>
+                            <label for="balance" class="form-label">Balance</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="balance"
                                 formControlName="balance">
                         </div>
 
                         <div class="mb-3">
-                            <label for="amountRaisedInThisBill" class="form-label"><span class="me-1">27.</span>Amount
+                            <label for="amountRaisedInThisBill" class="form-label">Amount
                                 raised in this bill</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                 id="amountRaisedInThisBill" formControlName="amountRaisedInThisBill">
                         </div>
 
                         <div class="mb-3">
-                            <label for="certificate" class="form-label"><span class="me-1">28.</span>Certificate</label>
+                            <label for="certificate" class="form-label">Certificate</label>
                             <textarea [readOnly]="AEFormReadOnly" type="text" class="form-control" id="certificate"
                                 formControlName="certificate"></textarea>
                         </div>
 
                         <div class="mb-3" style="grid-column: span 2;">
-                            <label class="form-label">
-                                <span class="me-1">29.</span>Signature with date</label>
+                            <label class="form-label">Signature with date</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="signature"
                                     formControlName="signature">
@@ -515,10 +531,10 @@
 
                         <div class="correctedValue">
                             <div class="mb-3">
-                                <label for="reportedbyaeandaee" class="form-label">Reported
-                                    by AE & AEE<span class="ms-1">(&#8377;)</span></label>
-                                <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                    id="reportedbyaeandaee" formControlName="valueOfWorkDoneAsReportedByAEAEE">
+                                <label for="valueOfWorkDoneAsReportedByAE" class="form-label">Reported
+                                    by AE<span class="ms-1">(&#8377;)</span></label>
+                                <input readonly type="text" class="form-control" id="valueOfWorkDoneAsReportedByAE"
+                                    formControlName="valueOfWorkDoneAsReportedByAE">
                             </div>
                             <div class="mb-3">
                                 <label for="correctedvalue" class="form-label">Corrected
@@ -560,6 +576,12 @@
                         <div class="mb-3">
                             <label for="rmd" class="form-label">RMD 5%</label>
                             <input type="text" class="form-control" id="rmd" formControlName="rmd" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="labourFund" class="form-label">Labour Welfare 1%</label>
+                            <input type="text" class="form-control" id="labourFund" formControlName="labourFund"
+                                readonly>
                         </div>
 
                         <div class="mb-3">
@@ -610,6 +632,12 @@
                             <label for="otherRecoveries" class="form-label">Other Recoveries</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
                                 formControlName="otherRecoveries">
+                        </div>
+
+                        <div class="mb-3 otherRecoveriesRemarks">
+                            <label for="otherRecoveriesRemarks" class="form-label">Other Recoveries Remarks</label>
+                            <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
+                                id="otherRecoveriesRemarks" formControlName="otherRecoveriesRemarks">
                         </div>
 
                         <div class="mb-3 totalDeduction">
@@ -675,14 +703,14 @@
 
                         <div class="mb-3">
                             <label for="billPassedFor" class="form-label">Bill passed for</label>
-                            <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="billPassedFor"
-                                formControlName="billPassedFor" readonly>
+                            <input type="text" class="form-control" id="billPassedFor" formControlName="billPassedFor"
+                                readonly>
                         </div>
 
                         <div class="mb-3">
                             <label for="billPayFor" class="form-label">Bill pay for</label>
-                            <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="billPayFor"
-                                formControlName="billPayFor" readonly>
+                            <input type="text" class="form-control" id="billPayFor" formControlName="billPayFor"
+                                readonly>
                         </div>
 
                         <div class="mb-3">
@@ -893,7 +921,6 @@
                                 <option value="3">66666</option>
                             </select>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
                             <input type="text" class="form-control" formControlName="signature">
@@ -902,6 +929,11 @@
                         <div class="mb-3">
                             <label class="form-label">Date</label>
                             <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" formControlName="remarks"></textarea>
                         </div>
 
                     </form>
@@ -920,8 +952,8 @@
                     <form [formGroup]="FAForm" class="FAForm">
 
                         <div class="mb-3">
-                            <label class="form-label">Pass order for LC</label>
-                            <input type="text" class="form-control" formControlName="passOrderForLC">
+                            <label class="form-label">LC Issued Order</label>
+                            <input type="text" class="form-control" formControlName="lcIssuedOrder">
                         </div>
 
                         <div class="mb-3">
@@ -932,6 +964,11 @@
                         <div class="mb-3">
                             <label class="form-label">Date</label>
                             <input type="date" class="form-control" formControlName="date">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" formControlName="remarks"></textarea>
                         </div>
 
                     </form>

@@ -6,6 +6,11 @@ import { PendingListComponent } from './pending-list/pending-list.component';
 import { ReviewedListComponent } from './reviewed-list/reviewed-list.component';
 import { PendingApplicationComponent } from './pending-application/pending-application.component';
 import { ReviewedApplicationComponent } from './reviewed-application/reviewed-application.component';
+import { ProjectsListComponent } from './projects-list/projects-list.component';
+import { ProjectViewComponent } from './project-view/project-view.component';
+import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
+import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
+import { AddWorkComponent } from './add-work/add-work.component';
 
 const routes: Routes = [
     {
@@ -18,6 +23,11 @@ const routes: Routes = [
             { path: 'pending-application/:id', component: PendingApplicationComponent },
             { path: 'reviewed-list', component: ReviewedListComponent },
             { path: 'reviewed-application/:id', component: ReviewedApplicationComponent },
+            { path: 'projects-list', component: ProjectsListComponent },
+            { path: 'project/:id', component: ProjectViewComponent },
+            { path: 'bank-accounts', component: BankAccountsComponent },
+            { path: 'works-list', component: ViewAllWorksComponent },
+            { path: 'add-work', component: AddWorkComponent },
         ],
     },
 ];

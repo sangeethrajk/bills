@@ -1,0 +1,65 @@
+<main id="main">
+    <h4 style="font-size: 1.2rem;font-weight: bold;text-align: center;">Add Work</h4>
+    <section>
+        <form [formGroup]="workDetailsForm" class="shadow form">
+
+            <div class="mb-3">
+                <label for="division" class="form-label">Select Division:</label>
+                <select id="division" class="form-select" formControlName="selectedDivision">
+                    <option [value]="null" disabled>Select Division</option>
+                    <option *ngFor="let division of divisions" [ngValue]="division">{{ division.name }}</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="nameofWork" class="form-label">Name of the Work</label>
+                <input type="text" class="form-control" id="nameofWork" formControlName="nameofWork">
+            </div>
+
+            <div class="mb-3">
+                <label for="agreementNumber" class="form-label">Agreement Number</label>
+                <input type="text" class="form-control" id="agreementNumber" formControlName="agreementNumber">
+            </div>
+
+            <div class="mb-3">
+                <label for="agreementValue" class="form-label">Agreement Value (incl. GST)</label>
+                <input type="text" class="form-control" id="agreementValue" formControlName="agreementValue">
+            </div>
+
+            <div class="mb-3">
+                <label for="agreementDate" class="form-label">Agreement Date</label>
+                <input type="date" class="form-control" id="agreementDate" formControlName="agreementDate">
+            </div>
+
+            <div class="mb-3">
+                <label for="dateOfCommencement" class="form-label">Date of Commencement</label>
+                <input type="date" class="form-control" id="dateOfCommencement" formControlName="dateOfCommencement">
+            </div>
+
+            <div class="mb-3">
+                <label for="dateOfCompletion" class="form-label">Date of Completion</label>
+                <input type="date" class="form-control" id="dateOfCompletion" formControlName="dateOfCompletion">
+            </div>
+
+            <div class="mb-3" *ngIf="workDetailsForm.get('selectedDivision')?.value">
+                <label for="aeEngineer" class="form-label">Select AE</label>
+                <select id="aeEngineer" class="form-select" formControlName="aeEngineer">
+                    <option *ngFor="let aeEngineer of aeEngineers">{{ aeEngineer }}</option>
+                </select>
+            </div>
+
+            <div class="mb-3" *ngIf="workDetailsForm.get('selectedDivision')?.value">
+                <label for="aeeEngineer" class="form-label">Select AEE</label>
+                <select id="aeeEngineer" class="form-select" formControlName="aeeEngineer">
+                    <option *ngFor="let aeeEngineer of aeeEngineers">{{ aeeEngineer }}</option>
+                </select>
+            </div>
+
+        </form>
+
+        <div style="display: flex;justify-content: end;">
+            <button mat-raised-button id="submit-button">Submit</button>
+        </div>
+    </section>
+
+</main>

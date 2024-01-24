@@ -40,8 +40,6 @@
 
 .nameOfContractor,
 .nameOfWork,
-.AEpart1Form.nameOfWork,
-.AEpart1Form.nameOfContractor,
 .allWorksCheckedByAEE,
 .preMeasurementsTaken {
     grid-column: span 2;
@@ -52,7 +50,8 @@
 .partIIDateOfMeasurement,
 .itemsOmittedOrPartlyDone,
 .computerizedMeasurementBookSubmitted,
-.itemsCoveredInAgreement {
+.itemsCoveredInAgreement,
+.finalBillCompletionReportEnclosed {
     grid-column: span 2;
 }
 
@@ -81,7 +80,9 @@
     grid-column: span 2;
 }
 
-.dpl {
+.dpl,
+.expenditureTillPreviousBill,
+.otherRecoveriesRemarks {
     grid-column: 1/3;
 }
 
