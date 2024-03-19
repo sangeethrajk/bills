@@ -16,6 +16,7 @@ import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
 import { BankDetailsDialogComponent } from './bank-details-dialog/bank-details-dialog.component';
 import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
 import { AddWorkComponent } from './add-work/add-work.component';
+import { ViewEditWorkComponent } from './view-edit-work/view-edit-work.component';
 
 
 
@@ -35,6 +36,8 @@ import { AddWorkComponent } from './add-work/add-work.component';
     BankDetailsDialogComponent,
     ViewAllWorksComponent,
     AddWorkComponent,
+    ViewEditWorkComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     CommonModule,

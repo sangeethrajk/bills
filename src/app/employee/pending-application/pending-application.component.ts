@@ -8,6 +8,9 @@ import autoTable from 'jspdf-autotable';
 import { BillsService } from '../../services/bills.service';
 import { DialogComponent } from '../dialog/dialog.component';
 import { VoucherService } from '../../services/voucher.service';
+import { PaymentService } from '../../services/payment.service';
+import { S3uploadService } from '../../services/s3upload.service';
+import { ToastrService } from 'ngx-toastr';
 
 export interface PeriodicElement {
   accountcode: string;
@@ -25,35 +28,50 @@ export interface PeriodicElement {
 export class PendingApplicationComponent {
 
   role: any;
+  getSingleBillDataResponse: any = {};
+  dataOfMeasurementFileAE!: File;
+  billId: any;
+  vendorProjectId: any;
+  updateDisable: boolean = false;
+  SEFile!: File;
+  CEFile!: File;
 
   showAE: boolean = false;
   showAEE: boolean = false;
-  showEE: boolean = false;
-  showEEstage2: boolean = false;
-  showAssistant: boolean = false;
   showDA: boolean = false;
+  showEE: boolean = false;
+  showSE: boolean = false;
+  showSEHQ: boolean = false;
+  showCE: boolean = false;
+  showDCAO: boolean = false;
+  showFA: boolean = false;
+  showMD: boolean = false;
+
 
   statusofEE: any;
 
   AEFormReadOnly: boolean = false;
   AEEFormReadOnly: boolean = false;
-  EEFormReadOnly: boolean = false;
   AssistantFormReadOnly: boolean = false;
   DAFormReadOnly: boolean = false;
+  EEFormReadOnly: boolean = false;
+  SEFormReadOnly: boolean = false;
+  SEHQFormReadOnly: boolean = false;
+  CEFormReadOnly: boolean = false;
 
   displayedColumns: string[] = ['sno', 'accountcode', 'description', 'amount'];
   panelOpenState = false;
   id: any;
-  revieweddate: any
+  revieweddate: any;
 
   applicationForm!: FormGroup;
   AEpart1Form!: FormGroup;
   AEpart2Form!: FormGroup;
   AEpart3Form!: FormGroup;
   AEEForm!: FormGroup;
+  AssistantForm!: FormGroup;
   DivisionalAccountantForm!: FormGroup;
   EEForm!: FormGroup;
-  AssistantForm!: FormGroup;
   SEForm!: FormGroup;
   SEHQForm!: FormGroup;
   CEForm!: FormGroup;
@@ -69,6 +87,9 @@ export class PendingApplicationComponent {
   gsturl: any;
   viewModel: any;
 
+  maxCertificateCharacters: number = 1000;
+  dcaoBankFields: boolean = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private billService: BillsService,
@@ -76,40 +97,111 @@ export class PendingApplicationComponent {
     private date: DatePipe,
     private router: Router,
     private dialog: MatDialog,
-    private voucherService: VoucherService
+    private voucherService: VoucherService,
+    private paymentService: PaymentService,
+    private s3Service: S3uploadService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit() {
-
     this.role = sessionStorage.getItem('role');
-
-    if (this.role == "AE") {
-      this.showAE = true;
-    }
-    if (this.role == "AEE") {
-      this.showAEE = true;
-      this.AEFormReadOnly = true;
-    }
-
-    if (this.role == "Assistant") {
-      this.showAssistant = true;
-      this.AEFormReadOnly = true;
-      this.AEEFormReadOnly = true;
-      this.AEFormReadOnly = true;
-      this.EEFormReadOnly = true;
-    }
-    if (this.role == "DA") {
-      this.showDA = true;
-      this.AEFormReadOnly = true;
-      this.AEEFormReadOnly = true;
-      this.AEFormReadOnly = true;
-      this.EEFormReadOnly = true;
-      this.AssistantFormReadOnly = true;
-    }
 
     this.route.params.subscribe(params => {
       this.id = +params['id'];
     });
+
+    if (this.role == "AE") {
+      this.showAE = true;
+    }
+
+    if (this.role == "AEE") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.AEFormReadOnly = true;
+    }
+
+    if (this.role == "DA") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+    }
+
+    if (this.role == "EE") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+    }
+
+    if (this.role == "SE") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+    }
+
+    if (this.role == "SEHQ") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+    }
+
+    if (this.role == "CE") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.showCE = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+      this.SEHQFormReadOnly = true;
+    }
+
+    if (this.role == "DCAO") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.showCE = true;
+      this.showDCAO = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+      this.SEHQFormReadOnly = true;
+      this.CEFormReadOnly = true;
+    }
 
 
     this.applicationForm = this.formBuilder.group({
@@ -143,10 +235,9 @@ export class PendingApplicationComponent {
     });
 
     this.AEpart1Form = this.formBuilder.group({
-      expenditureTillPreviousBill: [''],
-      estimateNo: [''],
+      reraNumber: [''],
       fsValue: [''],
-      reraNo: [''],
+      estimateNo: [''],
       mainAgreementNo: [''],
       mainAgreementValue: [null],
       wc79OrderNo: [''],
@@ -155,28 +246,24 @@ export class PendingApplicationComponent {
       supplementAgreementNo: [''],
       supplementAgreementValue: [null],
       totalValue: [null],
-      dateOfCommencement: [''],
-      dueDateOfCompletion: [''],
       actualDateOfCompletion: [''],
       finalBillCompletionReportEnclosed: [''],
-      // value: [''],
     });
 
     this.AEpart2Form = this.formBuilder.group({
-      partIIDateOfMeasurement: [''],
-      dateOfCheckMeasurement: [''],
-      physicalAchievement: [null],
-      actualPercentage: [''],
-      extensionOfTime: [''],
-      extensionOfTimeOrderNo: [''],
-      extensionOfTimeDate: [''],
-      extensionOfTimeFineAmount: [''],
-      liquidatedDamagesOrLumpSumFine: [''],
-      itemsCoveredInAgreement: [''],
-      quantitiesInBillAsPerEstimate: [''],
-      itemsOmittedOrPartlyDone: [''],
-      partRatePaidInAgreement: [''],
-      computerizedMeasurementBookSubmitted: [''],
+      dateOfMeasurementByAE: [''],
+      physicalProgress: [null],
+      actualProgress: [''],
+      eot: [''],
+      eotOrderNo: [''],
+      eotDate: [''],
+      eotFineAmount: [''],
+      liquidatedDamages: [''],
+      whetherAllItemsCovered: [''],
+      whetherQuantitiesAsPerEstimate: [''],
+      workOmittedOrPartlyDone: [''],
+      partRatePaid: [''],
+      measurementBookSubmitted: [''],
       actionTakenToRegularizeExcess: ['']
     });
 
@@ -185,81 +272,88 @@ export class PendingApplicationComponent {
       amountReleasedUptoPreviousBill: [''],
       balance: [''],
       amountRaisedInThisBill: [''],
-      certificate: [''],
-      signature: [''],
+      certificateAE: [''],
+      signatureAE: [''],
       date: [''],
     });
 
     this.AEEForm = this.formBuilder.group({
-      allWorksCheckedByAEE: [''],
-      preMeasurementsTaken: [''],
-      dateOfCheckMeasurement: [''],
-      certificate: [''],
-      signature: [''],
+      workCheckMeasuredByAEE: [''],
+      measurementCheckMeasuredByAEE: [''],
+      dateOfCheckMeasurementAEE: [''],
+      certificateAEE: [''],
+      signatureAEE: [''],
     })
 
     this.AssistantForm = this.formBuilder.group({
-      valueOfWorkDoneAsReportedByAE: [''],
-      correctedValue: [''],
-      gstamount: [''],
-      gst_Percentage: [''],
+      valueReportedByAE: [''],
+      correctedValueByDA: [''],
+      gstPercentage: [''],
+      gstValue: [''],
+      baseValueCode: [''],
       baseValue: [''],
-      rmd: [0],
+      rmdCode: ['714'],
+      rmdValue: [0],
+      labourFundCode: ['774'],
       labourFund: [0],
-      it: [0],
-      ec: [0],
-      sgst: [0],
-      cgst: [0],
-      steelRecovery: [''],
-      mobilization: [''],
-      withheldAmount: [''],
-      eotfine: [''],
-      otherRecoveries: [''],
+      itCode: ['731'],
+      itValue: [0],
+      sgstCode: ['752'],
+      sgstValue: [0],
+      cgstCode: ['751'],
+      cgstValue: [0],
+      steelRecoveryCode: ['561'],
+      steelRecoveryValue: [''],
+      mobilizationCode: ['571'],
+      mobilizationValue: [''],
+      withheldCode: ['719'],
+      withheldValue: [''],
+      eotCode: ['190'],
+      eotValue: [''],
+      otherRecoveriesCode: [''],
+      otherRecoveriesValue: [''],
       otherRecoveriesRemarks: [''],
       totalDeduction: [0],
-      netTotal: [''],
-      dplpageNo: [''],
-      dpldate: [''],
+      netTotalCode: ['701'],
+      netTotalValue: [''],
       billRegisterPageNo: [''],
       billRegisterDate: [''],
     })
 
     this.DivisionalAccountantForm = this.formBuilder.group({
-      certificate: [''],
+      remarksDA: [''],
       billPassedFor: [''],
       billPayFor: [''],
-      signatureWithDate: ['']
+      signatureDA: ['']
     })
 
     this.EEForm = this.formBuilder.group({
-      voucherNo: [''],
+      voucherNumber: [''],
       dateOfSuperCheck: [''],
       billPassedFor: [''],
       billPayFor: [''],
-      remarks: [''],
-      signatureWithDate: ['']
+      remarksEE: [''],
+      signatureEE: ['']
     })
 
     this.SEForm = this.formBuilder.group({
-      dateOfInspection: [''],
-      remarks: [''],
-      signature: [''],
+      dateOfInspectionSE: [''],
+      remarksSE: [''],
+      signatureSE: [''],
       date: [''],
     })
 
     this.SEHQForm = this.formBuilder.group({
-      recommendationOfLC: [''],
-      remarks: [''],
-      signature: [''],
-      date: [''],
+      recommendationOfLCSEHQ: [''],
+      remarksSEHQ: [''],
+      signatureSEHQ: [''],
     })
 
     this.CEForm = this.formBuilder.group({
-      dateOfInspection: [''],
-      recommendationOfLC: [''],
-      remarks: [''],
-      signature: [''],
-      date: [''],
+      dateOfInspectionCE: [''],
+      recommendationOfLCCE: [''],
+      remarksCE: [''],
+      signatureCE: [''],
     })
 
     this.DCAOForm = this.formBuilder.group({
@@ -284,551 +378,449 @@ export class PendingApplicationComponent {
       date: [''],
     })
 
-    this.billService.getapplbyid(this.id).subscribe(
-      (response) => {
-        this.viewModel = response.data.bill[0];
-        this.fileurl = this.viewModel.fileurl
-        this.statusofEE = this.viewModel.status;
-        if (this.role == "EE") {
-          console.log(this.statusofEE)
-          if (this.statusofEE == "Approved by AEE") {
-            this.showEE = true;
-            this.showEEstage2 = false;
-            this.AEFormReadOnly = true;
-            this.AEEFormReadOnly = true
-          }
-          else {
-            this.showEEstage2 = true;
-            this.showEE = false;
-            this.AEFormReadOnly = true;
-            this.AEEFormReadOnly = true;
-            this.AEFormReadOnly = true;
-            this.EEFormReadOnly = true;
-            this.AssistantFormReadOnly = true;
-            this.DAFormReadOnly = true;
-          }
-        }
-        console.log("this.viewModel", this.viewModel)
-        this.applicationForm.patchValue({
-          nameOfWork: this.viewModel.nameOfWork,
-          nameOfContractor: this.viewModel.nameOfContractor,
-          estimateNo: this.viewModel.estimateNo,
-          division: this.viewModel.division,
-          appliedDate: this.viewModel.appliedDate,
-          fileurl: this.viewModel.fileurl
-        });
-        this.AEpart1Form.patchValue({
-          estimateNo: this.viewModel.estimateNo,
-          mainAgreementNo: this.viewModel.mainAgreementNo,
-          value: this.viewModel.value,
-          wc79OrderNoAndDate: this.viewModel.wc79OrderNoAndDate,
-          supplementAgreementNo: this.viewModel.supplementAgreementNo,
-          supplementAgreementValue: this.viewModel.supplementAgreementValue,
-          totalValue: this.viewModel.totalValue,
-          dueDateOfCompletion: this.viewModel.dueDateOfCompletion,
-          actualDateOfCompletion: this.viewModel.actualDateOfCompletion,
-          finalBillCompletionReportEnclosed: this.viewModel.finalBillCompletionReportEnclosed,
-          dateOfCommencement: this.viewModel.dateOfCommencement,
-          mainAgreementValue: this.viewModel.mainAgreementValue,
-          wc79OrderDate: this.viewModel.wc79OrderDate,
-          wc79OrderNo: this.viewModel.wc79OrderNo,
-          wc79OrderValue: this.viewModel.wc79OrderValue,
-
-        })
-        this.AEpart2Form.patchValue({
-          partIIDateOfMeasurement: this.viewModel.partIIDateOfMeasurement,
-          dateOfCheckMeasurement: this.viewModel.dateOfCheckMeasurement,
-          workCarriedOutAtSpecifiedRateOfSpeed: this.viewModel.workCarriedOutAtSpecifiedRateOfSpeed,
-          extensionOfTimeDate: this.viewModel.extensionOfTimeDate,
-          extensionOfTimeOrderNo: this.viewModel.extensionOfTimeOrderNo,
-          fineAmount: this.viewModel.fineAmount,
-          liquidatedDamagesOrLumpSumFine: this.viewModel.liquidatedDamagesOrLumpSumFine,
-          itemsCoveredInAgreement: this.viewModel.itemsCoveredInAgreement,
-          quantitiesInBillAsPerEstimate: this.viewModel.quantitiesInBillAsPerEstimate,
-          itemsOmittedOrPartlyDone: this.viewModel.itemsOmittedOrPartlyDone,
-          partRatePaidInAgreement: this.viewModel.partRatePaidInAgreement,
-          allWorksCheckedByAEE: this.viewModel.allWorksCheckedByAEE,
-          computerizedMeasurementBookSubmitted: this.viewModel.computerizedMeasurementBookSubmitted,
-          preMeasurementsTaken: this.viewModel.preMeasurementsTaken,
-          actionTakenToRegularizeExcess: this.viewModel.actionTakenToRegularizeExcess,
-          physicalAchievement: this.viewModel.physicalAchievement,
-          actualPercentage: this.viewModel.actualPercentage,
-          extensionOfTime: this.viewModel.extensionOfTime,
-          extensionOfTimeFineAmount: this.viewModel.extensionOfTimeFineAmount
-        })
-        this.AEpart3Form.patchValue({
-          valueOfAgreement: this.viewModel.valueOfAgreement,
-          amountReleasedUptoPreviousBill: this.viewModel.amountReleasedUptoPreviousBill,
-          balance: this.viewModel.balance,
-          amountRaisedInThisBill: this.viewModel.amountRaisedInThisBill,
-
-        })
-
-        this.AssistantForm.patchValue({
-          valueOfWorkDoneAsReportedByAE: this.viewModel.valueOfWorkDoneAsReportedByAE,
-          correctedValue: this.viewModel.correctedValue,
-          gstamount: this.viewModel.gstamount,
-          gst_Percentage: this.viewModel.gst_Percentage,
-          baseValue: this.viewModel.baseValue,
-          rmd: this.viewModel.rmd,
-          it: this.viewModel.it,
-          ec: this.viewModel.ec,
-          sgst: this.viewModel.sgst,
-          cgst: this.viewModel.cgst,
-          steelRecovery: this.viewModel.steelRecovery,
-          mobilization: this.viewModel.mobilization,
-          withheldAmount: this.viewModel.withheldAmount,
-          eotfine: this.viewModel.eotfine,
-          otherRecoveries: this.viewModel.otherRecoveries,
-          totalDeduction: this.viewModel.totalDeduction,
-          netTotal: this.viewModel.netTotal,
-          dplpageNo: this.viewModel.dplpageNo,
-          dpldate: this.viewModel.dpldate,
-          billRegisterPageNo: this.viewModel.billRegisterPageNo,
-          billRegisterDate: this.viewModel.billRegisterDate,
-        });
-        this.DivisionalAccountantForm.patchValue({
-          billPassedFor: this.viewModel.correctedValue,
-          billPayFor: this.viewModel.netTotal,
-        });
-        const billauthor = response.data.billAuthorization;
-
-        for (const item of billauthor) {
-
-          const roleoftheofficer = item.roleOfTheOfficer;
-          const officerModel = item;
-
-          switch (roleoftheofficer) {
-            case 'AE':
-              console.log(officerModel)
-              // this.AEpart2Form.patchValue({
-              //   dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-              // });
-              this.AEpart3Form.patchValue({
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-              break;
-
-            case 'AEE':
-              this.AEEForm.patchValue({
-                dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-              break;
-
-
-            case 'EE':
-              if (this.viewModel.status == "Approved by AEE") {
-                this.EEForm.patchValue({
-                  dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                  certificate: officerModel.certificate,
-                  signatureWithDate: officerModel.signatureWithDate
-                });
-                this.revieweddate = officerModel.approvalDate;
-              }
-              if (this.viewModel.status == "Approved by EE") {
-                this.EEForm.patchValue({
-                  dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                  certificate: officerModel.certificate,
-                  signatureWithDate: officerModel.signatureWithDate
-                });
-                this.revieweddate = officerModel.approvalDate;
-              }
-              if (this.viewModel.status == "Approved by Assistant") {
-                this.EEForm.patchValue({
-                  dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                  certificate: officerModel.certificate,
-                  signatureWithDate: officerModel.signatureWithDate
-                });
-                this.revieweddate = officerModel.approvalDate;
-              }
-              if (this.viewModel.status == "Approved by DA") {
-                this.EEForm.patchValue({
-                  dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                  certificate: officerModel.certificate,
-                  signatureWithDate: officerModel.signatureWithDate,
-                  billPassedFor: officerModel.correctedValue,
-                  billPayFor: officerModel.netTotal,
-                });
-                this.revieweddate = officerModel.approvalDate;
-              }
-              break;
-
-            case 'DA':
-
-              this.DivisionalAccountantForm.patchValue({
-                billPassedFor: this.viewModel.correctedValue,
-                billPayFor: this.viewModel.netTotal,
-                signatureWithDate: officerModel.signatureWithDate,
-                certificate: officerModel.certificate
-              });
-              this.revieweddate = officerModel.approvalDate;
-              break;
-
-            default:
-
-              break;
-          }
-        }
-      },
-      (error) => {
-        console.error(error);
-      });
+    this.getSingleBillData();
 
     const currentDate = new Date();
-    this.currentDate = this.date.transform(currentDate, 'yyyy-MM-dd');
+    this.currentDate = this.date.transform(currentDate, 'dd-MM-yyyy');
+
   }
 
-  openFile(filePath: string): string {
-    return 'file://' + filePath.replace(/\\/g, '/');
+  aeCertificateWordCount(): { words: number, characters: number } {
+    const certificateControl = this.AEpart3Form.get('certificateAE');
+    const value = certificateControl?.value || '';
+
+    // Simple word count logic (you may need to adjust for your specific requirements)
+    const words = value.trim().split(/\s+/).length;
+
+    // Character count
+    const characters = value.length;
+
+    return { words, characters };
   }
 
   generateVoucherNo() {
     const division = this.applicationForm.get('division')?.value;
     const voucherNumber = this.voucherService.generateVoucherNumber(division);
-    this.EEForm.get('voucherNo')?.setValue(voucherNumber);
+    this.EEForm.get('voucherNumber')?.setValue(voucherNumber);
+  }
+
+  correctedValueCheck() {
+    this.AssistantForm.get('correctedValueByDA')?.valueChanges.subscribe((value) => {
+      const valueReportedByAE = parseInt(this.AssistantForm.get('valueReportedByAE')?.value, 10);
+      const correctedValueByDA = parseInt(value, 10);
+      if (correctedValueByDA > valueReportedByAE) {
+        // Reset correctedValueByDA to previous value or display a warning message
+        this.AssistantForm.get('correctedValueByDA')?.setValue(valueReportedByAE);
+      }
+    });
+  }
+
+  getSingleBillData() {
+    this.billService.getSingleBillBasedOnId(this.id).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.getSingleBillDataResponse = response;
+        this.billId = response.id;
+        this.vendorProjectId = response.vendorProjectId;
+        this.getPreviousAmount();
+        if (this.role == 'AE') {
+          this.patchApplicationForm(response);
+          this.AEpart3Form.patchValue({
+            valueOfAgreement: response.agreementValue,
+            amountRaisedInThisBill: response.billTotal,
+          });
+        } else if (this.role == "AEE") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+        } else if (this.role == "DA") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.AssistantForm.patchValue({
+            valueReportedByAE: response.billTotal
+          });
+        } else if (this.role == "EE") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.EEForm.patchValue({
+            billPassedFor: response.billPassedFor,
+            billPayFor: response.billPayFor
+          })
+        } else if (this.role == "SE") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+        } else if (this.role == "SEHQ") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+        } else if (this.role == "CE") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+          this.patchSEHQForm(response);
+        } else if (this.role == "DCAO") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+          this.patchSEHQForm(response);
+          this.patchCEForm(response);
+        }
+      },
+      (error: any) => {
+        console.error(error);
+      });
+  }
+
+  getPreviousAmount() {
+    this.billService.getAmountReleasedUptoPreviousBill(this.vendorProjectId).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.AEpart3Form.patchValue({
+          amountReleasedUptoPreviousBill: response.data
+        });
+        this.calculateBalance();
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
+  }
+
+  dataOfMeasurementFileAEChanged(event: any) {
+    this.dataOfMeasurementFileAE = event.target.files[0];
+  }
+
+  onSEFileSelected(event: any) {
+    this.SEFile = event.target.files[0];
+  }
+
+  onCEFileSelected(event: any) {
+    this.CEFile = event.target.files[0];
   }
 
   saveNewBill() {
-
-    if (this.role === 'AE') {
-      const dateOfCheckMeasurementValue = this.AEpart3Form.get('dateOfCheckMeasurement')?.value;
-      const certificate = this.AEpart3Form.get('certificate')?.value;
-      const signatureWithDate = this.AEpart3Form.get('signatureWithDate')?.value;
-      const nid = this.id;
-      const billAuthorization = {
-        "dateOfCheckMeasurement": dateOfCheckMeasurementValue,
-        "approvalDate": this.currentDate,
-        "certificate": certificate,
-        "signatureWithDate": signatureWithDate,
-        "roleOfTheOfficer": this.role,
-        "billPassedFor": null,
-        "billPayFor": null,
-        "approvalStatus": "approve"
-      };
-      const bill = {
-        ...this.applicationForm.value,
-        ...this.AEpart1Form.value,
-        ...this.AEpart2Form.value,
-        ...this.AEpart3Form.value,
-        nid
-      };
-
-      const data = {
-        "bill": bill,
-        "billAuthorization": billAuthorization
-      }
-
-      console.log(data)
-      this.billService.saveNewBill(data).subscribe(
-        (response) => {
-
-          const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px', // Set the width and other dialog options as needed
-            data: {
-              isSuccess: true,
-              message: 'Bill sent successfully to Assistant Executive Engineer'
-            }, // Pass data to the dialog if needed
-          });
-
-          // You can handle dialog close events if necessary
-          dialogRef.afterClosed().subscribe((result) => {
-            this.router.navigate(['home', 'pending']);
-          });
-
-        },
-        (error) => {
-          console.error('Error:', error);
+    this.updateDisable = true;
+    switch (this.role) {
+      case 'AE': {
+        if (!this.dataOfMeasurementFileAE) {
+          this.showToast('warning', 'Please select a Date of Measurement File', 'File Not Selected');
+          return;
         }
-      );
-    }
-
-    if (this.role === 'AEE') {
-      const dateOfCheckMeasurementValue = this.AEEForm.get('dateOfCheckMeasurement')?.value;
-      const certificate = this.AEEForm.get('certificate')?.value;
-      const signatureWithDate = this.AEEForm.get('signatureWithDate')?.value;
-      const nid = this.id;
-      const billAuthorization = {
-        "dateOfCheckMeasurement": dateOfCheckMeasurementValue,
-        "approvalDate": this.currentDate,
-        "certificate": certificate,
-        "signatureWithDate": signatureWithDate,
-        "roleOfTheOfficer": this.role,
-        "billPassedFor": null,
-        "billPayFor": null,
-        "approvalStatus": "approve"
-      };
-      const bill = {
-        ...this.applicationForm.value,
-        ...this.AEpart1Form.value,
-        ...this.AEpart2Form.value,
-        ...this.AEpart3Form.value,
-        ...this.AEEForm.value,
-        nid
-      };
-
-      const data = {
-        "bill": bill,
-        "billAuthorization": billAuthorization
+        this.s3Service.s3Direct(this.dataOfMeasurementFileAE, this.dataOfMeasurementFileAE?.name, "DateOfMeasurementFileAE")
+          .then((generatedFileName) => {
+            console.log('Generated filename:', generatedFileName);
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+            const data = {
+              "reraNumber": this.AEpart1Form.get('reraNumber')?.value,
+              "fsValue": this.AEpart1Form.get('fsValue')?.value,
+              "estimateNo": this.AEpart1Form.get('estimateNo')?.value,
+              "mainAgreementNo": this.AEpart1Form.get('mainAgreementNo')?.value,
+              "mainAgreementValue": this.AEpart1Form.get('mainAgreementValue')?.value,
+              "wc79OrderNo": this.AEpart1Form.get('wc79OrderNo')?.value,
+              "wc79OrderDate": this.AEpart1Form.get('wc79OrderDate')?.value,
+              "wc79OrderValue": this.AEpart1Form.get('wc79OrderValue')?.value,
+              "supplementAgreementNo": this.AEpart1Form.get('supplementAgreementNo')?.value,
+              "supplementAgreementValue": this.AEpart1Form.get('supplementAgreementValue')?.value,
+              "totalValue": this.AEpart1Form.get('totalValue')?.value,
+              "actualDateOfCompletion": this.AEpart1Form.get('actualDateOfCompletion')?.value,
+              "finalBillCompletionReportEnclosed": this.AEpart1Form.get('finalBillCompletionReportEnclosed')?.value,
+              "dateOfMeasurementByAE": this.AEpart2Form.get('dateOfMeasurementByAE')?.value,
+              "dateOfMeasurementFileNameAE": generatedFileName,
+              "physicalProgress": this.AEpart2Form.get('physicalProgress')?.value,
+              "actualProgress": this.AEpart2Form.get('actualProgress')?.value,
+              "eot": this.AEpart2Form.get('eot')?.value,
+              "eotOrderNo": this.AEpart2Form.get('eotOrderNo')?.value,
+              "eotDate": this.AEpart2Form.get('eotDate')?.value,
+              "eotFineAmount": this.AEpart2Form.get('eotFineAmount')?.value,
+              "liquidatedDamages": this.AEpart2Form.get('liquidatedDamages')?.value,
+              "whetherAllItemsCovered": this.AEpart2Form.get('whetherAllItemsCovered')?.value,
+              "whetherQuantitiesAsPerEstimate": this.AEpart2Form.get('whetherQuantitiesAsPerEstimate')?.value,
+              "workOmittedOrPartlyDone": this.AEpart2Form.get('workOmittedOrPartlyDone')?.value,
+              "actionTakenToRegularizeExcess": this.AEpart2Form.get('actionTakenToRegularizeExcess')?.value,
+              "partRatePaid": this.AEpart2Form.get('partRatePaid')?.value,
+              "measurementBookSubmitted": this.AEpart2Form.get('measurementBookSubmitted')?.value,
+              "certificateAE": this.AEpart3Form.get('certificateAE')?.value,
+              "signatureAE": this.AEpart3Form.get('signatureAE')?.value,
+              "dateOfSubmissionAE": formattedDate,
+              "billStatus": "Pending with AEE"
+            };
+            console.log(data);
+            this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+              (response: any) => {
+                console.log(response);
+                this.showToast('success', 'Bill Sent to AEE', 'Success');
+                setTimeout(() => {
+                  this.router.navigate(['employee', 'pending-list']);
+                }, 3000);
+              },
+              (error: any) => {
+                console.error(error);
+                this.showToast('error', 'Error while submitting the bill', 'Error');
+                this.updateDisable = false;
+              }
+            );
+          })
+          .catch((error) => {
+            console.error('Error uploading file to S3:', error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          });
+        break;
       }
-
-      this.billService.saveNewBill(data).subscribe(
-        (response) => {
-
-          console.log('Response from backend:', response);
-          const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px', // Set the width and other dialog options as needed
-            data: {
-              isSuccess: true,
-              message: 'Bill sent successfully to Executive Engineer'
-            }, // Pass data to the dialog if needed
-          });
-
-          // You can handle dialog close events if necessary
-          dialogRef.afterClosed().subscribe((result) => {
-            this.router.navigate(['home', 'pending']);
-          });
-        },
-        (error) => {
-
-          console.error('Error:', error);
-        }
-      );
-    }
-
-    if (this.role === 'EE') {
-      if (this.statusofEE == "Approved by AEE") {
-        const dateOfCheckMeasurementValue = this.EEForm.get('dateOfCheckMeasurement')?.value;
-        const certificate = this.EEForm.get('certificate')?.value;
-        const signatureWithDate = this.EEForm.get('signatureWithDate')?.value;
-        const nid = this.id;
-        const billAuthorization = {
-          "dateOfCheckMeasurement": dateOfCheckMeasurementValue,
-          "approvalDate": this.currentDate,
-          "certificate": certificate,
-          "signatureWithDate": signatureWithDate,
-          "roleOfTheOfficer": this.role,
-          "billPassedFor": null,
-          "billPayFor": null,
-          "approvalStatus": "approve"
-        };
-        const bill = {
-          ...this.applicationForm.value,
-          ...this.AEpart1Form.value,
-          ...this.AEpart2Form.value,
-          ...this.AEpart3Form.value,
-          ...this.AEEForm.value,
-          ...this.EEForm.value,
-          nid,
-          status: this.statusofEE,
-
-        };
-
+      case 'AEE': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
         const data = {
-          "bill": bill,
-          "billAuthorization": billAuthorization
-        }
-
-        console.log(data);
-        this.billService.saveNewBill(data).subscribe(
-          (response) => {
-
-            console.log('Response from backend:', response);
-            const dialogRef = this.dialog.open(DialogComponent, {
-              width: '400px', // Set the width and other dialog options as needed
-              data: {
-                isSuccess: true,
-                message: 'Bill sent successfully to Assistant'
-              }, // Pass data to the dialog if needed
-            });
-
-            // You can handle dialog close events if necessary
-            dialogRef.afterClosed().subscribe((result) => {
-              this.router.navigate(['home', 'pending']);
-            });
+          workCheckMeasuredByAEE: this.AEEForm.get('workCheckMeasuredByAEE')?.value,
+          measurementCheckMeasuredByAEE: this.AEEForm.get('measurementCheckMeasuredByAEE')?.value,
+          dateOfCheckMeasurementAEE: this.AEEForm.get('dateOfCheckMeasurementAEE')?.value,
+          certificateAEE: this.AEEForm.get('certificateAEE')?.value,
+          signatureAEE: this.AEEForm.get('signatureAEE')?.value,
+          dateOfSubmissionAEE: formattedDate,
+          billStatus: "Pending with DA"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to DA', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
           },
-          (error) => {
-
-            console.error('Error:', error);
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
           }
         );
+        break;
       }
-      else {
-        const signatureWithDate = this.EEForm.get('signatureWithDate')?.value;
-        const billpassedfor = this.EEForm.get('billPassedFor')?.value;
-        const billpayedfor = this.EEForm.get('billPayFor')?.value;
-        const nid = this.id;
-        const billAuthorization = {
-          "dateOfCheckMeasurement": null,
-          "approvalDate": this.currentDate,
-          "certificate": null,
-          "signatureWithDate": signatureWithDate,
-          "roleOfTheOfficer": this.role,
-          "billPassedFor": billpassedfor,
-          "billPayFor": billpayedfor,
-          "approvalStatus": "approve"
-        };
-        const bill = {
-          ...this.applicationForm.value,
-          ...this.AEpart1Form.value,
-          ...this.AEpart2Form.value,
-          ...this.AEpart3Form.value,
-          ...this.AEEForm.value,
-          ...this.EEForm.value,
-          ...this.AssistantForm.value,
-          ...this.DivisionalAccountantForm.value,
-          ...this.EEForm.value,
-          nid,
-          status: this.statusofEE,
-        };
-
+      case 'DA': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
         const data = {
-          "bill": bill,
-          "billAuthorization": billAuthorization
-        }
+          "valueReportedByAE": this.AssistantForm.get('valueReportedByAE')?.value,
+          "correctedValueByDA": this.AssistantForm.get('correctedValueByDA')?.value,
+          "gstPercentage": this.AssistantForm.get('gstPercentage')?.value,
+          "gstValue": this.AssistantForm.get('gstValue')?.value,
+          "baseValueCode": this.AssistantForm.get('baseValueCode')?.value,
+          "baseValue": this.AssistantForm.get('baseValue')?.value,
+          "rmdCode": this.AssistantForm.get('rmdCode')?.value,
+          "rmdValue": this.AssistantForm.get('rmdValue')?.value,
+          "labourFundCode": this.AssistantForm.get('labourFundCode')?.value,
+          "labourFund": this.AssistantForm.get('labourFund')?.value,
+          "itCode": this.AssistantForm.get('itCode')?.value,
+          "itValue": this.AssistantForm.get('itValue')?.value,
+          "sgstCode": this.AssistantForm.get('sgstCode')?.value,
+          "sgstValue": this.AssistantForm.get('sgstValue')?.value,
+          "cgstCode": this.AssistantForm.get('cgstCode')?.value,
+          "cgstValue": this.AssistantForm.get('cgstValue')?.value,
+          "steelRecoveryCode": this.AssistantForm.get('steelRecoveryCode')?.value,
+          "steelRecoveryValue": this.AssistantForm.get('steelRecoveryValue')?.value,
+          "mobilizationCode": this.AssistantForm.get('mobilizationCode')?.value,
+          "mobilizationValue": this.AssistantForm.get('mobilizationValue')?.value,
+          "withheldCode": this.AssistantForm.get('withheldCode')?.value,
+          "withheldValue": this.AssistantForm.get('withheldValue')?.value,
+          "eotCode": this.AssistantForm.get('eotCode')?.value,
+          "eotValue": this.AssistantForm.get('eotValue')?.value,
+          "otherRecoveriesCode": this.AssistantForm.get('otherRecoveriesCode')?.value,
+          "otherRecoveriesValue": this.AssistantForm.get('otherRecoveriesValue')?.value,
+          "otherRecoveriesRemarks": this.AssistantForm.get('otherRecoveriesRemarks')?.value,
+          "totalDeduction": this.AssistantForm.get('totalDeduction')?.value,
+          "netTotalCode": this.AssistantForm.get('netTotalCode')?.value,
+          "netTotalValue": this.AssistantForm.get('netTotalValue')?.value,
+          "billRegisterPageNo": this.AssistantForm.get('billRegisterPageNo')?.value,
+          "billRegisterDate": this.AssistantForm.get('billRegisterDate')?.value,
 
-        this.billService.saveNewBill(data).subscribe(
-          (response) => {
-
-            console.log('Response from backend:', response);
-            const dialogRef = this.dialog.open(DialogComponent, {
-              width: '400px', // Set the width and other dialog options as needed
-              data: {
-                isSuccess: true,
-                message: 'Bill sent successfully'
-              }, // Pass data to the dialog if needed
-            });
-
-            // You can handle dialog close events if necessary
-            dialogRef.afterClosed().subscribe((result) => {
-              this.router.navigate(['home', 'pending']);
-            });
+          "remarksDA": this.DivisionalAccountantForm.get('remarksDA')?.value,
+          "billPassedFor": this.DivisionalAccountantForm.get('billPassedFor')?.value,
+          "billPayFor": this.DivisionalAccountantForm.get('billPayFor')?.value,
+          "signatureDA": this.DivisionalAccountantForm.get('signatureDA')?.value,
+          "dateOfSubmissionDA": formattedDate,
+          billStatus: "Pending with EE"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to EE', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
           },
-          (error) => {
-
-            console.error('Error:', error);
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
           }
         );
+        break;
+      }
+      case 'EE': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+        const data = {
+          "voucherNumber": this.EEForm.get('voucherNumber')?.value,
+          "dateOfSuperCheck": this.EEForm.get('dateOfSuperCheck')?.value,
+          "remarksEE": this.EEForm.get('remarksEE')?.value,
+          "signatureEE": this.EEForm.get('signatureEE')?.value,
+          "dateOfSubmissionEE": formattedDate,
+          billStatus: "Pending with SE"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to SE', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
+          },
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          }
+        );
+        break;
+      }
+      case 'SE': {
+        this.s3Service.s3Direct(this.SEFile, this.SEFile?.name, "SEFilesUpload")
+          .then((generatedFileName) => {
+            console.log('Generated filename:', generatedFileName);
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+            const data = {
+              "dateOfInspectionSE": this.SEForm.get('dateOfInspectionSE')?.value,
+              "inspectionSEFileName": generatedFileName,
+              "remarksSE": this.SEForm.get('remarksSE')?.value,
+              "signatureSE": this.SEForm.get('signatureSE')?.value,
+              "dateOfSubmissionSE": formattedDate,
+              billStatus: "Pending with SEHQ"
+            };
+            console.log(data);
+            this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+              (response: any) => {
+                console.log(response);
+                this.showToast('success', 'Bill Sent to SEHQ', 'Success');
+                setTimeout(() => {
+                  this.router.navigate(['employee', 'pending-list']);
+                }, 3000);
+              },
+              (error: any) => {
+                console.error(error);
+                this.showToast('error', 'Error while submitting the bill', 'Error');
+                this.updateDisable = false;
+              }
+            );
+          })
+          .catch((error) => {
+            console.error('Error uploading file to S3:', error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          });
+        break;
+      }
+      case 'SEHQ': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+        const data = {
+          "recommendationOfLCSEHQ": this.SEHQForm.get('recommendationOfLCSEHQ')?.value,
+          "remarksSEHQ": this.SEHQForm.get('remarksSEHQ')?.value,
+          "signatureSEHQ": this.SEHQForm.get('signatureSEHQ')?.value,
+          "dateOfSubmissionSEHQ": formattedDate,
+          billStatus: "Pending with CE"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to CE', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
+          },
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          }
+        );
+        break;
+      }
+      case 'CE': {
+        this.s3Service.s3Direct(this.CEFile, this.CEFile?.name, "CEFilesUpload")
+          .then((generatedFileName) => {
+            console.log('Generated filename:', generatedFileName);
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+            const data = {
+              "dateOfInspectionCE": this.CEForm.get('dateOfInspectionCE')?.value,
+              "inspectionCEFileName": generatedFileName,
+              "recommendationOfLCCE": this.CEForm.get('recommendationOfLCCE')?.value,
+              "remarksCE": this.CEForm.get('remarksCE')?.value,
+              "signatureCE": this.CEForm.get('signatureCE')?.value,
+              "dateOfSubmissionCE": formattedDate,
+              billStatus: "Pending with DCAO"
+            };
+            console.log(data);
+            this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+              (response: any) => {
+                console.log(response);
+                this.showToast('success', 'Bill Sent to DCAO', 'Success');
+                setTimeout(() => {
+                  this.router.navigate(['employee', 'pending-list']);
+                }, 3000);
+              },
+              (error: any) => {
+                console.error(error);
+                this.showToast('error', 'Error while submitting the bill', 'Error');
+                this.updateDisable = false;
+              }
+            );
+          })
+          .catch((error) => {
+            console.error('Error uploading file to S3:', error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          });
+        break;
+      }
+      default: {
+        // Actions to be performed if the role doesn't match any case
+        break;
       }
     }
 
-    if (this.role === 'DA') {
+  }
 
-      const certificate = this.DivisionalAccountantForm.get('certificate')?.value;
-      const signatureWithDate = this.DivisionalAccountantForm.get('signatureWithDate')?.value;
-      const billpassedfor = this.DivisionalAccountantForm.get('billPassedFor')?.value;
-      const billpayedfor = this.DivisionalAccountantForm.get('billPayFor')?.value;
-      const nid = this.id;
-      const billAuthorization = {
-        "dateOfCheckMeasurement": null,
-        "approvalDate": this.currentDate,
-        "certificate": certificate,
-        "signatureWithDate": signatureWithDate,
-        "roleOfTheOfficer": this.role,
-        "billPassedFor": billpassedfor,
-        "billPayFor": billpayedfor,
-        "approvalStatus": "approve"
-      };
-      const bill = {
-        ...this.applicationForm.value,
-        ...this.AEpart1Form.value,
-        ...this.AEpart2Form.value,
-        ...this.AEpart3Form.value,
-        ...this.AEEForm.value,
-        ...this.EEForm.value,
-        ...this.DivisionalAccountantForm.value,
-        ...this.AssistantForm.value,
-        nid
-      };
+  onBankAccountNoChange() {
+    this.dcaoBankFields = true;
+    // const selectedBankAccountNo = this.myForm.get('bankAccountNo')?.value;
 
-      const data = {
-        "bill": bill,
-        "billAuthorization": billAuthorization
-      }
-
-      this.billService.saveNewBill(data).subscribe(
-        (response) => {
-
-          console.log('Response from backend:', response);
-          const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px', // Set the width and other dialog options as needed
-            data: {
-              isSuccess: true,
-              message: 'Bill sent successfully to Executive Engineer'
-            }, // Pass data to the dialog if needed
-          });
-
-          // You can handle dialog close events if necessary
-          dialogRef.afterClosed().subscribe((result) => {
-            this.router.navigate(['home', 'pending']);
-          });
-        },
-        (error) => {
-
-          console.error('Error:', error);
-        }
-      );
-    }
-
-    if (this.role === 'Assistant') {
-      const nid = this.id;
-      const bill = {
-        ...this.applicationForm.value,
-        ...this.AEpart1Form.value,
-        ...this.AEpart2Form.value,
-        ...this.AEpart3Form.value,
-        ...this.AEEForm.value,
-        ...this.AEEForm.value,
-        ...this.AssistantForm.value,
-        nid
-      };
-
-
-      const billAuthorization = {
-        "dateOfCheckMeasurement": null,
-        "approvalDate": this.currentDate,
-        "certificate": null,
-        "signatureWithDate": null,
-        "roleOfTheOfficer": this.role,
-        "billPassedFor": null,
-        "billPayFor": null,
-        "approvalStatus": "approve"
-      };
-
-      const data = {
-        "bill": bill,
-        "billAuthorization": billAuthorization
-      }
-
-      console.log(data);
-      this.billService.saveNewBill(data).subscribe(
-        (response) => {
-          console.log('Response from backend:', response);
-          const dialogRef = this.dialog.open(DialogComponent, {
-            width: '400px', // Set the width and other dialog options as needed
-            data: {
-              isSuccess: true,
-              message: 'Bill sent successfully to Divisional Accountant'
-            }, // Pass data to the dialog if needed
-          });
-
-          // You can handle dialog close events if necessary
-          dialogRef.afterClosed().subscribe((result) => {
-            this.router.navigate(['home', 'pending']);
-          });
-
-        },
-        (error) => {
-
-          console.error('Error:', error);
-        }
-      );
-    }
-
+    // if (selectedBankAccountNo === '1') {
+    //   this.myForm.patchValue({
+    //     accountNumber: 'Account Number 1',
+    //     accountHolder: 'Account Holder 1',
+    //     bankName: 'Bank Name 1',
+    //     bankBranch: 'Branch 1',
+    //     ifscCode: 'IFSC Code 1'
+    //   });
+    // } else if (selectedBankAccountNo === '2') {
+    // } else if (selectedBankAccountNo === '3') {
+    // }
   }
 
   calculateGST() {
@@ -839,46 +831,42 @@ export class PendingApplicationComponent {
     // Check if AssistantForm is defined and not null
     console.log("calculate is clicked");
 
-    // Retrieve the 'correctedValue' control from the form
-    const correctedValueControl = this.AssistantForm.get('correctedValue');
+    // Retrieve the 'correctedValueByDA' control from the form
+    const correctedValueControl = this.AssistantForm.get('correctedValueByDA');
     console.log("correctedValueControl", correctedValueControl);
 
     // Check if 'correctedValueControl' is not null and its value is a number
     if (correctedValueControl) {
       // Extract the numeric value and calculate the GST amount based on the selected value
-      const correctedValue = correctedValueControl.value;
-      let gstamount = (selectedValue / divideValue) * correctedValue;
-      gstamount = parseFloat(gstamount.toFixed(2));
-      let baseValue = correctedValue - gstamount;
-      let rmd = (5 / 100) * baseValue;
+      const correctedValueByDA = correctedValueControl.value;
+      let gstValue = (selectedValue / divideValue) * correctedValueByDA;
+      gstValue = parseFloat(gstValue.toFixed(2));
+      let baseValue = correctedValueByDA - gstValue;
+      let rmdValue = (5 / 100) * baseValue;
       let labourFund = (1 / 100) * baseValue;
-      let it = (2 / 100) * baseValue;
-      let ec = (0.066 / 100) * it;
-      let sgst = (1 / 100) * baseValue;
-      let cgst = (1 / 100) * baseValue;
+      let itValue = (2 / 100) * baseValue;
+      let sgstValue = (1 / 100) * baseValue;
+      let cgstValue = (1 / 100) * baseValue;
 
-      this.AssistantForm.get('gstamount')?.setValue(gstamount);
+      this.AssistantForm.get('gstValue')?.setValue(gstValue);
 
       baseValue = parseFloat(baseValue.toFixed(2));
       this.AssistantForm.get('baseValue')?.setValue(baseValue);
 
-      rmd = Math.ceil(parseFloat(rmd.toFixed(2)) / 100) * 100;
-      this.AssistantForm.get('rmd')?.setValue(rmd);
+      rmdValue = Math.ceil(parseFloat(rmdValue.toFixed(2)) / 100) * 100;
+      this.AssistantForm.get('rmdValue')?.setValue(rmdValue);
 
       labourFund = Math.ceil(parseFloat(labourFund.toFixed(2)));
       this.AssistantForm.get('labourFund')?.setValue(labourFund);
 
-      it = Math.ceil(parseFloat(it.toFixed(2)));
-      this.AssistantForm.get('it')?.setValue(it);
+      itValue = Math.ceil(parseFloat(itValue.toFixed(2)));
+      this.AssistantForm.get('itValue')?.setValue(itValue);
 
-      ec = Math.ceil(parseFloat(ec.toFixed(2)));
-      this.AssistantForm.get('ec')?.setValue(ec);
+      sgstValue = Math.ceil(parseFloat(sgstValue.toFixed(2)));
+      this.AssistantForm.get('sgstValue')?.setValue(sgstValue);
 
-      sgst = Math.ceil(parseFloat(sgst.toFixed(2)));
-      this.AssistantForm.get('sgst')?.setValue(sgst);
-
-      cgst = Math.ceil(parseFloat(cgst.toFixed(2)));
-      this.AssistantForm.get('cgst')?.setValue(cgst);
+      cgstValue = Math.ceil(parseFloat(cgstValue.toFixed(2)));
+      this.AssistantForm.get('cgstValue')?.setValue(cgstValue);
 
       // this.totalDeduction = parseFloat(this.totalDeduction.toFixed(2));
       // this.AssistantForm.get('totalDeduction')?.setValue(this.totalDeduction);
@@ -891,30 +879,29 @@ export class PendingApplicationComponent {
   }
 
   calculateTotalDeduction() {
-    const rmd = parseFloat(this.AssistantForm.get('rmd')?.value || '0');
+    const rmdValue = parseFloat(this.AssistantForm.get('rmdValue')?.value || '0');
     const labourFund = parseFloat(this.AssistantForm.get('labourFund')?.value || '0');
-    const it = parseFloat(this.AssistantForm.get('it')?.value || '0');
-    const ec = parseFloat(this.AssistantForm.get('ec')?.value || '0');
-    const sgst = parseFloat(this.AssistantForm.get('sgst')?.value || '0');
-    const cgst = parseFloat(this.AssistantForm.get('cgst')?.value || '0');
-    const steelRecovery = parseFloat(this.AssistantForm.get('steelRecovery')?.value || '0');
-    const mobilization = parseFloat(this.AssistantForm.get('mobilization')?.value || '0');
-    const withheldAmount = parseFloat(this.AssistantForm.get('withheldAmount')?.value || '0');
-    const eotfine = parseFloat(this.AssistantForm.get('eotfine')?.value || '0');
-    const otherRecoveries = parseFloat(this.AssistantForm.get('otherRecoveries')?.value || '0');
+    const itValue = parseFloat(this.AssistantForm.get('itValue')?.value || '0');
+    const sgstValue = parseFloat(this.AssistantForm.get('sgstValue')?.value || '0');
+    const cgstValue = parseFloat(this.AssistantForm.get('cgstValue')?.value || '0');
+    const steelRecoveryValue = parseFloat(this.AssistantForm.get('steelRecoveryValue')?.value || '0');
+    const mobilizationValue = parseFloat(this.AssistantForm.get('mobilizationValue')?.value || '0');
+    const withheldValue = parseFloat(this.AssistantForm.get('withheldValue')?.value || '0');
+    const eotValue = parseFloat(this.AssistantForm.get('eotValue')?.value || '0');
+    const otherRecoveriesValue = parseFloat(this.AssistantForm.get('otherRecoveriesValue')?.value || '0');
 
-    let totalDeduction = rmd + labourFund + it + ec + sgst + cgst + steelRecovery + mobilization + withheldAmount + eotfine + otherRecoveries;
+    let totalDeduction = rmdValue + labourFund + itValue + sgstValue + cgstValue + steelRecoveryValue + mobilizationValue + withheldValue + eotValue + otherRecoveriesValue;
     totalDeduction = parseFloat(totalDeduction.toFixed(2));
 
     this.AssistantForm.get('totalDeduction')?.setValue(totalDeduction);
 
-    let netTotal = this.AssistantForm.get('baseValue')?.value - this.AssistantForm.get('totalDeduction')?.value;
-    netTotal = parseFloat(netTotal.toFixed(2));
-    this.AssistantForm.get('netTotal')?.setValue(netTotal);
+    let netTotalValue = this.AssistantForm.get('baseValue')?.value - this.AssistantForm.get('totalDeduction')?.value;
+    netTotalValue = parseFloat(netTotalValue.toFixed(2));
+    this.AssistantForm.get('netTotalValue')?.setValue(netTotalValue);
 
-    const valueOfWorkDoneAsReportedByAE = this.AssistantForm.get('valueOfWorkDoneAsReportedByAE')?.value;
-    this.DivisionalAccountantForm.get('billPassedFor')?.setValue(valueOfWorkDoneAsReportedByAE);
-    this.DivisionalAccountantForm.get('billPayFor')?.setValue(netTotal);
+    const valueReportedByAE = this.AssistantForm.get('valueReportedByAE')?.value;
+    this.DivisionalAccountantForm.get('billPassedFor')?.setValue(valueReportedByAE);
+    this.DivisionalAccountantForm.get('billPayFor')?.setValue(netTotalValue);
 
   }
 
@@ -941,8 +928,8 @@ export class PendingApplicationComponent {
   }
 
   calculatePhysicalAchievement() {
-    const dateOfCommencement = new Date(this.AEpart1Form.get('dateOfCommencement')?.value);
-    const dueDateOfCompletion = new Date(this.AEpart1Form.get('dueDateOfCompletion')?.value);
+    const dateOfCommencement = new Date(this.applicationForm.get('dateOfCommencement')?.value);
+    const dueDateOfCompletion = new Date(this.applicationForm.get('dateOfCompletion')?.value);
     const actualDateOfCompletion = new Date(this.AEpart1Form.get('actualDateOfCompletion')?.value);
 
     if (dateOfCommencement && dueDateOfCompletion && actualDateOfCompletion) {
@@ -952,7 +939,7 @@ export class PendingApplicationComponent {
       const totalDaysTakenBetween = Math.floor(totalDaysTaken / (1000 * 60 * 60 * 24));
       const physicalAchievement = ((totalDaysTakenBetween / totalDaysBetween) * 100).toFixed(2);
       const cappedAchievement = Math.min(parseFloat(physicalAchievement), 100).toFixed(2);
-      this.AEpart2Form.get('physicalAchievement')?.setValue(cappedAchievement);
+      this.AEpart2Form.get('physicalProgress')?.setValue(cappedAchievement);
     }
   }
 
@@ -1357,23 +1344,23 @@ export class PendingApplicationComponent {
         };
 
         AssistantForm = {
-          "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAE,
-          "Corrected Value": this.viewModel.correctedValue,
-          "GST Percentage": this.viewModel.gst_Percentage,
-          "GST Amount": this.viewModel.gstamount,
+          "Value of work done": this.viewModel.valueReportedByAE,
+          "Corrected Value": this.viewModel.correctedValueByDA,
+          "GST Percentage": this.viewModel.gstPercentage,
+          "GST Amount": this.viewModel.gstValue,
           "Base value": this.viewModel.baseValue,
-          "RMD 5%": this.viewModel.rmd,
+          "RMD 5%": this.viewModel.rmdValue,
           "IT 2%": this.viewModel.it,
           "EC 0.066%": this.viewModel.ec,
-          "SGST 1%": this.viewModel.sgst,
-          "CGST 1%": this.viewModel.cgst,
-          "Steel Recovery": this.viewModel.steelRecovery,
-          "Mobilization": this.viewModel.mobilization,
-          "Withheld amount": this.viewModel.withheldAmount,
-          "EOT fine": this.viewModel.eotfine,
-          "Other Recoveries (if any)": this.viewModel.otherRecoveries,
+          "SGST 1%": this.viewModel.sgstValue,
+          "CGST 1%": this.viewModel.cgstValue,
+          "Steel Recovery": this.viewModel.steelRecoveryValue,
+          "Mobilization": this.viewModel.mobilizationValue,
+          "Withheld amount": this.viewModel.withheldValue,
+          "EOT fine": this.viewModel.eotValue,
+          "Other Recoveries (if any)": this.viewModel.otherRecoveriesValue,
           "Total Deduction": this.viewModel.totalDeduction,
-          "Net Total": this.viewModel.netTotal,
+          "Net Total": this.viewModel.netTotalValue,
           "Detailed project ledger (DPL) Page No.": this.viewModel.dplpageNo,
           "DPL Date": this.viewModel.dpldate,
           "Bill register Page No.": this.viewModel.billRegisterPageNo,
@@ -1791,23 +1778,23 @@ export class PendingApplicationComponent {
       };
 
       AssistantForm = {
-        "Value of work done": this.viewModel.valueOfWorkDoneAsReportedByAE,
-        "Corrected Value": this.viewModel.correctedValue,
-        "GST Percentage": this.viewModel.gst_Percentage,
-        "GST Amount": this.viewModel.gstamount,
+        "Value of work done": this.viewModel.valueReportedByAE,
+        "Corrected Value": this.viewModel.correctedValueByDA,
+        "GST Percentage": this.viewModel.gstPercentage,
+        "GST Amount": this.viewModel.gstValue,
         "Base value": this.viewModel.baseValue,
-        "RMD 5%": this.viewModel.rmd,
+        "RMD 5%": this.viewModel.rmdValue,
         "IT 2%": this.viewModel.it,
         "EC 0.066%": this.viewModel.ec,
-        "SGST 1%": this.viewModel.sgst,
-        "CGST 1%": this.viewModel.cgst,
-        "Steel Recovery": this.viewModel.steelRecovery,
-        "Mobilization": this.viewModel.mobilization,
-        "Withheld amount": this.viewModel.withheldAmount,
-        "EOT fine": this.viewModel.eotfine,
-        "Other Recoveries (if any)": this.viewModel.otherRecoveries,
+        "SGST 1%": this.viewModel.sgstValue,
+        "CGST 1%": this.viewModel.cgstValue,
+        "Steel Recovery": this.viewModel.steelRecoveryValue,
+        "Mobilization": this.viewModel.mobilizationValue,
+        "Withheld amount": this.viewModel.withheldValue,
+        "EOT fine": this.viewModel.eotValue,
+        "Other Recoveries (if any)": this.viewModel.otherRecoveriesValue,
         "Total Deduction": this.viewModel.totalDeduction,
-        "Net Total": this.viewModel.netTotal,
+        "Net Total": this.viewModel.netTotalValue,
         "Detailed project ledger (DPL) Page No.": this.viewModel.dplpageNo,
         "DPL Date": this.viewModel.dpldate,
         "Bill register Page No.": this.viewModel.billRegisterPageNo,
@@ -1959,7 +1946,135 @@ export class PendingApplicationComponent {
 
     }
 
+  }
 
+  //Pay Vendor
+  // payVendor() {
+  //   this.paymentService.canaraEncryptData().subscribe(
+  //     (response: any) => {
+  //       console.log(response);
+  //       this.paymentService.canaraPaymentRequest(response.data).subscribe(
+  //         (response: any) => {
+  //           console.log(response);
+  //         },
+  //         (error: any) => {
+  //           console.error(error);
+  //         }
+  //       );
+  //     },
+  //     (error: any) => {
+  //       console.error(error);
+  //     }
+  //   );
+  // }
+
+  payVendor() {
+    const dataToEncrypt = {
+      "Authorization": "Basic U1lFREFQSUFVVEg6MmE4OGE5MWE5MmE2NGEx",
+      "txnPassword": "2a88a91a92a64a1a1a3",
+      "srcAcctNumber": "2774201000198",
+      "destAcctNumber": "9833111000032",
+      "customerID": "13961989",
+      "txnAmount": "1",
+      "benefName": "test"
+    };
+    this.paymentService.canaraEncryptData(dataToEncrypt).subscribe(
+      (response: any) => {
+        console.log(response);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
+  }
+
+  showToast(type: string, message: string, title: string) {
+    const toastConfig = {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      progressBar: true,
+      tapToDismiss: false,
+    };
+
+    switch (type) {
+      case 'success':
+        this.toastr.success(message, title, toastConfig);
+        break;
+      case 'warning':
+        this.toastr.warning(message, title, toastConfig);
+        break;
+      case 'info':
+        this.toastr.warning(message, title, toastConfig);
+        break;
+      default:
+        this.toastr.error(message, title, toastConfig);
+        break;
+    }
+  }
+
+  patchApplicationForm(response: any) {
+    this.applicationForm.patchValue({
+      division: response.billDivision,
+      nameOfContractor: response.nameOfTheContractor,
+      nameOfWork: response.nameOfTheWork,
+      agreementNo: response.agreementNumber,
+      agreementDate: response.agreementDate,
+      dateOfCommencement: response.commencementDate,
+      dateOfCompletion: response.completionDate,
+      agreementValue: response.agreementValue,
+      invoiceNo: response.invoiceNumber,
+      billNo: response.billNumber,
+      billAmount: response.billAmount,
+      billGSTPercentage: response.billGSTPercentage,
+      billGSTAmount: response.billGSTAmount,
+      billTotal: response.billTotal,
+      pan: response.panNumber,
+      tan: response.tanNumber,
+      gst: response.gstNumber,
+      appliedDate: response.creationTime,
+      bankName: [''],
+      bankAccountNo: [''],
+      accountHolderName: [''],
+      ifscCode: [''],
+      branchName: ['']
+    });
+  }
+
+  patchAEpart1Form(response: any) {
+    this.AEpart1Form.patchValue(response);
+    this.AEpart2Form.patchValue(response);
+    this.AEpart3Form.patchValue({
+      valueOfAgreement: response.agreementValue,
+      amountRaisedInThisBill: response.billTotal,
+      certificateAE: response.certificateAE,
+      signatureAE: response.signatureAE,
+      date: response.dateOfSubmissionAE,
+    });
+  }
+
+  patchAEEForm(response: any) {
+    this.AEEForm.patchValue(response);
+  }
+
+  patchDAForm(response: any) {
+    this.AssistantForm.patchValue(response);
+    this.DivisionalAccountantForm.patchValue(response);
+  }
+
+  patchEEForm(response: any) {
+    this.EEForm.patchValue(response);
+  }
+
+  patchSEForm(response: any) {
+    this.SEForm.patchValue(response);
+  }
+
+  patchSEHQForm(response: any) {
+    this.SEHQForm.patchValue(response);
+  }
+
+  patchCEForm(response: any) {
+    this.CEForm.patchValue(response);
   }
 
 }

@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -13,7 +13,11 @@ export class LayoutComponent implements OnInit {
 
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private activatedRoute: ActivatedRoute) {
+  constructor(changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -28,5 +32,10 @@ export class LayoutComponent implements OnInit {
   }
 
   shouldRun = /(^|.)(stackblitz|webcontainer).(io|com)$/.test(window.location.host);
+
+  logout() {
+    sessionStorage.clear();
+    this.router.navigateByUrl('/');
+  }
 
 }

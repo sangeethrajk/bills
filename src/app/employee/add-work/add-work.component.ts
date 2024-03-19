@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { BillsService } from '../../services/bills.service';
+
+interface Officer {
+  roles: { name: string }[]; // Define roles as an array of objects with a name property
+  username: string;
+  circle: string;
+}
 
 @Component({
   selector: 'app-add-work',
@@ -8,74 +15,123 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class AddWorkComponent implements OnInit {
   workDetailsForm!: FormGroup;
+  division: any;
+  aeUsernames: string[] = [];
+  aeeUsernames: string[] = [];
+  thirdOfficer: any;
+  fourthOfficer: any;
+  circle: any;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private billsService: BillsService
   ) { }
 
   ngOnInit() {
+
+    this.division = sessionStorage.getItem('division');
+
     this.workDetailsForm = this.formBuilder.group({
-      nameofWork: ['', Validators.required],
+      nameOfTheWork: ['', Validators.required],
       agreementNumber: ['', Validators.required],
       agreementValue: ['', Validators.required],
       agreementDate: ['', Validators.required],
-      dateOfCommencement: ['', Validators.required],
-      dateOfCompletion: ['', Validators.required],
-      selectedDivision: ['', Validators.required],
-      aeEngineer: ['', Validators.required],
-      aeeEngineer: ['', Validators.required],
+      commencementDate: ['', Validators.required],
+      completionDate: ['', Validators.required],
+      division: [this.division, Validators.required],
+      firstOfficer: ['', Validators.required],
+      secondOfficer: ['', Validators.required],
+      thirdOfficer: [''],
+      fourthOfficer: [''],
+      fifthOfficer: [''],
+      sixthOfficer: [''],
+      seventhOfficer: ['', Validators.required],
+      eightOfficer: [''],
+      ninthOfficer: [''],
+      tenthOfficer: [''],
+      creationTime: ['']
     });
-
-    this.workDetailsForm.get('selectedDivision')?.valueChanges.subscribe(() => {
-      this.onDivisionSelected();
-    });
+    this.getAllOfficersByDivision();
   }
 
-  divisions = [
-    { name: 'Villupuram Housing Unit', AE: 2, AEE: 1 },
-    { name: 'JJ Nagar', AE: 4, AEE: 1 },
-    { name: 'SPD -I', AE: 5, AEE: 1 },
-    { name: 'Coimbatore Housing Unit', AE: 3, AEE: 1 },
-    { name: 'Tirunelveli Housing Unit', AE: 4, AEE: 1 },
-    { name: 'Hosur Housing Unit', AE: 1, AEE: 1 },
-    { name: 'CIT Nagar', AE: 7, AEE: 3 },
-    { name: 'Erode Housing Unit', AE: 2, AEE: 1 },
-    { name: 'Anna Nagar', AE: 3, AEE: 3 },
-    { name: 'Salem Housing Unit', AE: 3, AEE: 1 },
-    { name: 'Thoppur Uchampatti', AE: 2, AEE: 1 },
-    { name: 'Trichy', AE: 4, AEE: 1 },
-    { name: 'SPD - II', AE: 4, AEE: 2 },
-    { name: 'SPD - III', AE: 2, AEE: 1 },
-    { name: 'Madurai', AE: 4, AEE: 3 },
-    { name: 'Thirumazhisai', AE: 3, AEE: 1 },
-    { name: 'Foreshore', AE: 7, AEE: 1 },
-    { name: 'SAF Games', AE: 2, AEE: 1 },
-    { name: 'Ramanathapuram', AE: 2, AEE: 1 },
-    { name: 'Thanjavur', AE: 1, AEE: 1 },
-    { name: 'KK Nagar', AE: 4, AEE: 2 },
-    { name: 'Nandanam', AE: 1, AEE: 1 },
-    { name: 'Vellore', AE: 1, AEE: 1 },
-    { name: 'Maintenance', AE: 1, AEE: 1 },
-    { name: 'Besant Nagar', AE: 2, AEE: 1 },
-  ];
+  onAddWork() {
+    console.log(this.workDetailsForm.value);
 
-  aeEngineers!: string[];
-  aeeEngineers!: string[];
+    if (this.workDetailsForm.valid) {
+      const currentTimeStamp = new Date().toISOString();
 
-  onDivisionSelected() {
-    const selectedDivision = this.workDetailsForm.get('selectedDivision')?.value;
-    if (selectedDivision) {
-      this.aeEngineers = this.generateEngineers(selectedDivision.AE, 'AE', selectedDivision.name);
-      this.aeeEngineers = this.generateEngineers(selectedDivision.AEE, 'AEE', selectedDivision.name);
+      this.workDetailsForm.patchValue({
+        thirdOfficer: this.thirdOfficer,
+        fourthOfficer: this.fourthOfficer,
+        fifthOfficer: this.getFifthOfficer(),
+        sixthOfficer: "SE_HQ",
+        eightOfficer: "DCAO",
+        ninthOfficer: "FA",
+        tenthOfficer: "MD",
+        creationTime: currentTimeStamp
+      });
+
+      console.log(this.workDetailsForm.value);
+
+      this.billsService.addWork(this.workDetailsForm.value).subscribe(
+        (response: any) => {
+          console.log("Successfully added work details", response);
+        },
+        (error: any) => {
+          console.error("Error adding work details", error);
+        }
+      );
     } else {
-      this.aeEngineers = [];
-      this.aeeEngineers = [];
+      window.alert("Please fill out all the required fields.");
     }
   }
 
-  private generateEngineers(count: number, prefix: string, selectedDivision: string): string[] {
-    const cleanedDivision = selectedDivision.replace(/\s/g, "");
-    return Array.from({ length: count }, (_, i) => `${cleanedDivision}_${prefix}_${i + 1}`);
+  getAllOfficersByDivision() {
+    this.aeUsernames = [];
+    this.aeeUsernames = [];
+    console.log(this.division);
+    this.billsService.getOfficersBydivision(this.division).subscribe(
+      (response: any) => {
+        response.forEach((officer: any) => { // Change Officer type to any
+          const role = officer.role; // Access the role property from the officer object
+          if (role === 'AE') {
+            this.aeUsernames.push(officer.username);
+          } else if (role === 'AEE') {
+            this.aeeUsernames.push(officer.username);
+          } else if (role === 'DA') {
+            this.thirdOfficer = officer.username;
+          } else if (role === 'EE') {
+            this.fourthOfficer = officer.username;
+            this.circle = officer.circle;
+          }
+        });
+        console.log("thirdOfficer: ", this.thirdOfficer);
+        console.log("fourthOfficer: ", this.fourthOfficer);
+        console.log("circle: ", this.circle);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
   }
+
+
+  getFifthOfficer() {
+    if (this.circle === 'Chennai Circle - I') {
+      return 'Chennai_Circle_I_SE';
+    } else if (this.circle === 'Chennai Circle - II') {
+      return 'Chennai_Circle_II_SE';
+    } else if (this.circle === 'Madurai') {
+      return 'Madurai_SE';
+    } else if (this.circle === 'Project Circle (City)') {
+      return 'Project_Circle_City_SE';
+    } else if (this.circle === 'Project Circle (Rural)') {
+      return 'Project_Circle_Rural_SE';
+    } else if (this.circle === 'Salem') {
+      return 'Salem_SE';
+    } return undefined;
+  }
+
+
 
 }

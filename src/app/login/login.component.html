@@ -8,7 +8,7 @@
         <div class="login-form">
             <section [formGroup]="form" style="padding: 0 3rem;">
                 <div class="mb-3">
-                    <label for="username" class="form-label fw-bold">Email</label>
+                    <label for="username" class="form-label fw-bold">Username</label>
                     <input type="text" class="form-control" id="username" formControlName="username" required>
                     <div *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')"
                         class="text-danger">
@@ -17,8 +17,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label fw-bold">Password</label>
-                    <input type="password" class="form-control" id="password" formControlName="password_encrypted"
-                        required>
+                    <input type="password" class="form-control" id="password" formControlName="password" required>
                     <div *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')"
                         class="text-danger">
                         Password is required

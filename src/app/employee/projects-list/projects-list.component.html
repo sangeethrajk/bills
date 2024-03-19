@@ -2,37 +2,32 @@
     <h4 class="heading">Projects for Verification</h4>
     <section>
         <div>
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 matTable">
 
                 <ng-container matColumnDef="sno">
                     <th mat-header-cell *matHeaderCellDef> S. No. </th>
-                    <td mat-cell *matCellDef="let element"> {{element.sno}} </td>
+                    <td mat-cell *matCellDef="let element;let i =index"> {{i+1}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="projectName">
-                    <th mat-header-cell *matHeaderCellDef> Project Name </th>
-                    <td mat-cell *matCellDef="let element"> {{element.projectName}} </td>
+                <ng-container matColumnDef="workName">
+                    <th mat-header-cell *matHeaderCellDef> Work Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.workName}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="projectValue">
-                    <th mat-header-cell *matHeaderCellDef> Project Value </th>
-                    <td mat-cell *matCellDef="let element"> {{element.projectValue}} </td>
+                <ng-container matColumnDef="agreementValue">
+                    <th mat-header-cell *matHeaderCellDef> Agreement Value </th>
+                    <td mat-cell *matCellDef="let element"> {{element.agreementValue}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="projectStatus">
                     <th mat-header-cell *matHeaderCellDef> Project Status </th>
-                    <td mat-cell *matCellDef="let element"></td>
-                </ng-container>
-
-                <ng-container matColumnDef="projectLocation">
-                    <th mat-header-cell *matHeaderCellDef> Project Location </th>
-                    <td mat-cell *matCellDef="let element"> {{element.projectLocation}} </td>
+                    <td mat-cell *matCellDef="let element">{{element.projectStatus}}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef> Action </th>
                     <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button routerLink="/employee/project/1">
+                        <button mat-icon-button routerLink="/employee/project/{{element.vendorProjectId}}">
                             <mat-icon>remove_red_eye</mat-icon>
                         </button>
                     </td>
@@ -40,6 +35,10 @@
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No data</td>
+                </tr>
             </table>
 
         </div>

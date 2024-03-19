@@ -17,7 +17,7 @@
 
         <div style="width:100%;">
 
-            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8 matTable">
 
                 <!-- Sl. No Column -->
                 <ng-container matColumnDef="slNo">
@@ -26,31 +26,26 @@
                 </ng-container>
 
                 <!-- Name Column -->
-                <ng-container matColumnDef="name">
-                    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+                <ng-container matColumnDef="nameOfTheWork">
+                    <mat-header-cell *matHeaderCellDef> Name of the Work </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.nameOfTheWork }} </mat-cell>
                 </ng-container>
 
                 <!-- Worked Column -->
-                <ng-container matColumnDef="workid">
-                    <mat-header-cell *matHeaderCellDef> Work ID </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> 123 </mat-cell>
+                <ng-container matColumnDef="billTotal">
+                    <mat-header-cell *matHeaderCellDef> Bill Total </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.billTotal}} </mat-cell>
                 </ng-container>
 
-                <ng-container matColumnDef="applieddate">
-                    <mat-header-cell *matHeaderCellDef> Applied Date </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.applieddate }} </mat-cell>
-                </ng-container>
-
-                <ng-container matColumnDef="division">
-                    <mat-header-cell *matHeaderCellDef> Division </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> Anna Nagar </mat-cell>
+                <ng-container matColumnDef="billCreationDate">
+                    <mat-header-cell *matHeaderCellDef> Bill Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{ element.billCreationDate }} </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="goto(element.nid)"
+                        <button mat-icon-button (click)="goto(element.id)"
                             style="display: flex;justify-content: center;align-items: center;">
                             <mat-icon>visibility</mat-icon>
                         </button>
@@ -59,6 +54,10 @@
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No data</td>
+                </tr>
             </mat-table>
 
         </div>

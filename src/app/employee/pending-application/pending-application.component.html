@@ -13,11 +13,10 @@
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Vendor Details
+                        <mat-panel-title style="font-size: 1.2rem;">
+                            Vendor Invoice Form
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <h2> Work Description</h2>
                     <form [formGroup]="applicationForm" class="form-group">
 
                         <div class="mb-3">
@@ -123,60 +122,61 @@
                         </div>
                     </form>
                     <div style="display: flex;flex-wrap: wrap;column-gap: 1rem;">
-                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">Invoice PDF</a>
-                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">PAN
+                        <a class="btn btn-info mb-3" id="invoicePDF"
+                            href="{{getSingleBillDataResponse.invoiceFileName}}" target="_blank">Invoice PDF</a>
+                        <a class="btn btn-info mb-3" id="invoicePDF" href="{{getSingleBillDataResponse.panFileName}}"
+                            target="_blank">PAN
                             PDF</a>
-                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">TAN
+                        <a class="btn btn-info mb-3" id="invoicePDF" href="{{getSingleBillDataResponse.tanFileName}}"
+                            target="_blank">TAN
                             PDF</a>
-                        <a class="btn btn-info mb-3" id="invoicePDF" target="_blank">GST
+                        <a class="btn btn-info mb-3" id="invoicePDF" href="{{getSingleBillDataResponse.gstFileName}}"
+                            target="_blank">GST
                             PDF</a>
+                        <a class="btn btn-info mb-3" id="invoicePDF"
+                            href="{{getSingleBillDataResponse.gstChallanFileName}}" target="_blank">GST
+                            Invoice Challan</a>
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showAE">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Assistant Engineer
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <h2 style="font-weight: bold;">Part – I Work Description</h2>
                     <form [formGroup]="AEpart1Form" class="AEpart1Form">
 
-                        <div class="mb-3 expenditureTillPreviousBill">
-                            <label for="expenditureTillPreviousBill" class="form-label">Expenditure accured till
-                                previous bill</label>
-                            <input readonly type="text" class="form-control" id="expenditureTillPreviousBill"
-                                formControlName="expenditureTillPreviousBill">
-                        </div>
-
                         <div class="mb-3">
                             <label for="reraNo" class="form-label">RERA Number</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="reraNo"
-                                formControlName="reraNo">
+                                formControlName="reraNumber" maxlength="100">
                         </div>
 
                         <div class="mb-3">
                             <label for="fsValue" class="form-label">FS Value</label>
-                            <input type="text" class="form-control" id="fsValue" formControlName="fsValue">
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="fsValue"
+                                formControlName="fsValue" maxlength="20">
                         </div>
 
                         <div class="mb-3">
                             <label for="estimateNo" class="form-label">Estimate Number</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="estimateNo"
-                                formControlName="estimateNo">
+                                formControlName="estimateNo" maxlength="50">
                         </div>
 
                         <div class="mb-3 mainAgreement">
                             <label class="form-label">Main Agreement No</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="mainAgreementNo"
-                                    formControlName="mainAgreementNo" placeholder="Number">
+                                    formControlName="mainAgreementNo" placeholder="Number" maxlength="50">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="mainAgreementNo"
-                                    formControlName="mainAgreementValue" placeholder="Value"
+                                    formControlName="mainAgreementValue" placeholder="Value" maxlength="20"
                                     (keyup)="calculateTotalValue()">
                             </div>
                         </div>
@@ -185,11 +185,11 @@
                             <label class="form-label">WC-79 Order No & Date</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="wc79OrderNo"
-                                    formControlName="wc79OrderNo" placeholder="Number">
+                                    formControlName="wc79OrderNo" placeholder="Number" maxlength="50">
                                 <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="wc79OrderDate"
-                                    formControlName="wc79OrderDate">
+                                    formControlName="wc79OrderDate" maxlength="20">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="wc79OrderValue"
-                                    formControlName="wc79OrderValue" placeholder="Value"
+                                    formControlName="wc79OrderValue" placeholder="Value" maxlength="20"
                                     (keyup)="calculateTotalValue()">
                             </div>
                         </div>
@@ -199,10 +199,10 @@
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                     id="supplementAgreementNo" formControlName="supplementAgreementNo"
-                                    placeholder="Number">
+                                    placeholder="Number" maxlength="50">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
                                     id="supplementAgreementNo" formControlName="supplementAgreementValue"
-                                    placeholder="Value" (keyup)="calculateTotalValue()">
+                                    placeholder="Value" maxlength="20" (keyup)="calculateTotalValue()">
                             </div>
                         </div>
 
@@ -210,10 +210,10 @@
                             <label for="totalValue" class="form-label">Total
                                 value</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="totalValue"
-                                formControlName="totalValue" readonly>
+                                formControlName="totalValue" maxlength="20" readonly>
                         </div>
 
-                        <div class="mb-3 dateOfCommencement">
+                        <!-- <div class="mb-3 dateOfCommencement">
                             <label for="dateOfCommencement" class="form-label">Date of
                                 commencement</label>
                             <input readonly type="date" class="form-control" id="dateOfCommencement"
@@ -225,7 +225,7 @@
                                 completion</label>
                             <input readonly type="date" class="form-control" id="dueDateOfCompletion"
                                 formControlName="dueDateOfCompletion" (change)="calculatePhysicalAchievement()">
-                        </div>
+                        </div> -->
 
                         <div class="mb-3">
                             <label for="actualDateOfCompletion" class="form-label">Actual
@@ -262,26 +262,31 @@
                                 measurement</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
-                                    id="partIIDateOfMeasurement" formControlName="partIIDateOfMeasurement">
-                                <input type="file" class="form-control" id="DateOfMeasurementFile" accept=".pdf,.xlsx">
+                                    id="partIIDateOfMeasurement" formControlName="dateOfMeasurementByAE">
+                                <input *ngIf="!AEFormReadOnly" type="file" class="form-control"
+                                    id="DateOfMeasurementFile" accept=".pdf"
+                                    (change)="dataOfMeasurementFileAEChanged($event)">
+                                <a mat-raised-button color="primary" *ngIf="AEFormReadOnly"
+                                    href="{{getSingleBillDataResponse.dateOfMeasurementFileNameAE}}" target="_blank">
+                                    PDF</a>
                             </div>
                         </div>
 
                         <div class="mb-3 AEpart2Form-progress">
-                            <p>Whether work carried out at specified rate of speed</p>
+                            <p>Whether work carried out at as per agreement</p>
                             <div style="display: flex;column-gap: 1rem;">
                                 <div>
                                     <label for="physicalAchievement" class="form-label">Physical progress (%)</label>
                                     <div class="col-auto">
                                         <input readonly type="text" class="form-control" id="physicalAchievement"
-                                            formControlName="physicalAchievement" readonly>
+                                            formControlName="physicalProgress" readonly>
                                     </div>
                                 </div>
                                 <div>
                                     <label for="actualPercentage" class="form-label">Actual progress (%)</label>
                                     <div class="col-auto">
                                         <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                            id="actualPercentage" formControlName="actualPercentage">
+                                            id="actualPercentage" formControlName="actualProgress" maxlength="5">
                                     </div>
                                 </div>
                             </div>
@@ -291,7 +296,7 @@
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
                             <span class="col-3">Extension of time (EOT)</span>
                             <span class="col-auto">
-                                <select class="form-select" formControlName="extensionOfTime">
+                                <select class="form-select" formControlName="eot">
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                 </select>
@@ -301,28 +306,28 @@
                             <span class="col-3">Extension of time (EOT)</span>
                             <span class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" class="form-control" id="extensionOfTime"
-                                    formControlName="extensionOfTime">
+                                    formControlName="eot">
                             </span>
                         </div>
-                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('eot')?.value === 'Yes'">
                             <label for="extensionOfTimeOrderNo" class="form-label">Order Number</label>
                             <div class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                    id="extensionOfTimeOrderNo" formControlName="extensionOfTimeOrderNo">
+                                    id="extensionOfTimeOrderNo" formControlName="eotOrderNo" maxlength="50">
                             </div>
                         </div>
-                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('eot')?.value === 'Yes'">
                             <label for="extensionOfTimeDate" class="form-label">Date</label>
                             <div class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" type="date" class="form-control"
-                                    id="extensionOfTimeDate" formControlName="extensionOfTimeDate">
+                                    id="extensionOfTimeDate" formControlName="eotDate">
                             </div>
                         </div>
-                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('extensionOfTime')?.value === 'Yes'">
+                        <div class="ms-3 mb-3" *ngIf="AEpart2Form.get('eot')?.value === 'Yes'">
                             <label for="extensionOfTimeFineAmount" class="form-label">Fine Amount</label>
                             <div class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                    id="extensionOfTimeFineAmount" formControlName="extensionOfTimeFineAmount">
+                                    id="extensionOfTimeFineAmount" formControlName="eotFineAmount" maxlength="50">
                             </div>
                         </div>
 
@@ -330,29 +335,29 @@
                             <label for="liquidatedDamagesOrLumpSumFine" class="form-label">Liquidated damages / Lump sum
                                 fine</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="liquidatedDamagesOrLumpSumFine" formControlName="liquidatedDamagesOrLumpSumFine">
+                                id="liquidatedDamagesOrLumpSumFine" formControlName="liquidatedDamages" maxlength="50">
                         </div>
 
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
                             <label for="itemsCoveredInAgreement" class="form-label">Whether
                                 all items covered in original or supplemental agreement</label>
-                            <select class="form-select" formControlName="itemsCoveredInAgreement">
+                            <select class="form-select" formControlName="whetherAllItemsCovered">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
                         </div>
 
                         <div class="mb-3 itemsCoveredInAgreement" *ngIf="AEFormReadOnly">
-                            <label for="itemsCoveredInAgreement" class="col-6 col-form-label">Whether
+                            <label for="itemsCoveredInAgreement" class="form-label">Whether
                                 all items covered in original or supplemental agreement</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="itemsCoveredInAgreement" formControlName="itemsCoveredInAgreement">
+                                id="itemsCoveredInAgreement" formControlName="whetherAllItemsCovered">
                         </div>
 
                         <div class="mb-3" *ngIf="!AEFormReadOnly">
                             <span class="col-6">Whether quantities in the bill are as per
                                 estimate</span>
-                            <select class="form-select" formControlName="quantitiesInBillAsPerEstimate">
+                            <select class="form-select" formControlName="whetherQuantitiesAsPerEstimate">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
@@ -361,11 +366,11 @@
                             <span class="col-6">Whether quantities in the bill are as per
                                 estimate</span>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="quantitiesInBillAsPerEstimate" formControlName="quantitiesInBillAsPerEstimate">
+                                id="quantitiesInBillAsPerEstimate" formControlName="whetherQuantitiesAsPerEstimate">
                         </div>
                         <div class="ms-3 mb-3"
-                            *ngIf="AEpart2Form.get('quantitiesInBillAsPerEstimate')?.value === 'No' && !AEFormReadOnly">
-                            <label for="actionTakenForExcess" class="col-6 col-form-label">Specify action taken to
+                            *ngIf="AEpart2Form.get('whetherQuantitiesAsPerEstimate')?.value === 'No' && !AEFormReadOnly">
+                            <label for="actionTakenForExcess" class="form-label">Specify action taken to
                                 regularize such
                                 excess</label>
                             <select class="form-select" formControlName="actionTakenToRegularizeExcess">
@@ -374,21 +379,19 @@
                             </select>
                         </div>
                         <div class="ms-3 mb-3"
-                            *ngIf="AEpart2Form.get('quantitiesInBillAsPerEstimate')?.value === 'No' && AEFormReadOnly">
-                            <label for="actionTakenForExcess" class="col-6 col-form-label">Specify action taken to
+                            *ngIf="AEpart2Form.get('whetherQuantitiesAsPerEstimate')?.value === 'No' && AEFormReadOnly">
+                            <label for="actionTakenForExcess" class="form-label">Specify action taken to
                                 regularize such
                                 excess</label>
-                            <div class="col-auto" style="margin-left: -1rem;">
-                                <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                    id="actionTakenForExcess" formControlName="actionTakenToRegularizeExcess">
-                            </div>
+                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
+                                id="actionTakenForExcess" formControlName="actionTakenToRegularizeExcess">
                         </div>
 
                         <div class="mb-3 itemsOmittedOrPartlyDone">
                             <label for="itemsOmittedOrPartlyDone" class="form-label">Have
                                 any items of work in the agreement being omitted or partly done</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="itemsOmittedOrPartlyDone" formControlName="itemsOmittedOrPartlyDone">
+                                id="itemsOmittedOrPartlyDone" formControlName="workOmittedOrPartlyDone" maxlength="50">
                         </div>
 
                         <div class="mb-3">
@@ -396,14 +399,14 @@
                                 part rate is paid</label>
                             <div class="col-auto">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                    id="partRatePaidInAgreement" formControlName="partRatePaidInAgreement">
+                                    id="partRatePaidInAgreement" formControlName="partRatePaid" maxlength="50">
                             </div>
                         </div>
 
                         <div class="mb-3 computerizedMeasurementBookSubmitted" *ngIf="!AEFormReadOnly">
                             <label for="computerizedMeasurementBookSubmitted" class="form-label">Whether computerized
                                 measurement book submitted?</label>
-                            <select class="form-select" formControlName="computerizedMeasurementBookSubmitted">
+                            <select class="form-select" formControlName="measurementBookSubmitted">
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                             </select>
@@ -412,8 +415,7 @@
                             <label for="computerizedMeasurementBookSubmitted" class="form-label">Whether computerized
                                 measurement book submitted?</label>
                             <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="computerizedMeasurementBookSubmitted"
-                                formControlName="computerizedMeasurementBookSubmitted">
+                                id="computerizedMeasurementBookSubmitted" formControlName="measurementBookSubmitted">
                         </div>
 
                     </form>
@@ -424,22 +426,20 @@
                         <div class="mb-3">
                             <label for="valueOfAgreement" class="form-label">Value of
                                 agreement</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="valueOfAgreement"
-                                formControlName="valueOfAgreement" (keyup)="calculateBalance()">
+                            <input readonly type="text" class="form-control" id="valueOfAgreement"
+                                formControlName="valueOfAgreement">
                         </div>
 
                         <div class="mb-3">
                             <label for="amountReleasedUptoPreviousBill" class="form-label">Amount
                                 released upto previous bill</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="amountReleasedUptoPreviousBill" formControlName="amountReleasedUptoPreviousBill"
-                                (keyup)="calculateBalance()">
+                            <input readonly type="text" class="form-control" id="amountReleasedUptoPreviousBill"
+                                formControlName="amountReleasedUptoPreviousBill" (keyup)="calculateBalance()">
                         </div>
 
                         <div class="mb-3">
                             <label for="balance" class="form-label">Balance</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="balance"
-                                formControlName="balance">
+                            <input readonly type="text" class="form-control" id="balance" formControlName="balance">
                         </div>
 
                         <div class="mb-3">
@@ -452,29 +452,33 @@
                         <div class="mb-3">
                             <label for="certificate" class="form-label">Certificate</label>
                             <textarea [readOnly]="AEFormReadOnly" type="text" class="form-control" id="certificate"
-                                formControlName="certificate"></textarea>
+                                formControlName="certificateAE" (keyup)="aeCertificateWordCount()"
+                                maxlength="1000"></textarea>
+                            <div class="text-muted mt-2">
+                                <small>Character Count: {{
+                                    aeCertificateWordCount().characters }}/{{maxCertificateCharacters}}</small>
+                            </div>
                         </div>
 
-                        <div class="mb-3" style="grid-column: span 2;">
-                            <label class="form-label">Signature with date</label>
+                        <div class="mb-3">
+                            <label class="form-label">Signature</label>
                             <div style="display: flex;column-gap: 1rem;">
                                 <input [readOnly]="AEFormReadOnly" type="text" class="form-control" id="signature"
-                                    formControlName="signature">
-                                <input [readOnly]="AEFormReadOnly" type="date" class="form-control" id="date"
-                                    formControlName="date">
+                                    formControlName="signatureAE">
                             </div>
                         </div>
 
                     </form>
+                    <p *ngIf="AEFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionAE}}</p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showAEE">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Assistant Executive Engineer
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -483,64 +487,67 @@
                         <div class="mb-3 allWorksCheckedByAEE">
                             <label for="allWorksCheckedByAEE" class="form-label">Whether
                                 all the works have been check measured by AEE and date of check measurement</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="allWorksCheckedByAEE" formControlName="allWorksCheckedByAEE">
+                            <input [readOnly]="AEEFormReadOnly" type="text" class="form-control"
+                                id="allWorksCheckedByAEE" formControlName="workCheckMeasuredByAEE" maxlength="255">
                         </div>
 
                         <div class="mb-3 preMeasurementsTaken">
                             <label for="preMeasurementsTaken" class="form-label">Whether
                                 pre measurements were taken wherever necessary and check measured by AEE and
                                 reference to pre measurement</label>
-                            <input [readOnly]="AEFormReadOnly" type="text" class="form-control"
-                                id="preMeasurementsTaken" formControlName="preMeasurementsTaken">
+                            <input [readOnly]="AEEFormReadOnly" type="text" class="form-control"
+                                id="preMeasurementsTaken" formControlName="measurementCheckMeasuredByAEE"
+                                maxlength="255">
                         </div>
 
                         <div class="mb-3">
                             <label for="dateOfCheckMeasurement" class="form-label">Date of Check
                                 measurement</label>
                             <input [readOnly]="AEEFormReadOnly" type="date" class="form-control"
-                                id="dateOfCheckMeasurement" formControlName="dateOfCheckMeasurement">
+                                id="dateOfCheckMeasurement" formControlName="dateOfCheckMeasurementAEE">
                         </div>
 
                         <div class="mb-3">
                             <label for="certificate" class="form-label">Certificate</label>
-                            <textarea [readOnly]="AEEFormReadOnly" class="form-control" formControlName="certificate"
+                            <textarea [readOnly]="AEEFormReadOnly" class="form-control" formControlName="certificateAEE"
                                 id="certificate" maxlength="1000"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label for="signature" class="form-label">Signature</label>
                             <input [readOnly]="AEEFormReadOnly" type="text" class="form-control" id="signature"
-                                formControlName="signature">
+                                formControlName="signatureAEE" maxlength="50">
                         </div>
 
                     </form>
+                    <p *ngIf="AEEFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionAEE}}</p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showDA">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Divisional Accountant
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <form action="" [formGroup]="AssistantForm" class="AssistantForm">
+                    <form [formGroup]="AssistantForm" class="AssistantForm">
 
                         <div class="correctedValue">
                             <div class="mb-3">
                                 <label for="valueOfWorkDoneAsReportedByAE" class="form-label">Reported
                                     by AE<span class="ms-1">(&#8377;)</span></label>
                                 <input readonly type="text" class="form-control" id="valueOfWorkDoneAsReportedByAE"
-                                    formControlName="valueOfWorkDoneAsReportedByAE">
+                                    formControlName="valueReportedByAE">
                             </div>
                             <div class="mb-3">
                                 <label for="correctedvalue" class="form-label">Corrected
                                     Value<span class="ms-1">(&#8377;)</span></label>
                                 <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                    id="correctedvalue" formControlName="correctedValue">
+                                    id="correctedvalue" formControlName="correctedValueByDA"
+                                    (keyup)="correctedValueCheck()">
                             </div>
                         </div>
 
@@ -549,7 +556,7 @@
                             <div style="display: flex;column-gap: 1rem;">
                                 <div *ngIf="!AssistantFormReadOnly">
                                     <select id="dropdownSelect" class="form-select" (change)="calculateGST()"
-                                        formControlName="gst_Percentage">
+                                        formControlName="gstPercentage">
                                         <option>Select an option</option>
                                         <option value="12">12</option>
                                         <option value="18">18</option>
@@ -558,80 +565,96 @@
 
                                 <div *ngIf="AssistantFormReadOnly">
                                     <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                        formControlName="gst_Percentage" readonly>
-                                </div>
-
-                                <div>
-                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                        formControlName="gstamount" readonly>
+                                        formControlName="gstPercentage" readonly>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-3 baseValue">
-                            <label for="baseValue" class="form-label">Base Value</label>
+                        <div class="mb-3">
+                            <label class="form-label">GST Value</label>
+                            <input readOnly type="text" class="form-control" formControlName="gstValue" readonly>
+                        </div>
+
+                        <div class="mb-3 baseValue" *ngIf="!AssistantFormReadOnly">
+                            <label for="baseValue" class="form-label">
+                                <small class="accCode">
+                                    <select formControlName="baseValueCode">
+                                        <option value="xxx">xxx</option>
+                                        <option value="yyy">yyy</option>
+                                        <option value="zzz">zzz</option>
+                                    </select>
+                                </small>
+                                Base Value
+                            </label>
+                            <input type="text" class="form-control" id="baseValue" formControlName="baseValue" readonly>
+                        </div>
+
+                        <div class="mb-3 baseValue" *ngIf="AssistantFormReadOnly">
+                            <label for="baseValue" class="form-label"><small class="accCode">Cr.
+                                    {{this.AssistantForm.get('baseValueCode')?.value}}:</small>Base Value</label>
                             <input type="text" class="form-control" id="baseValue" formControlName="baseValue" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="rmd" class="form-label">RMD 5%</label>
-                            <input type="text" class="form-control" id="rmd" formControlName="rmd" readonly>
+                            <label for="rmd" class="form-label"><small class="accCode">Cr. 714:</small>RMD 5%</label>
+                            <input type="text" class="form-control" id="rmd" formControlName="rmdValue" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="labourFund" class="form-label">Labour Welfare 1%</label>
+                            <label for="labourFund" class="form-label"><small class="accCode">Cr. 774:</small>Labour
+                                Welfare 1%</label>
                             <input type="text" class="form-control" id="labourFund" formControlName="labourFund"
                                 readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="it" class="form-label">IT 2%</label>
-                            <input type="text" class="form-control" id="it" formControlName="it" readonly>
+                            <label for="it" class="form-label"><small class="accCode">Cr. 731:</small>IT 2%</label>
+                            <input type="text" class="form-control" id="it" formControlName="itValue" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="ec" class="form-label">EC 0.066%</label>
-                            <input type="text" class="form-control" id="ec" formControlName="ec" readonly>
+                            <label for="sgst" class="form-label"><small class="accCode">Cr. 752:</small>SGST 1%</label>
+                            <input type="text" class="form-control" id="sgst" formControlName="sgstValue" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="sgst" class="form-label">SGST 1%</label>
-                            <input type="text" class="form-control" id="sgst" formControlName="sgst" readonly>
+                            <label for="cgst" class="form-label"><small class="accCode">Cr. 751:</small>CGST 1%</label>
+                            <input type="text" class="form-control" id="cgst" formControlName="cgstValue" readonly>
                         </div>
 
                         <div class="mb-3">
-                            <label for="cgst" class="form-label">CGST 1%</label>
-                            <input type="text" class="form-control" id="cgst" formControlName="cgst" readonly>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="steelRecovery" class="form-label">Steel Recovery</label>
+                            <label for="steelRecovery" class="form-label"><small class="accCode">Cr. 561:</small>Steel
+                                Recovery</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                id="steelRecovery" formControlName="steelRecovery">
+                                id="steelRecovery" formControlName="steelRecoveryValue">
                         </div>
 
                         <div class="mb-3">
-                            <label for="mobilization" class="form-label">Mobilization</label>
+                            <label for="mobilization" class="form-label"><small class="accCode">Cr.
+                                    571:</small>Mobilization</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="mobilization"
-                                formControlName="mobilization">
+                                formControlName="mobilizationValue">
                         </div>
 
                         <div class="mb-3">
-                            <label for="withheldAmount" class="form-label">Withheld amount</label>
+                            <label for="withheldAmount" class="form-label"><small class="accCode">Cr.
+                                    719:</small>Withheld amount</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                id="withheldAmount" formControlName="withheldAmount">
+                                id="withheldAmount" formControlName="withheldValue">
                         </div>
 
                         <div class="mb-3">
-                            <label for="eotfine" class="form-label">EOT fine</label>
+                            <label for="eotfine" class="form-label"><small class="accCode">Cr. 190:</small>EOT
+                                fine</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
-                                formControlName="eotfine">
+                                formControlName="eotValue">
                         </div>
 
                         <div class="mb-3">
-                            <label for="otherRecoveries" class="form-label">Other Recoveries</label>
+                            <label for="otherRecoveries" class="form-label"><small class="accCode">Cr. :</small>Other
+                                Recoveries</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
-                                formControlName="otherRecoveries">
+                                formControlName="otherRecoveriesValue">
                         </div>
 
                         <div class="mb-3 otherRecoveriesRemarks">
@@ -655,25 +678,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="netTotal" class="form-label">Net Total</label>
-                            <input type="text" class="form-control" id="totalDeduction" formControlName="netTotal"
+                            <label for="netTotal" class="form-label"><small class="accCode">Cr. 701:</small>Net
+                                Total</label>
+                            <input type="text" class="form-control" id="totalDeduction" formControlName="netTotalValue"
                                 readonly>
-                        </div>
-
-                        <div class="dpl">
-                            <h4 style="font-weight: bold;">Detailed project ledger (DPL)</h4>
-                            <div style="display: flex;column-gap: 1rem;">
-                                <div class="mb-3">
-                                    <label for="dplpageNo" class="form-label">Page No</label>
-                                    <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control"
-                                        id="dplpageNo" formControlName="dplpageNo">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="dpldate" class="form-label">Date</label>
-                                    <input [readOnly]="AssistantFormReadOnly" type="date" class="form-control"
-                                        id="dpldate" formControlName="dpldate">
-                                </div>
-                            </div>
                         </div>
 
                         <div class="bill-register">
@@ -697,7 +705,7 @@
 
                         <div class="mb-3">
                             <label for="DACertificate" class="form-label">Remarks</label>
-                            <textarea [readOnly]="DAFormReadOnly" class="form-control" formControlName="certificate"
+                            <textarea [readOnly]="DAFormReadOnly" class="form-control" formControlName="remarksDA"
                                 id="DACertificate" maxlength="1000"></textarea>
                         </div>
 
@@ -716,19 +724,20 @@
                         <div class="mb-3">
                             <label for="daSignature" class="form-label">Signature</label>
                             <input [readOnly]="DAFormReadOnly" type="text" class="form-control" id="daSignature"
-                                formControlName="signatureWithDate">
+                                formControlName="signatureDA">
                         </div>
 
                     </form>
+                    <p *ngIf="DAFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionDA}}</p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showEE">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Executive Engineer
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -736,11 +745,13 @@
 
                         <div class="mb-3" style="grid-column: span 2;">
                             <label for="voucherNo" class="form-label">Voucher Number</label>
-                            <div style="display: flex;column-gap: 1rem;">
+                            <div style="display: flex;column-gap: 1rem;" *ngIf="!EEFormReadOnly">
                                 <input readonly type="text" class="form-control" id="voucherNo"
-                                    formControlName="voucherNo">
+                                    formControlName="voucherNumber">
                                 <button class="btn btn-primary" (click)="generateVoucherNo()">Generate</button>
                             </div>
+                            <input readonly *ngIf="EEFormReadOnly" type="text" class="form-control" id="voucherNo"
+                                formControlName="voucherNumber">
                         </div>
 
                         <div class="mb-3">
@@ -763,7 +774,7 @@
 
                         <div class="mb-3">
                             <label for="eeRemarks" class="form-label">Remarks</label>
-                            <textarea [readOnly]="EEFormReadOnly" class="form-control" formControlName="remarks"
+                            <textarea [readOnly]="EEFormReadOnly" class="form-control" formControlName="remarksEE"
                                 id="eeRemarks" maxlength="1000"></textarea>
                         </div>
 
@@ -771,20 +782,20 @@
                             <label for="eeSignature" class="form-label">Signature</label>
                             <div class="col-auto">
                                 <input [readOnly]="EEFormReadOnly" type="text" class="form-control" id="eeSignature"
-                                    formControlName="signatureWithDate">
+                                    formControlName="signatureEE">
                             </div>
                         </div>
-
                     </form>
+                    <p *ngIf="EEFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionEE}}</p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showSE">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Superintending Engineer
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -793,36 +804,39 @@
                         <div class="mb-3" style="grid-column: span 2;">
                             <label class="form-label">Date of Inspection</label>
                             <div style="display: flex;column-gap: 1rem;">
-                                <input type="date" class="form-control" formControlName="dateOfInspection">
-                                <input type="file" class="form-control" multiple accept=".png,.jpg,.jpeg">
+                                <input type="date" [readOnly]="SEFormReadOnly" class="form-control"
+                                    formControlName="dateOfInspectionSE">
+                                <input type="file" class="form-control" accept=".pdf" *ngIf="!SEFormReadOnly"
+                                    (change)="onSEFileSelected($event)">
+                                <a mat-raised-button color="primary" *ngIf="SEFormReadOnly"
+                                    href="{{getSingleBillDataResponse.inspectionSEFileName}}" target="_blank">
+                                    PDF</a>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <textarea class="form-control" formControlName="remarks" maxlength="1000"></textarea>
+                            <textarea [readOnly]="SEFormReadOnly" class="form-control" formControlName="remarksSE"
+                                maxlength="1000"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input [readOnly]="SEFormReadOnly" type="text" class="form-control"
+                                formControlName="signatureSE">
                         </div>
 
                     </form>
+                    <p *ngIf="SEFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionSE}}</p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showSEHQ">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Superintending Engineer (HQ)
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -830,35 +844,34 @@
 
                         <div class="mb-3">
                             <label class="form-label">Recommendation of LC</label>
-                            <input type="text" class="form-control" formControlName="recommendationOfLC">
+                            <input [readonly]="SEHQFormReadOnly" type="text" class="form-control"
+                                formControlName="recommendationOfLCSEHQ">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <textarea [readOnly]="EEFormReadOnly" class="form-control" formControlName="remarks"
+                            <textarea [readonly]="SEHQFormReadOnly" class="form-control" formControlName="remarksSEHQ"
                                 maxlength="1000"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input [readonly]="SEHQFormReadOnly" type="text" class="form-control"
+                                formControlName="signatureSEHQ">
                         </div>
 
                     </form>
+                    <p *ngIf="SEHQFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionSEHQ}}
+                    </p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showCE">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Chief Engineer
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -867,41 +880,46 @@
                         <div class="mb-3" style="grid-column: span 2;">
                             <label class="form-label">Date of Inspection</label>
                             <div style="display: flex;column-gap: 1rem;">
-                                <input type="date" class="form-control" formControlName="dateOfInspection">
-                                <input type="file" class="form-control" multiple accept=".png,.jpg,.jpeg">
+                                <input type="date" [readOnly]="CEFormReadOnly" class="form-control"
+                                    formControlName="dateOfInspectionCE">
+                                <input type="file" class="form-control" accept=".pdf" *ngIf="!CEFormReadOnly"
+                                    (change)="onCEFileSelected($event)">
+                                <a mat-raised-button color="primary" *ngIf="CEFormReadOnly"
+                                    href="{{getSingleBillDataResponse.inspectionCEFileName}}" target="_blank">
+                                    PDF</a>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Recommendation of LC</label>
-                            <input type="text" class="form-control" formControlName="recommendationOfLC">
+                            <input [readOnly]="CEFormReadOnly" type="text" class="form-control"
+                                formControlName="recommendationOfLCCE">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <textarea class="form-control" formControlName="remarks" maxlength="1000"></textarea>
+                            <textarea [readOnly]="CEFormReadOnly" class="form-control" formControlName="remarksCE"
+                                maxlength="1000"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input [readOnly]="CEFormReadOnly" type="text" class="form-control"
+                                formControlName="signatureCE">
                         </div>
 
                     </form>
+                    <p *ngIf="CEFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionCE}}
+                    </p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showDCAO">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             DCAO
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -914,13 +932,42 @@
 
                         <div class="mb-3">
                             <label class="form-label">Bank Account Number</label>
-                            <select class="form-select" aria-label="Bank account" formControlName="bankAccountNo">
-                                <option selected>Open this select menu</option>
+                            <select class="form-select" aria-label="Bank account" formControlName="bankAccountNo"
+                                (change)="onBankAccountNoChange()">
+                                <option selected disabled>Select an option</option>
                                 <option value="1">12344</option>
                                 <option value="2">22222</option>
                                 <option value="3">66666</option>
                             </select>
                         </div>
+
+                        <div class="mb-3" *ngIf="dcaoBankFields">
+                            <label for="accountNumber" class="form-label">Account Number</label>
+                            <input type="text" class="form-control" id="accountNumber" formControlName="accountNumber"
+                                readonly>
+                        </div>
+
+                        <div class="mb-3" *ngIf="dcaoBankFields">
+                            <label for="accountHolder" class="form-label">Account Holder</label>
+                            <input type="text" class="form-control" id="accountHolder" formControlName="accountHolder"
+                                readonly>
+                        </div>
+
+                        <div class="mb-3" *ngIf="dcaoBankFields">
+                            <label for="bankName" class="form-label">Bank Name</label>
+                            <input type="text" class="form-control" id="bankName" formControlName="bankName" readonly>
+                        </div>
+
+                        <div class="mb-3" *ngIf="dcaoBankFields">
+                            <label for="bankBranch" class="form-label">Branch</label>
+                            <input type="text" class="form-control" id="bankBranch" formControlName="branch" readonly>
+                        </div>
+
+                        <div class="mb-3" *ngIf="dcaoBankFields">
+                            <label for="ifscCode" class="form-label">IFSC Code</label>
+                            <input type="text" class="form-control" id="ifscCode" formControlName="ifscCode" readonly>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
                             <input type="text" class="form-control" formControlName="signature">
@@ -941,11 +988,11 @@
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showFA">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Financial Advisor
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -976,11 +1023,11 @@
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="showMD">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             Managing Director
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -1023,11 +1070,11 @@
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;" *ngIf="false">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title style="font-size: 1.2rem;">
                             DCAO
                         </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -1037,8 +1084,18 @@
                             <input type="text" class="form-control" formControlName="lcFormat">
                         </div>
                     </form>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canarabank" id="canarabank">
+                        <label class="form-check-label" for="canarabank">
+                            <img src="../../../assets/images/canara-bank-logo.png" alt="canarabank"
+                                style="height: 4rem;width: auto;">
+                        </label>
+                    </div>
+
                     <div class="mb-3">
-                        <button mat-raised-button style="background-color: #304D30;color: #ffffff;">Pay Vendor</button>
+                        <button mat-raised-button style="background-color: #304D30;color: #ffffff;"
+                            (click)="payVendor()">Pay Vendor</button>
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -1046,8 +1103,8 @@
 
         <br>
         <div style="text-align: right;">
-            <button mat-raised-button style="background-color: #0802A3;color: #ffffff;"
-                (click)="saveNewBill()">Update</button>
+            <button mat-raised-button style="background-color: #0802A3;color: #ffffff;" (click)="saveNewBill()"
+                [disabled]="updateDisable">Update</button>
         </div>
     </section>
 </main>

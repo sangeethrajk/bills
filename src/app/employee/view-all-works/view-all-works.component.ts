@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { BillsService } from '../../services/bills.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 
 export interface WorkDetail {
   nameOfWork: string;
@@ -16,25 +19,73 @@ export interface WorkDetail {
   styleUrl: './view-all-works.component.css'
 })
 export class ViewAllWorksComponent implements OnInit {
+
+  division: any;
+
   displayedColumns: string[] = [
-    'nameOfWork',
+    'nameOfTheWork',
     'agreementNumber',
     'agreementValue',
     'agreementDate',
-    'dateOfCommencement',
-    'dateOfCompletion'
+    'commencementDate',
+    'completionDate',
+    'assignedAE',
+    'assignedAEE',
+    'creationTime',
+    'action'
   ];
 
   dataSource = new MatTableDataSource<WorkDetail>([]);
 
-  ngOnInit() {
-    // Fetch your work details data from a service or wherever it comes from
-    // For example, you might have a service method like getWorkDetails() that returns an Observable
-    // Here, for illustration, I'm assuming you have a hardcoded array of work details
-    const hardcodedWorkDetails: WorkDetail[] = [
-      // ... your work details here ...
-    ];
+  constructor(
+    private billsService: BillsService,
+    private dialog: MatDialog
+  ) { }
 
-    this.dataSource.data = hardcodedWorkDetails;
+  ngOnInit() {
+    this.division = sessionStorage.getItem('division');
+    this.getAllWorks();
   }
+
+  getAllWorks() {
+    this.billsService.getAllWorks(this.division).subscribe(
+      (response: any) => {
+        console.log('All Works Data : ', response);
+        this.dataSource.data = response;
+      },
+      (error: any) => {
+        console.error('Error in fetching  all works : ', error);
+      }
+    );
+  }
+
+  deleteWork(id: any) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '500px',
+      data: {
+        message: 'Are you sure you want to delete the work?',
+        confirmBackgroundColor: 'red',
+        cancelBackgroundColor: 'white',
+        confirmTextColor: 'white',
+        cancelTextColor: 'black',
+        confirmText: 'Yes',
+        cancelText: 'No'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.billsService.deleteWorkById(id).subscribe(
+          (response: any) => {
+            this.getAllWorks();
+          },
+          (error: any) => {
+            console.error('Error in deleting scheme data. Please try again later.', error);
+          }
+        );
+      }
+    });
+  }
+
+
 }

@@ -13,6 +13,18 @@
 }
 
 #verify-button {
-    background-color: #161f6d;
+    background-color: #294B29;
+    color: #ffffff;
+}
+
+#file-buttons {
+    display: flex;
+    column-gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#file-buttons .file-btn {
+    width: 10rem;
+    background-color: #1D24CA;
     color: #ffffff;
 }

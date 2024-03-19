@@ -10,6 +10,7 @@ import { MaterialModule } from './shared/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from 'ngx-ui-loader';
+import { ToastrModule, IndividualConfig } from 'ngx-toastr';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig =
 {
@@ -58,7 +59,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig =
     HttpClientModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderRouterModule,
-    NgxUiLoaderHttpModule
+    NgxUiLoaderHttpModule,
+    ToastrModule.forRoot(),
   ],
   providers: [Title, DatePipe],
   bootstrap: [AppComponent]

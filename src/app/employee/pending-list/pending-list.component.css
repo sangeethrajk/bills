@@ -2,7 +2,7 @@
     padding: 2rem;
 }
 
-.mat-elevation-z8 mat-header-cell {
+.matTable th {
     background-color: #7743DB;
     color: #ffffff;
 }

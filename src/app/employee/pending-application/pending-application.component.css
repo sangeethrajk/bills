@@ -74,7 +74,6 @@
     grid-column: span 2;
 }
 
-.gstPercentage,
 .baseValue,
 .totalDeduction {
     grid-column: span 2;
@@ -88,4 +87,8 @@
 
 .bill-register {
     grid-column: span 2;
+}
+
+.accCode {
+    font-weight: bold;
 }

@@ -1,25 +1,32 @@
-<h2 mat-dialog-title>{{ dialogData.accountNumber ? 'Edit' : 'Add' }} Bank Account</h2>
+<h2 mat-dialog-title>{{ this.bankDetailsForm.get('bankAccNo')?.value ? 'Edit' : 'Add' }} Bank Account</h2>
 <mat-dialog-content>
     <form [formGroup]="bankDetailsForm">
 
         <div class="mb-3">
             <label for="accountNumber" class="form-label">Account Number</label>
-            <input type="text" class="form-control" id="accountNumber" formControlName="accountNumber">
+            <input type="text" class="form-control" id="accountNumber" formControlName="bankAccNo">
         </div>
 
         <div class="mb-3">
             <label for="accountHolder" class="form-label">Account Holder</label>
-            <input type="text" class="form-control" id="accountHolder" formControlName="accountHolder">
+            <input type="text" class="form-control" id="accountHolder" formControlName="bankAccHolder">
         </div>
 
         <div class="mb-3">
             <label for="bankName" class="form-label">Bank Name</label>
-            <input type="text" class="form-control" id="bankName" formControlName="bankName">
+            <select class="form-select" formControlName="bankName">
+                <option value="Canara Bank">Canara Bank</option>
+                <option value="Union Bank of India">Union Bank of India</option>
+                <option value="Axis Bank">Axis Bank</option>
+                <option value="Indian Bank">Indian Bank</option>
+                <option value="HDFC Bank">HDFC Bank</option>
+                <option value="ICICI Bank">ICICI Bank</option>
+            </select>
         </div>
 
         <div class="mb-3">
             <label for="bankBranch" class="form-label">Branch</label>
-            <input type="text" class="form-control" id="bankBranch" formControlName="bankBranch">
+            <input type="text" class="form-control" id="bankBranch" formControlName="branch">
         </div>
 
         <div class="mb-3">
@@ -31,5 +38,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-button (click)="onSave()">Save</button>
+    <button mat-button (click)="saveData()" [disabled]="saveDisable">Save</button>
 </mat-dialog-actions>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { BillsService } from '../../services/bills.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-pending-list',
@@ -9,51 +10,68 @@ import { BillsService } from '../../services/bills.service';
   styleUrl: './pending-list.component.css'
 })
 export class PendingListComponent implements OnInit {
-  displayedColumns: string[] = ['slNo', 'name', 'workid', 'applieddate', 'division', 'action'];
-  dataSource = new MatTableDataSource<WorkItem>([]);
 
-  constructor(private router: Router, private apiService: BillsService) { }
+  division: any;
+  role: any;
+  username: any;
 
-  role = sessionStorage.getItem('role')!
+  displayedColumns: string[] = ['slNo', 'nameOfTheWork', 'billTotal', 'billCreationDate', 'action'];
+  dataSource = new MatTableDataSource<any>();
+
+  constructor(
+    private router: Router,
+    private apiService: BillsService,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
-    this.getPendhingApplicationList();
+    this.division = sessionStorage.getItem('division');
+    this.role = sessionStorage.getItem('role');
+    this.username = sessionStorage.getItem('username');
+    if (this.role === 'AE' || this.role === 'AEE' || this.role === 'DA' || this.role === 'EE') {
+      this.getAllBillsBasedOnDivision();
+    } else if (this.role === 'SE' || this.role === 'SEHQ' || this.role === 'CE' || this.role === 'DCAO' || this.role === 'FA' || this.role === 'MD') {
+      this.getAllBillsForUsername();
+    }
   }
 
-  getPendhingApplicationList() {
-    console.log(this.role)
-    this.apiService.getPendingWith(this.role).subscribe(data => {
-      console.log(data.data);
-      if (Array.isArray(data.data)) {
-        const transformedData: WorkItem[] = data.data.map((item: { nameOfContractor: any; workId: any; appliedDate: any; division: any; estimateNo: any; nid: any }, index: number) => ({
-          slNo: index + 1,
-          name: item.nameOfContractor,
-          workid: item.workId,
-          applieddate: item.appliedDate,
-          division: item.division,
-          estimateno: item.estimateNo,
-          nid: item.nid
-        }));
-        this.dataSource.data = transformedData;
-      } else {
-        console.error("API response is not an array.");
+  getAllBillsBasedOnDivision() {
+    this.apiService.getAllBillsBasedOnDivision(this.division, this.role).subscribe(
+      (response: any) => {
+        console.log(response);
+        if (this.role === "AE") {
+          this.dataSource = response.filter((item: { firstOfficer: any; }) => this.username === item.firstOfficer);
+        } else if (this.role === "AEE") {
+          this.dataSource = response.filter((item: { secondOfficer: any; }) => this.username === item.secondOfficer);
+        } else if (this.role === "DA") {
+          this.dataSource = response.filter((item: { thirdOfficer: any; }) => this.username === item.thirdOfficer);
+        } else if (this.role === "EE") {
+          this.dataSource = response.filter((item: { fourthOfficer: any; }) => this.username === item.fourthOfficer);
+        }
+      },
+      (error: any) => {
+        console.error(error);
+        this.toastService.showToast('error', 'Error while fetching data', '');
       }
-    }, error => {
-      console.error(error);
-    });
+    );
   }
+
+  getAllBillsForUsername() {
+    this.apiService.getAllBillsForUsername(this.username, this.role).subscribe(
+      (response: any) => {
+        console.log(response);
+        this.dataSource = response;
+      },
+      (error: any) => {
+        console.error(error);
+        this.toastService.showToast('error', 'Error while fetching data', '');
+      }
+    );
+  }
+
   goto(id: string) {
     this.router.navigate(['employee', 'pending-application', id]);
   }
 
 
-}
-
-interface WorkItem {
-  slNo: number;
-  name: string;
-  workid: string;
-  applieddate: string;
-  division: string;
-  estimateno: string;
 }

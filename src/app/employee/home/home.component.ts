@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
 
     this.getAllBills();
     this.getReviewedBills();
-    this.getPendingBills();
+    // this.getPendingBills();
     this.getTotalBills();
 
   }
@@ -82,19 +82,19 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  getPendingBills() {
+  // getPendingBills() {
 
-    this.billService.getPendingWith(this.role).subscribe(
-      (response: any) => {
-        const pendingBills = response.data;
-        this.pendingBillsLength = pendingBills.length;
+  //   this.billService.getPendingWith(this.role).subscribe(
+  //     (response: any) => {
+  //       const pendingBills = response.data;
+  //       this.pendingBillsLength = pendingBills.length;
 
-      },
-      (error: any) => {
-        console.log(error);
-      }
-    )
-  }
+  //     },
+  //     (error: any) => {
+  //       console.log(error);
+  //     }
+  //   )
+  // }
 
   getTotalBills() {
 

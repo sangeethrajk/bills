@@ -29,14 +29,33 @@
         </div>
 
         <div class="mb-3">
-            <label for="dateOfCommencement" class="form-label">Date of Commencement</label>
-            <input type="date" class="form-control" id="dateOfCommencement" formControlName="dateOfCommencement"
-                readonly>
+            <label for="commencementDate" class="form-label">Date of Commencement</label>
+            <input type="date" class="form-control" id="commencementDate" formControlName="commencementDate" readonly>
         </div>
 
         <div class="mb-3">
-            <label for="dateOfCompletion" class="form-label">Date of Completion</label>
-            <input type="date" class="form-control" id="dateOfCompletion" formControlName="dateOfCompletion" readonly>
+            <label for="completionDate" class="form-label">Date of Completion</label>
+            <input type="date" class="form-control" id="completionDate" formControlName="completionDate" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="contractorName" class="form-label">Vendor Name</label>
+            <input type="text" class="form-control" id="contractorName" formControlName="contractorName" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="gstNumber" class="form-label">GST Number</label>
+            <input type="text" class="form-control" id="gstNumber" formControlName="gstNumber" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="gstNumber" class="form-label">PAN Number</label>
+            <input type="text" class="form-control" id="gstNumber" formControlName="panNumber" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="gstNumber" class="form-label">TAN Number</label>
+            <input type="text" class="form-control" id="gstNumber" formControlName="tanNumber" readonly>
         </div>
 
         <div class="mb-3">
@@ -65,7 +84,14 @@
         </div>
     </form>
 
+    <div id="file-buttons">
+        <a mat-raised-button href="{{gstFileName}}" target="_blank" class="file-btn">GST File</a>
+        <a mat-raised-button href="{{panFileName}}" target="_blank" class="file-btn">PAN File</a>
+        <a mat-raised-button href="{{tanFileName}}" target="_blank" class="file-btn">TAN File</a>
+    </div>
+
     <div>
-        <button mat-raised-button type="submit" id="verify-button">Verify Project</button>
+        <button mat-raised-button type="submit" id="verify-button" (click)="verifyProject(vendorProjectId)">Verify
+            Project</button>
     </div>
 </main>

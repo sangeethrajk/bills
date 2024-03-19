@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { BankDetailsDialogComponent } from '../bank-details-dialog/bank-details-dialog.component';
+import { BillsService } from '../../services/bills.service';
 
 export interface BankDetails {
-  accountNumber: string;
-  accountHolder: string;
+  bankAccNo: string;
+  bankAccHolder: string;
   bankName: string;
   ifscCode: string;
-  bankBranch: string;
+  branch: string;
+  id: any;
 }
 
 @Component({
@@ -19,9 +21,16 @@ export interface BankDetails {
 export class BankAccountsComponent {
   dataSource = new MatTableDataSource<BankDetails>([]);
 
-  displayedColumns: string[] = ['accountNumber', 'accountHolder', 'bankName', 'ifscCode', 'bankBranch', 'actions'];
+  displayedColumns: string[] = ['bankAccNo', 'bankAccHolder', 'bankName', 'ifscCode', 'branch', 'actions'];
 
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    private billsService: BillsService
+  ) { }
+
+  ngOnInit() {
+    this.getAllBankAccounts();
+  }
 
   openBankDetailsDialog(): void {
     const dialogRef = this.dialog.open(BankDetailsDialogComponent, {
@@ -45,15 +54,28 @@ export class BankAccountsComponent {
     dialogRef.afterClosed().subscribe((result: BankDetails) => {
       if (result) {
         const updatedData = this.dataSource.data.map(item =>
-          item === bankDetail ? { ...bankDetail, ...result } : item
+          item === bankDetail ? { ...item, ...result } : item
         );
         this.dataSource.data = updatedData;
       }
     });
   }
 
+
   deleteBankDetails(bankDetail: BankDetails): void {
     const updatedData = this.dataSource.data.filter(item => item !== bankDetail);
     this.dataSource.data = updatedData;
+  }
+
+  getAllBankAccounts() {
+    this.billsService.getAllBankAccounts().subscribe(
+      (response: any) => {
+        console.log("All bank accounts: ", response);
+        this.dataSource = response.data;
+      },
+      (error: any) => {
+        console.error("Error in fetching all bank accounts", error);
+      }
+    );
   }
 }

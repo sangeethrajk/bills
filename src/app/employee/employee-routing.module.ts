@@ -11,6 +11,7 @@ import { ProjectViewComponent } from './project-view/project-view.component';
 import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
 import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
 import { AddWorkComponent } from './add-work/add-work.component';
+import { ViewEditWorkComponent } from './view-edit-work/view-edit-work.component';
 
 const routes: Routes = [
     {
@@ -28,6 +29,7 @@ const routes: Routes = [
             { path: 'bank-accounts', component: BankAccountsComponent },
             { path: 'works-list', component: ViewAllWorksComponent },
             { path: 'add-work', component: AddWorkComponent },
+            { path: 'edit-work/:id', component: ViewEditWorkComponent }
         ],
     },
 ];
