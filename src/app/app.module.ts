@@ -10,7 +10,9 @@ import { MaterialModule } from './shared/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { NgxUiLoaderConfig, NgxUiLoaderModule, NgxUiLoaderRouterModule, NgxUiLoaderHttpModule } from 'ngx-ui-loader';
-import { ToastrModule, IndividualConfig } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig =
 {
@@ -48,6 +50,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig =
   declarations: [
     AppComponent,
     LoginComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,9 +63,9 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig =
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig),
     NgxUiLoaderRouterModule,
     NgxUiLoaderHttpModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot()
   ],
-  providers: [Title, DatePipe],
+  providers: [Title, DatePipe, provideCharts(withDefaultRegisterables())],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

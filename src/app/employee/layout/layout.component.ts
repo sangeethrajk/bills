@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LayoutComponent implements OnInit {
   username: any;
+  role: any;
   mobileQuery: MediaQueryList;
 
   private _mobileQueryListener: () => void;
@@ -25,6 +26,7 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
     this.username = sessionStorage.getItem('username');
+    this.role = sessionStorage.getItem('role');
   }
 
   ngOnDestroy(): void {

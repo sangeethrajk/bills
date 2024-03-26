@@ -1,12 +1,4 @@
 <main id="main">
-    <button mat-raised-button id="pdf-btn" (click)="generatePDF()"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-            height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
-            <path
-                d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-            <path
-                d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-        </svg><span class="ms-1" style="font-size: 1rem;">PDF</span>
-    </button>
     <section class="section dashboard">
 
         <div style="margin-bottom: 10px;">
@@ -927,63 +919,61 @@
 
                         <div class="mb-3">
                             <label class="form-label">Pass order for LC</label>
-                            <input type="text" class="form-control" formControlName="passOrderForLC">
+                            <input type="text" class="form-control" formControlName="passOrderForLCByDCAO"
+                                [readOnly]="DCAOReadOnly">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Bank Account Number</label>
-                            <select class="form-select" aria-label="Bank account" formControlName="bankAccountNo"
-                                (change)="onBankAccountNoChange()">
+                            <label class="form-label">Bank Name</label>
+                            <select *ngIf="!DCAOReadOnly" class="form-select" aria-label="Bank Name"
+                                formControlName="tnhbBankName" (change)="onBankNameChange()">
                                 <option selected disabled>Select an option</option>
-                                <option value="1">12344</option>
-                                <option value="2">22222</option>
-                                <option value="3">66666</option>
+                                <option *ngFor="let account of tnhbBankAccounts" [value]="account.bankName">{{
+                                    account.bankName }}</option>
                             </select>
+                            <input *ngIf="DCAOReadOnly" type="text" class="form-control" formControlName="tnhbBankName"
+                                readonly>
                         </div>
 
                         <div class="mb-3" *ngIf="dcaoBankFields">
                             <label for="accountNumber" class="form-label">Account Number</label>
-                            <input type="text" class="form-control" id="accountNumber" formControlName="accountNumber"
+                            <input type="text" class="form-control" id="accountNumber" formControlName="tnhbAccountNo"
                                 readonly>
                         </div>
 
                         <div class="mb-3" *ngIf="dcaoBankFields">
                             <label for="accountHolder" class="form-label">Account Holder</label>
-                            <input type="text" class="form-control" id="accountHolder" formControlName="accountHolder"
-                                readonly>
-                        </div>
-
-                        <div class="mb-3" *ngIf="dcaoBankFields">
-                            <label for="bankName" class="form-label">Bank Name</label>
-                            <input type="text" class="form-control" id="bankName" formControlName="bankName" readonly>
+                            <input type="text" class="form-control" id="accountHolder"
+                                formControlName="tnhbAccountHolderName" readonly>
                         </div>
 
                         <div class="mb-3" *ngIf="dcaoBankFields">
                             <label for="bankBranch" class="form-label">Branch</label>
-                            <input type="text" class="form-control" id="bankBranch" formControlName="branch" readonly>
+                            <input type="text" class="form-control" id="bankBranch" formControlName="tnhbBranchName"
+                                readonly>
                         </div>
 
                         <div class="mb-3" *ngIf="dcaoBankFields">
                             <label for="ifscCode" class="form-label">IFSC Code</label>
-                            <input type="text" class="form-control" id="ifscCode" formControlName="ifscCode" readonly>
+                            <input type="text" class="form-control" id="ifscCode" formControlName="tnhbBankIfscCode"
+                                readonly>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input type="text" class="form-control" formControlName="signatureDCAO"
+                                [readOnly]="DCAOReadOnly">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <textarea class="form-control" formControlName="remarks"></textarea>
+                            <textarea class="form-control" formControlName="remarksDCAO"
+                                [readOnly]="DCAOReadOnly"></textarea>
                         </div>
 
                     </form>
+                    <p *ngIf="DCAOReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionDCAO}}
+                    </p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
@@ -998,27 +988,49 @@
                     </mat-expansion-panel-header>
                     <form [formGroup]="FAForm" class="FAForm">
 
+                        <div class="mb-3" *ngIf="!FAReadOnly">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="faApproval" id="approve"
+                                    value="Approve">
+                                <label class="form-check-label" for="approve">
+                                    Approve
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" formControlName="faApproval" id="reject"
+                                    value="Reject" checked>
+                                <label class="form-check-label" for="reject">
+                                    Reject
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" *ngIf="FAReadOnly">
+                            <label class="form-label">Approval Status</label>
+                            <input type="text" class="form-control" formControlName="faApproval" readonly>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label">LC Issued Order</label>
-                            <input type="text" class="form-control" formControlName="lcIssuedOrder">
+                            <input type="text" class="form-control" formControlName="passOrderForLCByFA"
+                                [readonly]="FAReadOnly">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input type="text" class="form-control" formControlName="signatureFA"
+                                [readonly]="FAReadOnly">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <textarea class="form-control" formControlName="remarks"></textarea>
+                            <textarea class="form-control" formControlName="remarksFA"
+                                [readonly]="FAReadOnly"></textarea>
                         </div>
 
                     </form>
+                    <p *ngIf="FAReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionFA}}
+                    </p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
@@ -1034,43 +1046,25 @@
                     <form [formGroup]="MDForm" class="MDForm">
 
                         <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="approvalStatus"
-                                    id="approve" value="approve">
-                                <label class="form-check-label" for="approve">
-                                    Approve
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" formControlName="approvalStatus"
-                                    id="reject" value="reject" checked>
-                                <label class="form-check-label" for="reject">
-                                    Reject
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
                             <label class="form-label">Remarks</label>
-                            <input type="text" class="form-control" formControlName="remarks">
+                            <input type="text" class="form-control" formControlName="remarksMD"
+                                [readOnly]="MDFormReadOnly">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Signature</label>
-                            <input type="text" class="form-control" formControlName="signature">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date</label>
-                            <input type="date" class="form-control" formControlName="date">
+                            <input type="text" class="form-control" formControlName="signatureMD"
+                                [readOnly]="MDFormReadOnly">
                         </div>
 
                     </form>
+                    <p *ngIf="MDFormReadOnly">Date of Submission: {{getSingleBillDataResponse.dateOfSubmissionMD}}
+                    </p>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
 
-        <div style="margin-bottom: 10px;" *ngIf="false">
+        <div style="margin-bottom: 10px;" *ngIf="mdprocessed === 'true'">
             <mat-accordion>
                 <mat-expansion-panel (opened)="panelOpenState" (closed)="panelOpenState">
                     <mat-expansion-panel-header>
@@ -1078,20 +1072,23 @@
                             DCAO
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <form [formGroup]="DCAOForm2" class="DCAOForm2">
+
+                    <form class="DCAOForm2">
                         <div class="mb-3">
-                            <label class="form-label">LC Format</label>
-                            <input type="text" class="form-control" formControlName="lcFormat">
+                            <label class="form-label">Payment Bank</label>
+                            <input type="text" class="form-control" value="{{getSingleBillDataResponse.tnhbBankName}}"
+                                readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bank Balance</label>
+                            <input type="text" class="form-control" value="{{bankBalanceResponse.netBalance}}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Processing Amount</label>
+                            <input type="text" class="form-control" value="{{getSingleBillDataResponse.billPayFor}}"
+                                readonly>
                         </div>
                     </form>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="canarabank" id="canarabank">
-                        <label class="form-check-label" for="canarabank">
-                            <img src="../../../assets/images/canara-bank-logo.png" alt="canarabank"
-                                style="height: 4rem;width: auto;">
-                        </label>
-                    </div>
 
                     <div class="mb-3">
                         <button mat-raised-button style="background-color: #304D30;color: #ffffff;"

@@ -64,7 +64,8 @@
         </form>
 
         <div style="display: flex;justify-content: end;">
-            <button mat-raised-button id="submit-button" (click)="onAddWork()">Submit</button>
+            <button mat-raised-button id="submit-button" (click)="onAddWork()"
+                [disabled]="submitDisable">Submit</button>
         </div>
     </section>
 

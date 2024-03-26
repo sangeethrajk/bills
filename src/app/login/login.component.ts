@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -12,45 +13,37 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginComponent implements OnInit {
 
-
   message = '';
   invalidLogin = false
   form!: FormGroup;
   submitted = false;
-  @Input()
   error!: string | null;
   hide = true;
-  role: any
+  role: any;
+  loginDisable: boolean = false;
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private loginService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private toastService: ToastService
   ) { }
 
   ngOnInit(): void {
-    this.initializeForm();
-    if (!localStorage.getItem('foo')) {
-      localStorage.setItem('foo', 'no reload')
-
-    } else {
-      localStorage.removeItem('foo')
-    }
-  }
-  get f(): { [key: string]: AbstractControl } {
-    return this.form.controls;
-  }
-  initializeForm() {
     this.form = this.fb.group({
       username: ['', Validators.required],
-      password: ['', Validators.required]
-    })
+      password: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
   }
 
   checkLogin() {
     if (this.form.valid) {
-      // const { username, password } = this.form.value;
+      this.loginDisable = true;
       this.loginService.authenticate(this.form.value).subscribe(
         (userData) => {
           console.log('Authentication successful', userData);
@@ -62,18 +55,13 @@ export class LoginComponent implements OnInit {
         },
         (error) => {
           console.error('Authentication failed', error);
-          this.openSnackBar('Authentication failed', 'Close');
+          this.loginDisable = false;
+          this.toastService.showToast('error', 'Authentication failed', '');
         }
       );
+    } else {
+      this.toastService.showToast('error', 'Check Username or Password', '');
     }
-  }
-
-  openSnackBar(message: string, action: string) {
-    this.snackBar.open(message, action, {
-      duration: 3000, // Snackbar will be displayed for 3 seconds
-      horizontalPosition: 'end', // Positions the snackbar horizontally at the end (right side)
-      verticalPosition: 'top' // Positions the snackbar vertically at the top
-    });
   }
 
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BillsService } from '../../services/bills.service';
+import { ToastService } from '../../services/toast.service';
+import { Router } from '@angular/router';
 
 interface Officer {
   roles: { name: string }[]; // Define roles as an array of objects with a name property
@@ -21,10 +23,13 @@ export class AddWorkComponent implements OnInit {
   thirdOfficer: any;
   fourthOfficer: any;
   circle: any;
+  submitDisable: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private billsService: BillsService
+    private billsService: BillsService,
+    private toastService: ToastService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -55,10 +60,9 @@ export class AddWorkComponent implements OnInit {
   }
 
   onAddWork() {
-    console.log(this.workDetailsForm.value);
-
     if (this.workDetailsForm.valid) {
-      const currentTimeStamp = new Date().toISOString();
+      this.submitDisable = true;
+      const currentTimeStamp = new Date().toLocaleString();
 
       this.workDetailsForm.patchValue({
         thirdOfficer: this.thirdOfficer,
@@ -76,13 +80,19 @@ export class AddWorkComponent implements OnInit {
       this.billsService.addWork(this.workDetailsForm.value).subscribe(
         (response: any) => {
           console.log("Successfully added work details", response);
+          this.toastService.showToast('success', 'Successfully added work details', '');
+          setTimeout(() => {
+            this.router.navigate(['/employee/work-list']);
+          }, 3000);
         },
         (error: any) => {
           console.error("Error adding work details", error);
+          this.toastService.showToast('error', 'Error adding work details', '');
+          this.submitDisable = false;
         }
       );
     } else {
-      window.alert("Please fill out all the required fields.");
+      this.toastService.showToast('warning', 'Please fill out all the required fields', '');
     }
   }
 
@@ -92,8 +102,8 @@ export class AddWorkComponent implements OnInit {
     console.log(this.division);
     this.billsService.getOfficersBydivision(this.division).subscribe(
       (response: any) => {
-        response.forEach((officer: any) => { // Change Officer type to any
-          const role = officer.role; // Access the role property from the officer object
+        response.data.forEach((officer: any) => {
+          const role = officer.role;
           if (role === 'AE') {
             this.aeUsernames.push(officer.username);
           } else if (role === 'AEE') {
@@ -111,6 +121,7 @@ export class AddWorkComponent implements OnInit {
       },
       (error: any) => {
         console.error(error);
+        this.toastService.showToast('error', 'Failed to fetch officers', '');
       }
     );
   }

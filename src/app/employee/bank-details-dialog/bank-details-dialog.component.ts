@@ -20,6 +20,7 @@ export class BankDetailsDialogComponent {
     private formBuilder: FormBuilder,
     private billsService: BillsService,
     private toastService: ToastService,
+    private router: Router,
     @Inject(MAT_DIALOG_DATA) public data: BankDetails
   ) {
     this.bankDetailsForm = this.formBuilder.group({
@@ -59,6 +60,9 @@ export class BankDetailsDialogComponent {
         (response: any) => {
           console.log("Bank Account saved successfully: ", response);
           this.toastService.showToast('success', 'Bank Account saved successfully', '');
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
           this.dialogRef.close();
         },
         (error: any) => {
@@ -80,6 +84,7 @@ export class BankDetailsDialogComponent {
   editAccount(): void {
     if (this.bankDetailsForm.valid) {
       this.saveDisable = true;
+      const id = this.bankDetailsForm.get('id')?.value;
       const data = {
         "bankAccNo": this.bankDetailsForm.get('bankAccNo')?.value,
         "bankAccHolder": this.bankDetailsForm.get('bankAccHolder')?.value,
@@ -87,11 +92,14 @@ export class BankDetailsDialogComponent {
         "branch": this.bankDetailsForm.get('branch')?.value,
         "ifscCode": this.bankDetailsForm.get('ifscCode')?.value
       };
-      const id = this.bankDetailsForm.get('id')?.value;
+      console.log(data);
       this.billsService.editBankAccount(data, id).subscribe(
         (response: any) => {
           console.log("Bank Account edited successfully: ", response);
           this.toastService.showToast('success', 'Bank Account edited successfully', '');
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
           this.dialogRef.close();
         },
         (error: any) => {

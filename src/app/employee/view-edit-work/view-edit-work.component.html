@@ -1,5 +1,7 @@
 <main id="main">
-    <h4 style="font-size: 1.2rem;font-weight: bold;text-align: center;">Edit Work</h4>
+    <h4 *ngIf="mode !== 'view'" style="font-size: 1.2rem;font-weight: bold;text-align: center;">Edit Work</h4>
+    <h4 *ngIf="mode === 'view'" style="font-size: 1.2rem;font-weight: bold;text-align: center;">View Work</h4>
+
     <section>
         <form [formGroup]="workDetailsForm" class="shadow form">
 
@@ -10,42 +12,53 @@
 
             <div class="mb-3">
                 <label for="nameofWork" class="form-label">Name of the Work</label>
-                <input type="text" class="form-control" id="nameofWork" formControlName="nameOfTheWork">
+                <input type="text" class="form-control" id="nameofWork" formControlName="nameOfTheWork"
+                    [readOnly]="mode === 'view'">
             </div>
 
             <div class="mb-3">
                 <label for="agreementNumber" class="form-label">Agreement Number</label>
-                <input type="text" class="form-control" id="agreementNumber" formControlName="agreementNumber">
+                <input type="text" class="form-control" id="agreementNumber" formControlName="agreementNumber"
+                    [readOnly]="mode === 'view'">
             </div>
 
             <div class="mb-3">
                 <label for="agreementValue" class="form-label">Agreement Value (incl. GST)</label>
-                <input type="text" class="form-control" id="agreementValue" formControlName="agreementValue">
+                <input type="text" class="form-control" id="agreementValue" formControlName="agreementValue"
+                    [readOnly]="mode === 'view'">
             </div>
 
             <div class="mb-3">
                 <label for="agreementDate" class="form-label">Agreement Date</label>
-                <input type="date" class="form-control" id="agreementDate" formControlName="agreementDate">
+                <input type="date" class="form-control" id="agreementDate" formControlName="agreementDate"
+                    [readOnly]="mode === 'view'">
             </div>
 
             <div class="mb-3">
                 <label for="dateOfCommencement" class="form-label">Date of Commencement</label>
-                <input type="date" class="form-control" id="dateOfCommencement" formControlName="commencementDate">
+                <input type="date" class="form-control" id="dateOfCommencement" formControlName="commencementDate"
+                    [readOnly]="mode === 'view'">
             </div>
 
             <div class="mb-3">
                 <label for="dateOfCompletion" class="form-label">Date of Completion</label>
-                <input type="date" class="form-control" id="dateOfCompletion" formControlName="completionDate">
+                <input type="date" class="form-control" id="dateOfCompletion" formControlName="completionDate"
+                    [readOnly]="mode === 'view'">
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="mode !== 'view'">
                 <label for="aeEngineer" class="form-label">Select AE</label>
                 <select id="aeEngineer" class="form-select" formControlName="firstOfficer">
                     <option *ngFor="let firstOfficer of aeUsernames" [value]="firstOfficer">{{ firstOfficer }}</option>
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="mode === 'view'">
+                <label class="form-label">Selected AE</label>
+                <input type="text" class="form-control" formControlName="firstOfficer" readonly>
+            </div>
+
+            <div class="mb-3" *ngIf="mode !== 'view'">
                 <label for="aeeEngineer" class="form-label">Select AEE</label>
                 <select id="aeeEngineer" class="form-select" formControlName="secondOfficer">
                     <option *ngFor="let secondOfficer of aeeUsernames" [value]="secondOfficer">{{ secondOfficer }}
@@ -53,7 +66,12 @@
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="mode === 'view'">
+                <label class="form-label">Selected AEE</label>
+                <input type="text" class="form-control" formControlName="secondOfficer" readonly>
+            </div>
+
+            <div class="mb-3" *ngIf="mode !== 'view'">
                 <label for="seventhOfficer" class="form-label">Select CE</label>
                 <select id="seventhOfficer" class="form-select" formControlName="seventhOfficer">
                     <option value="CE_CITY">CE_CITY</option>
@@ -61,10 +79,15 @@
                 </select>
             </div>
 
+            <div class="mb-3" *ngIf="mode === 'view'">
+                <label class="form-label">Selected CE</label>
+                <input type="text" class="form-control" formControlName="seventhOfficer" readonly>
+            </div>
+
         </form>
 
-        <div style="display: flex;justify-content: end;">
-            <button mat-raised-button id="submit-button" (click)="editWork()">Submit</button>
+        <div style="display: flex;justify-content: end;" *ngIf="mode !== 'view'">
+            <button mat-raised-button id="submit-button" (click)="editWork()" [disabled]="updateDisable">Update</button>
         </div>
     </section>
 

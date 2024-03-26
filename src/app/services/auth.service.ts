@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment.development';
@@ -14,51 +14,23 @@ export class AuthService {
 
   private baseURL = environment.apiURL;
 
-  private _currentUserSubject: BehaviorSubject<any>;
-  public currentUser: Observable<any>;
-
-  public get currentUserVal(): any {
-    return this._currentUserSubject.value;
-  }
-
-  get isUserLoggedIn() {
-    return this.currentUserVal;
-  }
   constructor(private httpClient: HttpClient) {
-    this._currentUserSubject = new BehaviorSubject<any>(this.getUserFromLocalStorage());
-    this.currentUser = this._currentUserSubject.asObservable();
+
   }
 
   authenticate(data: any) {
     return this.httpClient.post<any>(`${this.baseURL}/api/v1/auth/officer/login`, data);
   }
 
-
-
-  logOut() {
-    sessionStorage.clear()
-    localStorage.removeItem('CurrentUser');
-    this._currentUserSubject.next(null);
+  resetPassword(username: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.httpClient.post<any>(`${this.baseURL}/api/v1/auth/officer/reset`, { username }, { headers });
   }
 
-  private getUserFromLocalStorage(): User {
-    try {
-      return JSON.parse(localStorage.getItem('CurrentUser')!);
-    } catch (error) {
-      return null!;
-    }
+  verifyOTP(username: string, otp: string, newPassword: string): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const data = { username, otp, newPassword }; // Corrected object initialization
+    return this.httpClient.post<any>(`${this.baseURL}/api/v1/auth/officer/verify`, data, { headers });
   }
-
-  authenticatelogout(username: any) {
-
-    return this.httpClient.post<any>(`${this.baseURL}/api/logout`, { username }).pipe(
-      map(userData => {
-
-
-        return userData;
-      })
-    );
-  }
-
 
 }

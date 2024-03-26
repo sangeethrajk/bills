@@ -35,9 +35,14 @@
                         </ul>
                     </div>
                 </li>
-                <li><button routerLink="/employee/works-list" class="btn mb-2">Work List</button></li>
-                <li><button routerLink="/employee/bank-accounts" class="btn mb-2">Bank Account</button></li>
-                <li><button routerLink="/employee/projects-list" class="btn mb-2">Vendor Verification</button></li>
+                <li *ngIf="role === 'EE'"><button routerLink="/employee/work-list" class="btn mb-2">Work List</button>
+                </li>
+                <li *ngIf="role === 'DCAO'"><button routerLink="/employee/all-payments" class="btn mb-2">All
+                        Payments</button></li>
+                <li *ngIf="role === 'DCAO'"><button routerLink="/employee/bank-accounts" class="btn mb-2">Bank
+                        Account</button></li>
+                <li *ngIf="role === 'EE'"><button routerLink="/employee/projects-list" class="btn mb-2">Vendor
+                        Verification</button></li>
                 <li><button (click)="logout()" class="btn mb-2">Logout</button></li>
             </ul>
         </mat-sidenav>

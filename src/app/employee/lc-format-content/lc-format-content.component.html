@@ -1,0 +1,53 @@
+<main>
+    <section #lcSection>
+        <div>
+            <img src="../../../assets/images/tnhb_logo.png" alt="tnhb_logo">
+        </div>
+        <h4>LETTER OF CREDIT</h4>
+        <table>
+            <tr>
+                <td>Name of the Division</td>
+                <td>{{data.billDivision}}</td>
+            </tr>
+            <tr>
+                <td>Name of the Work</td>
+                <td>{{data.nameOfTheWork}}</td>
+            </tr>
+            <tr>
+                <td>Name of the Vendor</td>
+                <td>{{data.accountHolderName}}</td>
+            </tr>
+            <tr>
+                <td>Invoice No. & Date</td>
+                <td>{{data.invoiceNumber}} & {{data.billCreationDate}}</td>
+            </tr>
+            <tr>
+                <td>Vendor's Bank Name</td>
+                <td>{{data.bankName}}</td>
+            </tr>
+            <tr>
+                <td>Vendor's Bank Account No.</td>
+                <td>{{data.bankAccountNumber}}</td>
+            </tr>
+            <tr>
+                <td>Bill Value</td>
+                <td>{{data.billTotal}}</td>
+            </tr>
+            <tr>
+                <td>Amount Released</td>
+                <td>{{data.billPayFor}}</td>
+            </tr>
+            <tr>
+                <td>Board Bank Name</td>
+                <td>{{data.tnhbBankName}}</td>
+            </tr>
+            <tr>
+                <td>Transaction ID</td>
+                <td>{{data.transactionId}}</td>
+            </tr>
+        </table>
+    </section>
+    <section>
+        <button mat-raised-button color="primary" (click)="generateLC()">Generate LC</button>
+    </section>
+</main>

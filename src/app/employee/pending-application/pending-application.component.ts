@@ -1,23 +1,16 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { BillsService } from '../../services/bills.service';
-import { DialogComponent } from '../dialog/dialog.component';
 import { VoucherService } from '../../services/voucher.service';
 import { PaymentService } from '../../services/payment.service';
 import { S3uploadService } from '../../services/s3upload.service';
 import { ToastrService } from 'ngx-toastr';
-
-export interface PeriodicElement {
-  accountcode: string;
-  sno: string;
-  description: string;
-  amount: string;
-}
+import { CanaraBankService } from '../../services/canara-bank.service';
 
 @Component({
   selector: 'app-pending-application',
@@ -35,6 +28,10 @@ export class PendingApplicationComponent {
   updateDisable: boolean = false;
   SEFile!: File;
   CEFile!: File;
+  tnhbBankAccounts: any[] = [];
+  mdprocessed: any;
+  receivedHtml!: string;
+  bankBalanceResponse: any = {};
 
   showAE: boolean = false;
   showAEE: boolean = false;
@@ -58,6 +55,9 @@ export class PendingApplicationComponent {
   SEFormReadOnly: boolean = false;
   SEHQFormReadOnly: boolean = false;
   CEFormReadOnly: boolean = false;
+  DCAOReadOnly: boolean = false;
+  FAReadOnly: boolean = false;
+  MDFormReadOnly: boolean = false;
 
   displayedColumns: string[] = ['sno', 'accountcode', 'description', 'amount'];
   panelOpenState = false;
@@ -100,7 +100,8 @@ export class PendingApplicationComponent {
     private voucherService: VoucherService,
     private paymentService: PaymentService,
     private s3Service: S3uploadService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private canaraBankService: CanaraBankService
   ) { }
 
   ngOnInit() {
@@ -108,6 +109,10 @@ export class PendingApplicationComponent {
 
     this.route.params.subscribe(params => {
       this.id = +params['id'];
+    });
+
+    this.route.queryParams.subscribe(params => {
+      this.mdprocessed = params['mdprocessed'];
     });
 
     if (this.role == "AE") {
@@ -184,7 +189,7 @@ export class PendingApplicationComponent {
       this.SEHQFormReadOnly = true;
     }
 
-    if (this.role == "DCAO") {
+    if (this.role == "DCAO" && this.mdprocessed === "false") {
       this.showAE = true;
       this.showAEE = true;
       this.showDA = true;
@@ -201,8 +206,77 @@ export class PendingApplicationComponent {
       this.SEFormReadOnly = true;
       this.SEHQFormReadOnly = true;
       this.CEFormReadOnly = true;
+      this.getAllBankAccounts();
     }
 
+    if (this.role == "FA") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.showCE = true;
+      this.showDCAO = true;
+      this.showFA = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+      this.SEHQFormReadOnly = true;
+      this.CEFormReadOnly = true;
+      this.DCAOReadOnly = true;
+    }
+
+    if (this.role == "MD") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.showCE = true;
+      this.showDCAO = true;
+      this.showFA = true;
+      this.showMD = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+      this.SEHQFormReadOnly = true;
+      this.CEFormReadOnly = true;
+      this.DCAOReadOnly = true;
+      this.FAReadOnly = true;
+    }
+
+    if (this.role == "DCAO" && this.mdprocessed === "true") {
+      this.showAE = true;
+      this.showAEE = true;
+      this.showDA = true;
+      this.showEE = true;
+      this.showSE = true;
+      this.showSEHQ = true;
+      this.showCE = true;
+      this.showDCAO = true;
+      this.showFA = true;
+      this.showMD = true;
+      this.AEFormReadOnly = true;
+      this.AEEFormReadOnly = true;
+      this.AssistantFormReadOnly = true;
+      this.DAFormReadOnly = true;
+      this.EEFormReadOnly = true;
+      this.SEFormReadOnly = true;
+      this.SEHQFormReadOnly = true;
+      this.CEFormReadOnly = true;
+      this.DCAOReadOnly = true;
+      this.FAReadOnly = true;
+      this.MDFormReadOnly = true;
+      this.fetchCanaraBankBalance();
+    }
 
     this.applicationForm = this.formBuilder.group({
       division: [''],
@@ -357,26 +431,32 @@ export class PendingApplicationComponent {
     })
 
     this.DCAOForm = this.formBuilder.group({
-      passOrderForLC: [''],
-      bankAccountNo: [''],
-      remarks: [''],
-      signature: [''],
-      date: [''],
+      passOrderForLCByDCAO: [''],
+      tnhbBankName: [''],
+      tnhbAccountNo: [''],
+      tnhbAccountHolderName: [''],
+      tnhbBranchName: [''],
+      tnhbBankIfscCode: [''],
+      remarksDCAO: [''],
+      signatureDCAO: [''],
+      dateOfSubmissionDCAO: [''],
     })
 
     this.FAForm = this.formBuilder.group({
-      lcIssuedOrder: [''],
-      signature: [''],
-      date: [''],
-      remarks: ['']
+      passOrderForLCByFA: [''],
+      signatureFA: [''],
+      remarksFA: [''],
+      faApproval: ['']
     })
 
     this.MDForm = this.formBuilder.group({
-      approvalStatus: ['approve'],
-      remarks: [''],
-      signature: [''],
-      date: [''],
+      remarksMD: [''],
+      signatureMD: [''],
     })
+
+    this.DCAOForm2 = this.formBuilder.group({
+      lcFormat: ['']
+    });
 
     this.getSingleBillData();
 
@@ -423,6 +503,7 @@ export class PendingApplicationComponent {
         this.billId = response.id;
         this.vendorProjectId = response.vendorProjectId;
         this.getPreviousAmount();
+
         if (this.role == 'AE') {
           this.patchApplicationForm(response);
           this.AEpart3Form.patchValue({
@@ -469,7 +550,7 @@ export class PendingApplicationComponent {
           this.patchEEForm(response);
           this.patchSEForm(response);
           this.patchSEHQForm(response);
-        } else if (this.role == "DCAO") {
+        } else if (this.role == "DCAO" && this.mdprocessed === "false") {
           this.patchApplicationForm(response);
           this.patchAEpart1Form(response);
           this.patchAEEForm(response);
@@ -478,6 +559,39 @@ export class PendingApplicationComponent {
           this.patchSEForm(response);
           this.patchSEHQForm(response);
           this.patchCEForm(response);
+        } else if (this.role == "FA") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+          this.patchSEHQForm(response);
+          this.patchCEForm(response);
+          this.patchDCAOForm(response);
+        } else if (this.role == "MD") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+          this.patchSEHQForm(response);
+          this.patchCEForm(response);
+          this.patchDCAOForm(response);
+          this.patchFAForm(response);
+        } else if (this.role == "DCAO" && this.mdprocessed === "true") {
+          this.patchApplicationForm(response);
+          this.patchAEpart1Form(response);
+          this.patchAEEForm(response);
+          this.patchDAForm(response);
+          this.patchEEForm(response);
+          this.patchSEForm(response);
+          this.patchSEHQForm(response);
+          this.patchCEForm(response);
+          this.patchDCAOForm(response);
+          this.patchFAForm(response);
+          this.patchMDForm(response);
         }
       },
       (error: any) => {
@@ -798,6 +912,84 @@ export class PendingApplicationComponent {
           });
         break;
       }
+      case 'DCAO': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+        const data = {
+          "passOrderForLCByDCAO": this.DCAOForm.get('passOrderForLCByDCAO')?.value,
+          "tnhbBankName": this.DCAOForm.get('tnhbBankName')?.value,
+          "signatureDCAO": this.DCAOForm.get('signatureDCAO')?.value,
+          "remarksDCAO": this.DCAOForm.get('remarksDCAO')?.value,
+          "dateOfSubmissionDCAO": formattedDate,
+          billStatus: "Pending with FA"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to FA', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
+          },
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          }
+        );
+        break;
+      }
+      case 'FA': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+        const data = {
+          "passOrderForLCByFA": this.FAForm.get('passOrderForLCByFA')?.value,
+          "signatureFA": this.FAForm.get('signatureFA')?.value,
+          "remarksFA": this.FAForm.get('remarksFA')?.value,
+          "dateOfSubmissionFA": formattedDate,
+          billStatus: "Pending with MD"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to MD', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
+          },
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          }
+        );
+        break;
+      }
+      case 'MD': {
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+        const data = {
+          "signatureMD": this.MDForm.get('signatureMD')?.value,
+          "remarksMD": this.MDForm.get('remarksMD')?.value,
+          "dateOfSubmissionMD": formattedDate,
+          billStatus: "Pending with DCAO"
+        };
+        this.billService.updateBillByRole(this.role, this.billId, data).subscribe(
+          (response: any) => {
+            console.log(response);
+            this.showToast('success', 'Bill Sent to DCAO', 'Success');
+            setTimeout(() => {
+              this.router.navigate(['employee', 'pending-list']);
+            }, 3000);
+          },
+          (error: any) => {
+            console.error(error);
+            this.showToast('error', 'Error while submitting the bill', 'Error');
+            this.updateDisable = false;
+          }
+        );
+        break;
+      }
       default: {
         // Actions to be performed if the role doesn't match any case
         break;
@@ -806,21 +998,20 @@ export class PendingApplicationComponent {
 
   }
 
-  onBankAccountNoChange() {
+  onBankNameChange() {
     this.dcaoBankFields = true;
-    // const selectedBankAccountNo = this.myForm.get('bankAccountNo')?.value;
-
-    // if (selectedBankAccountNo === '1') {
-    //   this.myForm.patchValue({
-    //     accountNumber: 'Account Number 1',
-    //     accountHolder: 'Account Holder 1',
-    //     bankName: 'Bank Name 1',
-    //     bankBranch: 'Branch 1',
-    //     ifscCode: 'IFSC Code 1'
-    //   });
-    // } else if (selectedBankAccountNo === '2') {
-    // } else if (selectedBankAccountNo === '3') {
-    // }
+    const bankName = this.DCAOForm.get('tnhbBankName')?.value;
+    const bankDetails = this.tnhbBankAccounts.find(item => { return item.bankName === bankName });
+    console.log(bankDetails);
+    if (bankDetails) {
+      this.DCAOForm.patchValue({
+        tnhbBankName: bankDetails.bankName,
+        tnhbAccountNo: bankDetails.bankAccNo,
+        tnhbAccountHolderName: bankDetails.bankAccHolder,
+        tnhbBranchName: bankDetails.branch,
+        tnhbBankIfscCode: bankDetails.ifscCode,
+      });
+    }
   }
 
   calculateGST() {
@@ -950,1068 +1141,6 @@ export class PendingApplicationComponent {
     this.AEpart3Form.get('balance')?.setValue(balance);
   }
 
-
-
-
-  generatePDF() {
-    let AEpart1Form = {};
-    let AEpart2Form = {};
-    let AEpart3Form = {};
-    let AEEForm = {};
-    let EEForm = {};
-    let AssistantForm = {};
-    let DAForm = {};
-
-    if (this.role == "AE") {
-      let jsonData = {};
-      jsonData = {
-        "Name of work": this.viewModel.nameOfWork,
-        "Name of Contractor": this.viewModel.nameOfContractor,
-      };
-
-      const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-      const columns = ['Part – I Work Description', ''];
-      const rows: any[][] = [];
-
-      // Convert jsonData to an array of key-value pairs
-      const jsonDataArray = Object.entries(jsonData);
-
-      jsonDataArray.forEach(([key, value]) => {
-        rows.push([key, value]);
-        // rows.push(['', '']);
-      });
-
-      doc.setFontSize(12);
-      autoTable(doc, {
-        head: [columns],
-        body: rows,
-        theme: 'striped',
-        startY: 10,
-        margin: { top: 20 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      // Generate a Blob from the PDF data
-      const pdfData = doc.output('blob');
-
-      // Create a URL for the Blob and open it in a new tab
-      const pdfUrl = URL.createObjectURL(pdfData);
-      window.open(pdfUrl, '_blank');
-
-      // Optionally, you can revoke the URL to release resources after the tab is closed
-      URL.revokeObjectURL(pdfUrl);
-
-    } else if (this.role == "AEE") {
-
-      AEpart1Form = {
-        "Estimate Number": this.viewModel.estimateNo,
-        "Main Agreement Number": this.viewModel.mainAgreementNo,
-        "WC-79 Order Number": this.viewModel.wc79OrderNo,
-        "WC-79 Order Date": this.viewModel.wc79OrderDate,
-        "WC-79 Order Value": this.viewModel.wc79OrderValue,
-        "Supplement Agreement Number": this.viewModel.supplementAgreementNo,
-        "Supplement Agreement Value": this.viewModel.supplementAgreementValue,
-        "Total Value": this.viewModel.totalValue,
-        "Date of commencement": this.viewModel.dateOfCommencement,
-        "Due date of completion": this.viewModel.dueDateOfCompletion,
-        "Actual date of completion": this.viewModel.actualDateOfCompletion,
-        "Does final bill, completion report enclosed?": this.viewModel.finalBillCompletionReportEnclosed,
-      };
-
-      AEpart2Form = {
-        "Date of measurement": this.viewModel.partIIDateOfMeasurement,
-        "Date of check measurement": this.viewModel.dateOfCheckMeasurement,
-        "Physical Achievement in %": this.viewModel.physicalAchievement,
-        "Actual Percentage in %": this.viewModel.actualPercentage,
-        "Extension of time (EOT)": this.viewModel.extensionOfTime,
-        "EOT Order Number": this.viewModel.extensionOfTimeOrderNo,
-        "EOT Date": this.viewModel.extensionOfTimeDate,
-        "EOT Fine Amount": this.viewModel.extensionOfTimeFineAmount,
-        "Liquidated damages / Lump sum fine imposed if any": this.viewModel.liquidatedDamagesOrLumpSumFine,
-        "Whether all items covered in original or supplemental agreement": this.viewModel.itemsCoveredInAgreement,
-        "Whether quantities in the bill are as per estimate": this.viewModel.quantitiesInBillAsPerEstimate,
-        "Specify action taken to regularize such excess": this.viewModel.actionTakenToRegularizeExcess,
-        "Have any items of work in the agreement being omitted or partly done": this.viewModel.itemsOmittedOrPartlyDone,
-        "Whether part rate is paid": this.viewModel.partRatePaidInAgreement,
-        "Whether all the works have been check measured by AEE and date of check measurement": this.viewModel.allWorksCheckedByAEE,
-        "Whether computerized measurement book submitted?": this.viewModel.computerizedMeasurementBookSubmitted,
-        "Whether pre measurements were taken wherever necessary and check measured by AEE and reference to pre measurement": this.viewModel.preMeasurementsTaken
-      };
-
-      AEpart3Form = {
-        "Value of agreement": this.viewModel.valueOfAgreement,
-        "Amount released upto previous bill": this.viewModel.amountReleasedUptoPreviousBill,
-        "Balance": this.viewModel.balance,
-        "Amount raised in this bill": this.viewModel.amountRaisedInThisBill,
-        "Certificate": this.AEpart3Form.get('certificate')?.value,
-        "Signature with date": this.AEpart3Form.get('signatureWithDate')?.value
-      };
-
-      const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-      const AEHeader = ['Assistant Engineer', ''];
-      const columnsPart1 = ['Part – I Work Description', ''];
-      const rowsPart1: any[][] = [];
-
-      const columnsPart2 = ['Part-II Bill details', ''];
-      const rowsPart2: any[][] = [];
-
-      const columnsPart3 = ['Part-III Payment details', ''];
-      const rowsPart3: any[][] = [];
-
-      const AEpart1FormArray = Object.entries(AEpart1Form);
-      AEpart1FormArray.forEach(([key, value]) => {
-        rowsPart1.push([key, value]);
-      });
-
-      const AEpart2FormArray = Object.entries(AEpart2Form);
-      AEpart2FormArray.forEach(([key, value]) => {
-        rowsPart2.push([key, value]);
-      });
-
-      const AEpart3FormArray = Object.entries(AEpart3Form);
-      AEpart3FormArray.forEach(([key, value]) => {
-        rowsPart3.push([key, value]);
-      });
-
-      doc.setFontSize(12);
-
-      // Add Part 1 table
-      autoTable(doc, {
-        head: [AEHeader, columnsPart1],
-        body: rowsPart1,
-        theme: 'striped',
-        startY: 10,
-        margin: { top: 20 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      // Add Part 2 table
-      autoTable(doc, {
-        head: [columnsPart2],
-        body: rowsPart2,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [columnsPart3],
-        body: rowsPart3,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      // Generate a Blob from the PDF data
-      const pdfData = doc.output('blob');
-
-      // Create a URL for the Blob and open it in a new tab
-      const pdfUrl = URL.createObjectURL(pdfData);
-      window.open(pdfUrl, '_blank');
-
-      // Optionally, you can revoke the URL to release resources after the tab is closed
-      URL.revokeObjectURL(pdfUrl);
-    } else if (this.role == "EE") {
-
-      if (this.statusofEE == "Approved by AEE") {
-        AEpart1Form = {
-          "Estimate Number": this.viewModel.estimateNo,
-          "Main Agreement Number": this.viewModel.mainAgreementNo,
-          "WC-79 Order Number": this.viewModel.wc79OrderNo,
-          "WC-79 Order Date": this.viewModel.wc79OrderDate,
-          "WC-79 Order Value": this.viewModel.wc79OrderValue,
-          "Supplement Agreement Number": this.viewModel.supplementAgreementNo,
-          "Supplement Agreement Value": this.viewModel.supplementAgreementValue,
-          "Total Value": this.viewModel.totalValue,
-          "Date of commencement": this.viewModel.dateOfCommencement,
-          "Due date of completion": this.viewModel.dueDateOfCompletion,
-          "Actual date of completion": this.viewModel.actualDateOfCompletion,
-          "Does final bill, completion report enclosed?": this.viewModel.finalBillCompletionReportEnclosed,
-        };
-
-        AEpart2Form = {
-          "Date of measurement": this.viewModel.partIIDateOfMeasurement,
-          "Date of check measurement": this.viewModel.dateOfCheckMeasurement,
-          "Physical Achievement in %": this.viewModel.physicalAchievement,
-          "Actual Percentage in %": this.viewModel.actualPercentage,
-          "Extension of time (EOT)": this.viewModel.extensionOfTime,
-          "EOT Order Number": this.viewModel.extensionOfTimeOrderNo,
-          "EOT Date": this.viewModel.extensionOfTimeDate,
-          "EOT Fine Amount": this.viewModel.extensionOfTimeFineAmount,
-          "Liquidated damages / Lump sum fine imposed if any": this.viewModel.liquidatedDamagesOrLumpSumFine,
-          "Whether all items covered in original or supplemental agreement": this.viewModel.itemsCoveredInAgreement,
-          "Whether quantities in the bill are as per estimate": this.viewModel.quantitiesInBillAsPerEstimate,
-          "Specify action taken to regularize such excess": this.viewModel.actionTakenToRegularizeExcess,
-          "Have any items of work in the agreement being omitted or partly done": this.viewModel.itemsOmittedOrPartlyDone,
-          "Whether part rate is paid": this.viewModel.partRatePaidInAgreement,
-          "Whether all the works have been check measured by AEE and date of check measurement": this.viewModel.allWorksCheckedByAEE,
-          "Whether computerized measurement book submitted?": this.viewModel.computerizedMeasurementBookSubmitted,
-          "Whether pre measurements were taken wherever necessary and check measured by AEE and reference to pre measurement": this.viewModel.preMeasurementsTaken
-        };
-
-        AEpart3Form = {
-          "Value of agreement": this.viewModel.valueOfAgreement,
-          "Amount released upto previous bill": this.viewModel.amountReleasedUptoPreviousBill,
-          "Balance": this.viewModel.balance,
-          "Amount raised in this bill": this.viewModel.amountRaisedInThisBill,
-          "Certificate": this.AEpart3Form.get('certificate')?.value,
-          "Signature with date": this.AEpart3Form.get('signatureWithDate')?.value
-        };
-
-        AEEForm = {
-          "Date of Check measurement": this.AEEForm.get('dateOfCheckMeasurement')?.value,
-          "Certificate": this.AEEForm.get('certificate')?.value,
-          "Signature": this.AEEForm.get('signatureWithDate')?.value,
-        };
-
-        const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-        const AEHeader = ['Assistant Engineer', ''];
-        const columnsPart1 = ['Part – I Work Description', ''];
-        const rowsPart1: any[][] = [];
-
-        const columnsPart2 = ['Part-II Bill details', ''];
-        const rowsPart2: any[][] = [];
-
-        const columnsPart3 = ['Part-III Payment details', ''];
-        const rowsPart3: any[][] = [];
-
-        const AEEColumns = ['Assistant Executive Engineer', ''];
-        const AEERows: any[][] = [];
-
-        const AEpart1FormArray = Object.entries(AEpart1Form);
-        AEpart1FormArray.forEach(([key, value]) => {
-          rowsPart1.push([key, value]);
-        });
-
-        const AEpart2FormArray = Object.entries(AEpart2Form);
-        AEpart2FormArray.forEach(([key, value]) => {
-          rowsPart2.push([key, value]);
-        });
-
-        const AEpart3FormArray = Object.entries(AEpart3Form);
-        AEpart3FormArray.forEach(([key, value]) => {
-          rowsPart3.push([key, value]);
-        });
-
-        const AEEFormArray = Object.entries(AEEForm);
-        AEEFormArray.forEach(([key, value]) => {
-          AEERows.push([key, value]);
-        });
-
-        doc.setFontSize(12);
-
-        // Add Part 1 table
-        autoTable(doc, {
-          head: [AEHeader, columnsPart1],
-          body: rowsPart1,
-          theme: 'striped',
-          startY: 10,
-          margin: { top: 20 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        // Add Part 2 table
-        autoTable(doc, {
-          head: [columnsPart2],
-          body: rowsPart2,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [columnsPart3],
-          body: rowsPart3,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [AEEColumns],
-          body: AEERows,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        const pdfData = doc.output('blob');
-
-        // Create a URL for the Blob and open it in a new tab
-        const pdfUrl = URL.createObjectURL(pdfData);
-        window.open(pdfUrl, '_blank');
-
-        // Optionally, you can revoke the URL to release resources after the tab is closed
-        URL.revokeObjectURL(pdfUrl);
-      } else {
-        AEpart1Form = {
-          "Estimate Number": this.viewModel.estimateNo,
-          "Main Agreement Number": this.viewModel.mainAgreementNo,
-          "WC-79 Order Number": this.viewModel.wc79OrderNo,
-          "WC-79 Order Date": this.viewModel.wc79OrderDate,
-          "WC-79 Order Value": this.viewModel.wc79OrderValue,
-          "Supplement Agreement Number": this.viewModel.supplementAgreementNo,
-          "Supplement Agreement Value": this.viewModel.supplementAgreementValue,
-          "Total Value": this.viewModel.totalValue,
-          "Date of commencement": this.viewModel.dateOfCommencement,
-          "Due date of completion": this.viewModel.dueDateOfCompletion,
-          "Actual date of completion": this.viewModel.actualDateOfCompletion,
-          "Does final bill, completion report enclosed?": this.viewModel.finalBillCompletionReportEnclosed,
-        };
-
-        AEpart2Form = {
-          "Date of measurement": this.viewModel.partIIDateOfMeasurement,
-          "Date of check measurement": this.viewModel.dateOfCheckMeasurement,
-          "Physical Achievement in %": this.viewModel.physicalAchievement,
-          "Actual Percentage in %": this.viewModel.actualPercentage,
-          "Extension of time (EOT)": this.viewModel.extensionOfTime,
-          "EOT Order Number": this.viewModel.extensionOfTimeOrderNo,
-          "EOT Date": this.viewModel.extensionOfTimeDate,
-          "EOT Fine Amount": this.viewModel.extensionOfTimeFineAmount,
-          "Liquidated damages / Lump sum fine imposed if any": this.viewModel.liquidatedDamagesOrLumpSumFine,
-          "Whether all items covered in original or supplemental agreement": this.viewModel.itemsCoveredInAgreement,
-          "Whether quantities in the bill are as per estimate": this.viewModel.quantitiesInBillAsPerEstimate,
-          "Specify action taken to regularize such excess": this.viewModel.actionTakenToRegularizeExcess,
-          "Have any items of work in the agreement being omitted or partly done": this.viewModel.itemsOmittedOrPartlyDone,
-          "Whether part rate is paid": this.viewModel.partRatePaidInAgreement,
-          "Whether all the works have been check measured by AEE and date of check measurement": this.viewModel.allWorksCheckedByAEE,
-          "Whether computerized measurement book submitted?": this.viewModel.computerizedMeasurementBookSubmitted,
-          "Whether pre measurements were taken wherever necessary and check measured by AEE and reference to pre measurement": this.viewModel.preMeasurementsTaken
-        };
-
-        AEpart3Form = {
-          "Value of agreement": this.viewModel.valueOfAgreement,
-          "Amount released upto previous bill": this.viewModel.amountReleasedUptoPreviousBill,
-          "Balance": this.viewModel.balance,
-          "Amount raised in this bill": this.viewModel.amountRaisedInThisBill,
-          "Certificate": this.AEpart3Form.get('certificate')?.value,
-          "Signature with date": this.AEpart3Form.get('signatureWithDate')?.value
-        };
-
-        AEEForm = {
-          "Date of Check measurement": this.AEEForm.get('dateOfCheckMeasurement')?.value,
-          "Certificate": this.AEEForm.get('certificate')?.value,
-          "Signature": this.AEEForm.get('signatureWithDate')?.value,
-        };
-
-        EEForm = {
-          "Date of super check": this.EEForm.get('dateOfCheckMeasurement')?.value,
-          "Remarks": this.EEForm.get('certificate')?.value,
-          "Signature": this.EEForm.get('signatureWithDate')?.value,
-        };
-
-        AssistantForm = {
-          "Value of work done": this.viewModel.valueReportedByAE,
-          "Corrected Value": this.viewModel.correctedValueByDA,
-          "GST Percentage": this.viewModel.gstPercentage,
-          "GST Amount": this.viewModel.gstValue,
-          "Base value": this.viewModel.baseValue,
-          "RMD 5%": this.viewModel.rmdValue,
-          "IT 2%": this.viewModel.it,
-          "EC 0.066%": this.viewModel.ec,
-          "SGST 1%": this.viewModel.sgstValue,
-          "CGST 1%": this.viewModel.cgstValue,
-          "Steel Recovery": this.viewModel.steelRecoveryValue,
-          "Mobilization": this.viewModel.mobilizationValue,
-          "Withheld amount": this.viewModel.withheldValue,
-          "EOT fine": this.viewModel.eotValue,
-          "Other Recoveries (if any)": this.viewModel.otherRecoveriesValue,
-          "Total Deduction": this.viewModel.totalDeduction,
-          "Net Total": this.viewModel.netTotalValue,
-          "Detailed project ledger (DPL) Page No.": this.viewModel.dplpageNo,
-          "DPL Date": this.viewModel.dpldate,
-          "Bill register Page No.": this.viewModel.billRegisterPageNo,
-          "Bill register Date": this.viewModel.billRegisterDate,
-        };
-
-        DAForm = {
-          "Remarks": this.DivisionalAccountantForm.get('certificate')?.value,
-          "Bill passed for": this.DivisionalAccountantForm.get('billPassedFor')?.value,
-          "Bill pay for": this.DivisionalAccountantForm.get('billPayFor')?.value,
-          "Signature": this.DivisionalAccountantForm.get('signatureWithDate')?.value,
-        };
-
-        const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-        const AEHeader = ['Assistant Engineer', ''];
-        const columnsPart1 = ['Part – I Work Description', ''];
-        const rowsPart1: any[][] = [];
-
-        const columnsPart2 = ['Part-II Bill details', ''];
-        const rowsPart2: any[][] = [];
-
-        const columnsPart3 = ['Part-III Payment details', ''];
-        const rowsPart3: any[][] = [];
-
-        const AEEColumns = ['Assistant Executive Engineer', ''];
-        const AEERows: any[][] = [];
-
-        const EEColumns = ['Executive Engineer', ''];
-        const EERows: any[][] = [];
-
-        const AssistantColumns = ['Assistant', ''];
-        const AssistantRows: any[][] = [];
-
-        const DAColumns = ['Divisional Accountant', ''];
-        const DARows: any[][] = [];
-
-        const AEpart1FormArray = Object.entries(AEpart1Form);
-        AEpart1FormArray.forEach(([key, value]) => {
-          rowsPart1.push([key, value]);
-        });
-
-        const AEpart2FormArray = Object.entries(AEpart2Form);
-        AEpart2FormArray.forEach(([key, value]) => {
-          rowsPart2.push([key, value]);
-        });
-
-        const AEpart3FormArray = Object.entries(AEpart3Form);
-        AEpart3FormArray.forEach(([key, value]) => {
-          rowsPart3.push([key, value]);
-        });
-
-        const AEEFormArray = Object.entries(AEEForm);
-        AEEFormArray.forEach(([key, value]) => {
-          AEERows.push([key, value]);
-        });
-
-        const EEFormArray = Object.entries(EEForm);
-        EEFormArray.forEach(([key, value]) => {
-          EERows.push([key, value]);
-        });
-
-        const AssistantFormArray = Object.entries(AssistantForm);
-        AssistantFormArray.forEach(([key, value]) => {
-          AssistantRows.push([key, value]);
-        });
-
-        const DAFormArray = Object.entries(DAForm);
-        DAFormArray.forEach(([key, value]) => {
-          DARows.push([key, value]);
-        });
-
-        doc.setFontSize(12);
-
-        // Add Part 1 table
-        autoTable(doc, {
-          head: [AEHeader, columnsPart1],
-          body: rowsPart1,
-          theme: 'striped',
-          startY: 10,
-          margin: { top: 20 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        // Add Part 2 table
-        autoTable(doc, {
-          head: [columnsPart2],
-          body: rowsPart2,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [columnsPart3],
-          body: rowsPart3,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [AEEColumns],
-          body: AEERows,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [EEColumns],
-          body: EERows,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [AssistantColumns],
-          body: AssistantRows,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        autoTable(doc, {
-          head: [DAColumns],
-          body: DARows,
-          theme: 'striped',
-          margin: { top: 10 },
-          tableWidth: 'auto',
-          rowPageBreak: 'avoid',
-          columnStyles: {
-            0: { cellWidth: 100 },
-            1: { cellWidth: 80 },
-          }
-        });
-
-        const pdfData = doc.output('blob');
-
-        // Create a URL for the Blob and open it in a new tab
-        const pdfUrl = URL.createObjectURL(pdfData);
-        window.open(pdfUrl, '_blank');
-
-        // Optionally, you can revoke the URL to release resources after the tab is closed
-        URL.revokeObjectURL(pdfUrl);
-      }
-
-    } else if (this.role == "Assistant") {
-
-      AEpart1Form = {
-        "Estimate Number": this.viewModel.estimateNo,
-        "Main Agreement Number": this.viewModel.mainAgreementNo,
-        "WC-79 Order Number": this.viewModel.wc79OrderNo,
-        "WC-79 Order Date": this.viewModel.wc79OrderDate,
-        "WC-79 Order Value": this.viewModel.wc79OrderValue,
-        "Supplement Agreement Number": this.viewModel.supplementAgreementNo,
-        "Supplement Agreement Value": this.viewModel.supplementAgreementValue,
-        "Total Value": this.viewModel.totalValue,
-        "Date of commencement": this.viewModel.dateOfCommencement,
-        "Due date of completion": this.viewModel.dueDateOfCompletion,
-        "Actual date of completion": this.viewModel.actualDateOfCompletion,
-        "Does final bill, completion report enclosed?": this.viewModel.finalBillCompletionReportEnclosed,
-      };
-
-      AEpart2Form = {
-        "Date of measurement": this.viewModel.partIIDateOfMeasurement,
-        "Date of check measurement": this.viewModel.dateOfCheckMeasurement,
-        "Physical Achievement in %": this.viewModel.physicalAchievement,
-        "Actual Percentage in %": this.viewModel.actualPercentage,
-        "Extension of time (EOT)": this.viewModel.extensionOfTime,
-        "EOT Order Number": this.viewModel.extensionOfTimeOrderNo,
-        "EOT Date": this.viewModel.extensionOfTimeDate,
-        "EOT Fine Amount": this.viewModel.extensionOfTimeFineAmount,
-        "Liquidated damages / Lump sum fine imposed if any": this.viewModel.liquidatedDamagesOrLumpSumFine,
-        "Whether all items covered in original or supplemental agreement": this.viewModel.itemsCoveredInAgreement,
-        "Whether quantities in the bill are as per estimate": this.viewModel.quantitiesInBillAsPerEstimate,
-        "Specify action taken to regularize such excess": this.viewModel.actionTakenToRegularizeExcess,
-        "Have any items of work in the agreement being omitted or partly done": this.viewModel.itemsOmittedOrPartlyDone,
-        "Whether part rate is paid": this.viewModel.partRatePaidInAgreement,
-        "Whether all the works have been check measured by AEE and date of check measurement": this.viewModel.allWorksCheckedByAEE,
-        "Whether computerized measurement book submitted?": this.viewModel.computerizedMeasurementBookSubmitted,
-        "Whether pre measurements were taken wherever necessary and check measured by AEE and reference to pre measurement": this.viewModel.preMeasurementsTaken
-      };
-
-      AEpart3Form = {
-        "Value of agreement": this.viewModel.valueOfAgreement,
-        "Amount released upto previous bill": this.viewModel.amountReleasedUptoPreviousBill,
-        "Balance": this.viewModel.balance,
-        "Amount raised in this bill": this.viewModel.amountRaisedInThisBill,
-        "Certificate": this.AEpart3Form.get('certificate')?.value,
-        "Signature with date": this.AEpart3Form.get('signatureWithDate')?.value
-      };
-
-      AEEForm = {
-        "Date of Check measurement": this.AEEForm.get('dateOfCheckMeasurement')?.value,
-        "Certificate": this.AEEForm.get('certificate')?.value,
-        "Signature": this.AEEForm.get('signatureWithDate')?.value,
-      };
-
-      EEForm = {
-        "Date of super check": this.EEForm.get('dateOfCheckMeasurement')?.value,
-        "Remarks": this.EEForm.get('certificate')?.value,
-        "Signature": this.EEForm.get('signatureWithDate')?.value,
-      };
-
-      const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-      const AEHeader = ['Assistant Engineer', ''];
-      const columnsPart1 = ['Part – I Work Description', ''];
-      const rowsPart1: any[][] = [];
-
-      const columnsPart2 = ['Part-II Bill details', ''];
-      const rowsPart2: any[][] = [];
-
-      const columnsPart3 = ['Part-III Payment details', ''];
-      const rowsPart3: any[][] = [];
-
-      const AEEColumns = ['Assistant Executive Engineer', ''];
-      const AEERows: any[][] = [];
-
-      const EEColumns = ['Executive Engineer', ''];
-      const EERows: any[][] = [];
-
-      const AEpart1FormArray = Object.entries(AEpart1Form);
-      AEpart1FormArray.forEach(([key, value]) => {
-        rowsPart1.push([key, value]);
-      });
-
-      const AEpart2FormArray = Object.entries(AEpart2Form);
-      AEpart2FormArray.forEach(([key, value]) => {
-        rowsPart2.push([key, value]);
-      });
-
-      const AEpart3FormArray = Object.entries(AEpart3Form);
-      AEpart3FormArray.forEach(([key, value]) => {
-        rowsPart3.push([key, value]);
-      });
-
-      const AEEFormArray = Object.entries(AEEForm);
-      AEEFormArray.forEach(([key, value]) => {
-        AEERows.push([key, value]);
-      });
-
-      const EEFormArray = Object.entries(EEForm);
-      EEFormArray.forEach(([key, value]) => {
-        EERows.push([key, value]);
-      });
-
-      doc.setFontSize(12);
-
-      // Add Part 1 table
-      autoTable(doc, {
-        head: [AEHeader, columnsPart1],
-        body: rowsPart1,
-        theme: 'striped',
-        startY: 10,
-        margin: { top: 20 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      // Add Part 2 table
-      autoTable(doc, {
-        head: [columnsPart2],
-        body: rowsPart2,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [columnsPart3],
-        body: rowsPart3,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [AEEColumns],
-        body: AEERows,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [EEColumns],
-        body: EERows,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      const pdfData = doc.output('blob');
-
-      // Create a URL for the Blob and open it in a new tab
-      const pdfUrl = URL.createObjectURL(pdfData);
-      window.open(pdfUrl, '_blank');
-
-      // Optionally, you can revoke the URL to release resources after the tab is closed
-      URL.revokeObjectURL(pdfUrl);
-
-    } else if (this.role == "DA") {
-
-      AEpart1Form = {
-        "Estimate Number": this.viewModel.estimateNo,
-        "Main Agreement Number": this.viewModel.mainAgreementNo,
-        "WC-79 Order Number": this.viewModel.wc79OrderNo,
-        "WC-79 Order Date": this.viewModel.wc79OrderDate,
-        "WC-79 Order Value": this.viewModel.wc79OrderValue,
-        "Supplement Agreement Number": this.viewModel.supplementAgreementNo,
-        "Supplement Agreement Value": this.viewModel.supplementAgreementValue,
-        "Total Value": this.viewModel.totalValue,
-        "Date of commencement": this.viewModel.dateOfCommencement,
-        "Due date of completion": this.viewModel.dueDateOfCompletion,
-        "Actual date of completion": this.viewModel.actualDateOfCompletion,
-        "Does final bill, completion report enclosed?": this.viewModel.finalBillCompletionReportEnclosed,
-      };
-
-      AEpart2Form = {
-        "Date of measurement": this.viewModel.partIIDateOfMeasurement,
-        "Date of check measurement": this.viewModel.dateOfCheckMeasurement,
-        "Physical Achievement in %": this.viewModel.physicalAchievement,
-        "Actual Percentage in %": this.viewModel.actualPercentage,
-        "Extension of time (EOT)": this.viewModel.extensionOfTime,
-        "EOT Order Number": this.viewModel.extensionOfTimeOrderNo,
-        "EOT Date": this.viewModel.extensionOfTimeDate,
-        "EOT Fine Amount": this.viewModel.extensionOfTimeFineAmount,
-        "Liquidated damages / Lump sum fine imposed if any": this.viewModel.liquidatedDamagesOrLumpSumFine,
-        "Whether all items covered in original or supplemental agreement": this.viewModel.itemsCoveredInAgreement,
-        "Whether quantities in the bill are as per estimate": this.viewModel.quantitiesInBillAsPerEstimate,
-        "Specify action taken to regularize such excess": this.viewModel.actionTakenToRegularizeExcess,
-        "Have any items of work in the agreement being omitted or partly done": this.viewModel.itemsOmittedOrPartlyDone,
-        "Whether part rate is paid": this.viewModel.partRatePaidInAgreement,
-        "Whether all the works have been check measured by AEE and date of check measurement": this.viewModel.allWorksCheckedByAEE,
-        "Whether computerized measurement book submitted?": this.viewModel.computerizedMeasurementBookSubmitted,
-        "Whether pre measurements were taken wherever necessary and check measured by AEE and reference to pre measurement": this.viewModel.preMeasurementsTaken
-      };
-
-      AEpart3Form = {
-        "Value of agreement": this.viewModel.valueOfAgreement,
-        "Amount released upto previous bill": this.viewModel.amountReleasedUptoPreviousBill,
-        "Balance": this.viewModel.balance,
-        "Amount raised in this bill": this.viewModel.amountRaisedInThisBill,
-        "Certificate": this.AEpart3Form.get('certificate')?.value,
-        "Signature with date": this.AEpart3Form.get('signatureWithDate')?.value
-      };
-
-      AEEForm = {
-        "Date of Check measurement": this.AEEForm.get('dateOfCheckMeasurement')?.value,
-        "Certificate": this.AEEForm.get('certificate')?.value,
-        "Signature": this.AEEForm.get('signatureWithDate')?.value,
-      };
-
-      EEForm = {
-        "Date of super check": this.EEForm.get('dateOfCheckMeasurement')?.value,
-        "Remarks": this.EEForm.get('certificate')?.value,
-        "Signature": this.EEForm.get('signatureWithDate')?.value,
-      };
-
-      AssistantForm = {
-        "Value of work done": this.viewModel.valueReportedByAE,
-        "Corrected Value": this.viewModel.correctedValueByDA,
-        "GST Percentage": this.viewModel.gstPercentage,
-        "GST Amount": this.viewModel.gstValue,
-        "Base value": this.viewModel.baseValue,
-        "RMD 5%": this.viewModel.rmdValue,
-        "IT 2%": this.viewModel.it,
-        "EC 0.066%": this.viewModel.ec,
-        "SGST 1%": this.viewModel.sgstValue,
-        "CGST 1%": this.viewModel.cgstValue,
-        "Steel Recovery": this.viewModel.steelRecoveryValue,
-        "Mobilization": this.viewModel.mobilizationValue,
-        "Withheld amount": this.viewModel.withheldValue,
-        "EOT fine": this.viewModel.eotValue,
-        "Other Recoveries (if any)": this.viewModel.otherRecoveriesValue,
-        "Total Deduction": this.viewModel.totalDeduction,
-        "Net Total": this.viewModel.netTotalValue,
-        "Detailed project ledger (DPL) Page No.": this.viewModel.dplpageNo,
-        "DPL Date": this.viewModel.dpldate,
-        "Bill register Page No.": this.viewModel.billRegisterPageNo,
-        "Bill register Date": this.viewModel.billRegisterDate,
-      };
-
-      const doc = new jsPDF('p', 'mm', 'a4'); // A4 size
-
-      const AEHeader = ['Assistant Engineer', ''];
-      const columnsPart1 = ['Part – I Work Description', ''];
-      const rowsPart1: any[][] = [];
-
-      const columnsPart2 = ['Part-II Bill details', ''];
-      const rowsPart2: any[][] = [];
-
-      const columnsPart3 = ['Part-III Payment details', ''];
-      const rowsPart3: any[][] = [];
-
-      const AEEColumns = ['Assistant Executive Engineer', ''];
-      const AEERows: any[][] = [];
-
-      const EEColumns = ['Executive Engineer', ''];
-      const EERows: any[][] = [];
-
-      const AssistantColumns = ['Assistant', ''];
-      const AssistantRows: any[][] = [];
-
-      const AEpart1FormArray = Object.entries(AEpart1Form);
-      AEpart1FormArray.forEach(([key, value]) => {
-        rowsPart1.push([key, value]);
-      });
-
-      const AEpart2FormArray = Object.entries(AEpart2Form);
-      AEpart2FormArray.forEach(([key, value]) => {
-        rowsPart2.push([key, value]);
-      });
-
-      const AEpart3FormArray = Object.entries(AEpart3Form);
-      AEpart3FormArray.forEach(([key, value]) => {
-        rowsPart3.push([key, value]);
-      });
-
-      const AEEFormArray = Object.entries(AEEForm);
-      AEEFormArray.forEach(([key, value]) => {
-        AEERows.push([key, value]);
-      });
-
-      const EEFormArray = Object.entries(EEForm);
-      EEFormArray.forEach(([key, value]) => {
-        EERows.push([key, value]);
-      });
-
-      const AssistantFormArray = Object.entries(AssistantForm);
-      AssistantFormArray.forEach(([key, value]) => {
-        AssistantRows.push([key, value]);
-      });
-
-      doc.setFontSize(12);
-
-      // Add Part 1 table
-      autoTable(doc, {
-        head: [AEHeader, columnsPart1],
-        body: rowsPart1,
-        theme: 'striped',
-        startY: 10,
-        margin: { top: 20 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      // Add Part 2 table
-      autoTable(doc, {
-        head: [columnsPart2],
-        body: rowsPart2,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [columnsPart3],
-        body: rowsPart3,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [AEEColumns],
-        body: AEERows,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [EEColumns],
-        body: EERows,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      autoTable(doc, {
-        head: [AssistantColumns],
-        body: AssistantRows,
-        theme: 'striped',
-        margin: { top: 10 },
-        tableWidth: 'auto',
-        rowPageBreak: 'avoid',
-        columnStyles: {
-          0: { cellWidth: 100 },
-          1: { cellWidth: 80 },
-        }
-      });
-
-      const pdfData = doc.output('blob');
-
-      // Create a URL for the Blob and open it in a new tab
-      const pdfUrl = URL.createObjectURL(pdfData);
-      window.open(pdfUrl, '_blank');
-
-      // Optionally, you can revoke the URL to release resources after the tab is closed
-      URL.revokeObjectURL(pdfUrl);
-
-    }
-
-  }
-
-  //Pay Vendor
-  // payVendor() {
-  //   this.paymentService.canaraEncryptData().subscribe(
-  //     (response: any) => {
-  //       console.log(response);
-  //       this.paymentService.canaraPaymentRequest(response.data).subscribe(
-  //         (response: any) => {
-  //           console.log(response);
-  //         },
-  //         (error: any) => {
-  //           console.error(error);
-  //         }
-  //       );
-  //     },
-  //     (error: any) => {
-  //       console.error(error);
-  //     }
-  //   );
-  // }
-
-  payVendor() {
-    const dataToEncrypt = {
-      "Authorization": "Basic U1lFREFQSUFVVEg6MmE4OGE5MWE5MmE2NGEx",
-      "txnPassword": "2a88a91a92a64a1a1a3",
-      "srcAcctNumber": "2774201000198",
-      "destAcctNumber": "9833111000032",
-      "customerID": "13961989",
-      "txnAmount": "1",
-      "benefName": "test"
-    };
-    this.paymentService.canaraEncryptData(dataToEncrypt).subscribe(
-      (response: any) => {
-        console.log(response);
-      },
-      (error: any) => {
-        console.error(error);
-      }
-    );
-  }
-
-  showToast(type: string, message: string, title: string) {
-    const toastConfig = {
-      timeOut: 3000,
-      positionClass: 'toast-top-right',
-      progressBar: true,
-      tapToDismiss: false,
-    };
-
-    switch (type) {
-      case 'success':
-        this.toastr.success(message, title, toastConfig);
-        break;
-      case 'warning':
-        this.toastr.warning(message, title, toastConfig);
-        break;
-      case 'info':
-        this.toastr.warning(message, title, toastConfig);
-        break;
-      default:
-        this.toastr.error(message, title, toastConfig);
-        break;
-    }
-  }
-
   patchApplicationForm(response: any) {
     this.applicationForm.patchValue({
       division: response.billDivision,
@@ -2075,6 +1204,134 @@ export class PendingApplicationComponent {
 
   patchCEForm(response: any) {
     this.CEForm.patchValue(response);
+  }
+
+  patchDCAOForm(response: any) {
+    this.DCAOForm.patchValue(response);
+  }
+
+  patchFAForm(response: any) {
+    this.FAForm.patchValue(response);
+  }
+
+  patchMDForm(response: any) {
+    this.MDForm.patchValue(response);
+  }
+
+  getAllBankAccounts() {
+    this.billService.getAllBankAccounts().subscribe(
+      (response: any) => {
+        console.log("All bank accounts: ", response);
+        this.tnhbBankAccounts = response.data;
+      },
+      (error: any) => {
+        console.error("Error in fetching all bank accounts", error);
+      }
+    );
+  }
+
+  showToast(type: string, message: string, title: string) {
+    const toastConfig = {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      progressBar: true,
+      tapToDismiss: false,
+    };
+
+    switch (type) {
+      case 'success':
+        this.toastr.success(message, title, toastConfig);
+        break;
+      case 'warning':
+        this.toastr.warning(message, title, toastConfig);
+        break;
+      case 'info':
+        this.toastr.warning(message, title, toastConfig);
+        break;
+      default:
+        this.toastr.error(message, title, toastConfig);
+        break;
+    }
+  }
+
+  payVendor() {
+    if (this.getSingleBillDataResponse.billPayFor < this.bankBalanceResponse.netBalance) {
+      if (this.getSingleBillDataResponse.tnhbBankName === 'Canara Bank') {
+        console.log("clicked");
+        const data = {
+          "destAcctNumber": this.getSingleBillDataResponse.accountNumber,
+          "txnAmount": this.getSingleBillDataResponse.billPayFor,
+          "benefName": this.getSingleBillDataResponse.accountHolderName,
+          "ifscCode": this.getSingleBillDataResponse.ifscCode
+        };
+        this.canaraBankService.fundTransfer(data).subscribe(
+          (response: any) => {
+            console.log(response);
+            if (response.statusCode === 200) {
+              const responseData = JSON.parse(response.data);
+              const encryptData = responseData.Response.body.encryptData;
+              console.log(encryptData);
+              this.canaraBankService.decryptData(encryptData).subscribe(
+                (response: any) => {
+                  console.log(response);
+                  if (response.utr) {
+                    this.saveUtrUserRef(response.utr, response.userRefNo);
+                  }
+                },
+                (error: any) => {
+                  console.error(error);
+                }
+              );
+            }
+          },
+          (error: any) => {
+            console.error(error);
+          }
+        );
+      }
+    } else {
+      this.showToast('warning', 'Bank balance is insufficient', '');
+    }
+
+  }
+
+  fetchCanaraBankBalance() {
+    this.canaraBankService.balanceEnquiry().subscribe(
+      (response: any) => {
+        console.log(response);
+        if (response.statusCode === 200) {
+          const responseData = JSON.parse(response.data);
+          const encryptData = responseData.Response.body.encryptData;
+          console.log(encryptData);
+          this.canaraBankService.decryptData(encryptData).subscribe(
+            (response: any) => {
+              this.bankBalanceResponse = response;
+              console.log(this.bankBalanceResponse);
+            },
+            (error: any) => {
+              console.error(error);
+            }
+          );
+        }
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
+  }
+
+  saveUtrUserRef(utrNumber: string, userRefNumber: string): void {
+    this.billService.saveUtrUserRefInBill(this.getSingleBillDataResponse.id, utrNumber, userRefNumber)
+      .subscribe(
+        (response: any) => {
+          console.log('UTR number and User reference number saved successfully:', response);
+          // Clear input fields or handle success message
+        },
+        (error: any) => {
+          console.error('Failed to save UTR number and User reference number:', error);
+          // Handle error, show error message, etc.
+        }
+      );
   }
 
 }

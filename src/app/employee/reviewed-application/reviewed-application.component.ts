@@ -144,7 +144,6 @@ export class ReviewedApplicationComponent {
       billPassedFor: [''],
       billPayFor: [''],
       signatureWithDate: ['']
-
     })
 
     this.AssistantForm = this.formBuilder.group({
@@ -171,193 +170,193 @@ export class ReviewedApplicationComponent {
       billRegisterDate: [''],
     })
 
-    this.apiService.getapplbyid(this.id).subscribe(response => {
-      console.log(response.data)
-      this.viewModel = response.data.bill[0];
-      this.fileurl = this.viewModel.fileurl
-      this.statusofEE = this.viewModel.status;
-      if (this.role == "EE") {
-        // this.statusofEE=this.viewModel.status
-        if (this.statusofEE == "Approved by EE") { this.showEE = true; this.showEEstage2 = false }
-        else { this.showEEstage2 = true; this.showEE = false; }
-      }
+    // this.apiService.getapplbyid(this.id).subscribe(response => {
+    //   console.log(response.data)
+    //   this.viewModel = response.data.bill[0];
+    //   this.fileurl = this.viewModel.fileurl
+    //   this.statusofEE = this.viewModel.status;
+    //   if (this.role == "EE") {
+    //     // this.statusofEE=this.viewModel.status
+    //     if (this.statusofEE == "Approved by EE") { this.showEE = true; this.showEEstage2 = false }
+    //     else { this.showEEstage2 = true; this.showEE = false; }
+    //   }
 
-      this.applicationForm.patchValue({
-        nameOfWork: this.viewModel.nameOfWork,
-        nameOfContractor: this.viewModel.nameOfContractor,
-        estimateNo: this.viewModel.estimateNo,
-        division: this.viewModel.division
-      })
+    //   this.applicationForm.patchValue({
+    //     nameOfWork: this.viewModel.nameOfWork,
+    //     nameOfContractor: this.viewModel.nameOfContractor,
+    //     estimateNo: this.viewModel.estimateNo,
+    //     division: this.viewModel.division
+    //   })
 
-      this.AEpart1Form.patchValue({
-        nameOfWork: this.viewModel.nameOfWork,
-        nameOfContractor: this.viewModel.nameOfContractor,
-        estimateNo: this.viewModel.estimateNo,
-        mainAgreementNo: this.viewModel.mainAgreementNo,
-        mainAgreementValue: this.viewModel.mainAgreementValue,
-        value: this.viewModel.value,
-        wc79OrderNo: this.viewModel.wc79OrderNo,
-        wc79OrderDate: this.viewModel.wc79OrderDate,
-        wc79OrderValue: this.viewModel.wc79OrderValue,
-        supplementAgreementNo: this.viewModel.supplementAgreementNo,
-        supplementAgreementValue: this.viewModel.supplementAgreementValue,
-        totalValue: this.viewModel.totalValue,
-        dateOfCommencement: this.viewModel.dateOfCommencement,
-        dueDateOfCompletion: this.viewModel.dueDateOfCompletion,
-        actualDateOfCompletion: this.viewModel.actualDateOfCompletion,
-        finalBillCompletionReportEnclosed: this.viewModel.finalBillCompletionReportEnclosed,
+    //   this.AEpart1Form.patchValue({
+    //     nameOfWork: this.viewModel.nameOfWork,
+    //     nameOfContractor: this.viewModel.nameOfContractor,
+    //     estimateNo: this.viewModel.estimateNo,
+    //     mainAgreementNo: this.viewModel.mainAgreementNo,
+    //     mainAgreementValue: this.viewModel.mainAgreementValue,
+    //     value: this.viewModel.value,
+    //     wc79OrderNo: this.viewModel.wc79OrderNo,
+    //     wc79OrderDate: this.viewModel.wc79OrderDate,
+    //     wc79OrderValue: this.viewModel.wc79OrderValue,
+    //     supplementAgreementNo: this.viewModel.supplementAgreementNo,
+    //     supplementAgreementValue: this.viewModel.supplementAgreementValue,
+    //     totalValue: this.viewModel.totalValue,
+    //     dateOfCommencement: this.viewModel.dateOfCommencement,
+    //     dueDateOfCompletion: this.viewModel.dueDateOfCompletion,
+    //     actualDateOfCompletion: this.viewModel.actualDateOfCompletion,
+    //     finalBillCompletionReportEnclosed: this.viewModel.finalBillCompletionReportEnclosed,
 
-      });
-
-
-      this.AEpart2Form.patchValue({
-        partIIDateOfMeasurement: this.viewModel.partIIDateOfMeasurement,
-        dateOfCheckMeasurement: this.viewModel.dateOfCheckMeasurement,
-        workCarriedOutAtSpecifiedRateOfSpeed: this.viewModel.workCarriedOutAtSpecifiedRateOfSpeed,
-        extensionOfTimeDate: this.viewModel.extensionOfTimeDate,
-        extensionOfTimeOrderNo: this.viewModel.extensionOfTimeOrderNo,
-        extensionOfTimeFineAmount: this.viewModel.extensionOfTimeFineAmount,
-        liquidatedDamagesOrLumpSumFine: this.viewModel.liquidatedDamagesOrLumpSumFine,
-        itemsCoveredInAgreement: this.viewModel.itemsCoveredInAgreement,
-        quantitiesInBillAsPerEstimate: this.viewModel.quantitiesInBillAsPerEstimate,
-        itemsOmittedOrPartlyDone: this.viewModel.itemsOmittedOrPartlyDone,
-        partRatePaidInAgreement: this.viewModel.partRatePaidInAgreement,
-        allWorksCheckedByAEE: this.viewModel.allWorksCheckedByAEE,
-        computerizedMeasurementBookSubmitted: this.viewModel.computerizedMeasurementBookSubmitted,
-        preMeasurementsTaken: this.viewModel.preMeasurementsTaken,
-        physicalAchievement: this.viewModel.physicalAchievement,
-        actualPercentage: this.viewModel.actualPercentage,
-        extensionOfTime: this.viewModel.extensionOfTime,
-        actionTakenToRegularizeExcess: this.viewModel.actionTakenToRegularizeExcess
-      });
+    //   });
 
 
-      this.AEpart3Form.patchValue({
-        valueOfAgreement: this.viewModel.valueOfAgreement,
-        amountReleasedUptoPreviousBill: this.viewModel.amountReleasedUptoPreviousBill,
-        balance: this.viewModel.balance,
-        amountRaisedInThisBill: this.viewModel.amountRaisedInThisBill,
-
-      });
-
-      this.AssistantForm.patchValue({
-        valueOfWorkDoneAsReportedByAEAEE: this.viewModel.valueOfWorkDoneAsReportedByAEAEE,
-        correctedValue: this.viewModel.correctedValue,
-        gst_Percentage: this.viewModel.gst_Percentage,
-        gstamount: this.viewModel.gstamount,
-        eotfine: this.viewModel.eotfine,
-        rmd: this.viewModel.rmd,
-        it: this.viewModel.it,
-        ec: this.viewModel.ec,
-        sgst: this.viewModel.sgst,
-        cgst: this.viewModel.cgst,
-        dplpageNo: this.viewModel.dplpageNo,
-        dpldate: this.viewModel.dpldate,
-        baseValue: this.viewModel.baseValue,
-        lessGST12: this.viewModel.lessGST12,
-        lessGST18: this.viewModel.lessGST18,
-        steelRecovery: this.viewModel.steelRecovery,
-        mobilization: this.viewModel.mobilization,
-        withheldAmount: this.viewModel.withheldAmount,
-        otherRecoveries: this.viewModel.otherRecoveries,
-        totalDeduction: this.viewModel.totalDeduction,
-        netTotal: this.viewModel.netTotal,
-        billRegisterPageNo: this.viewModel.billRegisterPageNo,
-        billRegisterDate: this.viewModel.billRegisterDate,
-      });
-      console.log("AssisForm", this.AssistantForm)
-
-      const billauthor = response.data.billAuthorization;
-
-      for (const item of billauthor) {
-        const roleoftheofficer = item.roleOfTheOfficer;
-        const officerModel = item;
-
-        switch (roleoftheofficer) {
-          case 'AE':
-            console.log(officerModel);
-            this.AEpart3Form.patchValue({
-              certificate: officerModel.certificate,
-              signatureWithDate: officerModel.signatureWithDate
-            });
-            this.revieweddate = officerModel.approvalDate;
-            break;
-
-          case 'AEE':
-            this.AEEForm.patchValue({
-              dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-              certificate: officerModel.certificate,
-              signatureWithDate: officerModel.signatureWithDate
-            });
-            this.revieweddate = officerModel.approvalDate;
-            break;
+    //   this.AEpart2Form.patchValue({
+    //     partIIDateOfMeasurement: this.viewModel.partIIDateOfMeasurement,
+    //     dateOfCheckMeasurement: this.viewModel.dateOfCheckMeasurement,
+    //     workCarriedOutAtSpecifiedRateOfSpeed: this.viewModel.workCarriedOutAtSpecifiedRateOfSpeed,
+    //     extensionOfTimeDate: this.viewModel.extensionOfTimeDate,
+    //     extensionOfTimeOrderNo: this.viewModel.extensionOfTimeOrderNo,
+    //     extensionOfTimeFineAmount: this.viewModel.extensionOfTimeFineAmount,
+    //     liquidatedDamagesOrLumpSumFine: this.viewModel.liquidatedDamagesOrLumpSumFine,
+    //     itemsCoveredInAgreement: this.viewModel.itemsCoveredInAgreement,
+    //     quantitiesInBillAsPerEstimate: this.viewModel.quantitiesInBillAsPerEstimate,
+    //     itemsOmittedOrPartlyDone: this.viewModel.itemsOmittedOrPartlyDone,
+    //     partRatePaidInAgreement: this.viewModel.partRatePaidInAgreement,
+    //     allWorksCheckedByAEE: this.viewModel.allWorksCheckedByAEE,
+    //     computerizedMeasurementBookSubmitted: this.viewModel.computerizedMeasurementBookSubmitted,
+    //     preMeasurementsTaken: this.viewModel.preMeasurementsTaken,
+    //     physicalAchievement: this.viewModel.physicalAchievement,
+    //     actualPercentage: this.viewModel.actualPercentage,
+    //     extensionOfTime: this.viewModel.extensionOfTime,
+    //     actionTakenToRegularizeExcess: this.viewModel.actionTakenToRegularizeExcess
+    //   });
 
 
-          case 'EE':
-            if (this.viewModel.status == "Approved by EE") {
-              console.log(officerModel);
-              this.EEForm.patchValue({
-                dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-            }
-            if (this.viewModel.status == "Approved by DA") {
-              this.EEForm.patchValue({
-                dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-            }
-            if (this.viewModel.status == "Approved by Assistant") {
-              this.EEForm.patchValue({
-                dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-            }
-            if (this.viewModel.pendingWith == "Submitted") {
+    //   this.AEpart3Form.patchValue({
+    //     valueOfAgreement: this.viewModel.valueOfAgreement,
+    //     amountReleasedUptoPreviousBill: this.viewModel.amountReleasedUptoPreviousBill,
+    //     balance: this.viewModel.balance,
+    //     amountRaisedInThisBill: this.viewModel.amountRaisedInThisBill,
 
-              this.EEForm.patchValue({
-                dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
-                certificate: officerModel.certificate,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.EEForm1.patchValue({
-                billPassedFor: officerModel.billPassedFor,
-                billPayFor: officerModel.billPayFor,
-                signatureWithDate: officerModel.signatureWithDate
-              });
-              this.revieweddate = officerModel.approvalDate;
-            }
-            break;
+    //   });
 
-          case 'DA':
-            this.DivisionalAccountantForm.patchValue({
-              billPassedFor: officerModel.billPassedFor,
-              billPayFor: officerModel.billPayFor,
-              signatureWithDate: officerModel.signatureWithDate,
-              certificate: officerModel.certificate
-            });
-            this.revieweddate = officerModel.approvalDate;
-            break;
-          case 'Assistant':
+    //   this.AssistantForm.patchValue({
+    //     valueOfWorkDoneAsReportedByAEAEE: this.viewModel.valueOfWorkDoneAsReportedByAEAEE,
+    //     correctedValue: this.viewModel.correctedValue,
+    //     gst_Percentage: this.viewModel.gst_Percentage,
+    //     gstamount: this.viewModel.gstamount,
+    //     eotfine: this.viewModel.eotfine,
+    //     rmd: this.viewModel.rmd,
+    //     it: this.viewModel.it,
+    //     ec: this.viewModel.ec,
+    //     sgst: this.viewModel.sgst,
+    //     cgst: this.viewModel.cgst,
+    //     dplpageNo: this.viewModel.dplpageNo,
+    //     dpldate: this.viewModel.dpldate,
+    //     baseValue: this.viewModel.baseValue,
+    //     lessGST12: this.viewModel.lessGST12,
+    //     lessGST18: this.viewModel.lessGST18,
+    //     steelRecovery: this.viewModel.steelRecovery,
+    //     mobilization: this.viewModel.mobilization,
+    //     withheldAmount: this.viewModel.withheldAmount,
+    //     otherRecoveries: this.viewModel.otherRecoveries,
+    //     totalDeduction: this.viewModel.totalDeduction,
+    //     netTotal: this.viewModel.netTotal,
+    //     billRegisterPageNo: this.viewModel.billRegisterPageNo,
+    //     billRegisterDate: this.viewModel.billRegisterDate,
+    //   });
+    //   console.log("AssisForm", this.AssistantForm)
 
-            this.revieweddate = "2023-09-16";
-            break;
+    //   const billauthor = response.data.billAuthorization;
+
+    //   for (const item of billauthor) {
+    //     const roleoftheofficer = item.roleOfTheOfficer;
+    //     const officerModel = item;
+
+    //     switch (roleoftheofficer) {
+    //       case 'AE':
+    //         console.log(officerModel);
+    //         this.AEpart3Form.patchValue({
+    //           certificate: officerModel.certificate,
+    //           signatureWithDate: officerModel.signatureWithDate
+    //         });
+    //         this.revieweddate = officerModel.approvalDate;
+    //         break;
+
+    //       case 'AEE':
+    //         this.AEEForm.patchValue({
+    //           dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
+    //           certificate: officerModel.certificate,
+    //           signatureWithDate: officerModel.signatureWithDate
+    //         });
+    //         this.revieweddate = officerModel.approvalDate;
+    //         break;
 
 
-          default:
+    //       case 'EE':
+    //         if (this.viewModel.status == "Approved by EE") {
+    //           console.log(officerModel);
+    //           this.EEForm.patchValue({
+    //             dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
+    //             certificate: officerModel.certificate,
+    //             signatureWithDate: officerModel.signatureWithDate
+    //           });
+    //           this.revieweddate = officerModel.approvalDate;
+    //         }
+    //         if (this.viewModel.status == "Approved by DA") {
+    //           this.EEForm.patchValue({
+    //             dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
+    //             certificate: officerModel.certificate,
+    //             signatureWithDate: officerModel.signatureWithDate
+    //           });
+    //           this.revieweddate = officerModel.approvalDate;
+    //         }
+    //         if (this.viewModel.status == "Approved by Assistant") {
+    //           this.EEForm.patchValue({
+    //             dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
+    //             certificate: officerModel.certificate,
+    //             signatureWithDate: officerModel.signatureWithDate
+    //           });
+    //           this.revieweddate = officerModel.approvalDate;
+    //         }
+    //         if (this.viewModel.pendingWith == "Submitted") {
 
-            break;
-        }
-      }
-    }, error => {
-      console.error(error);
-    });
+    //           this.EEForm.patchValue({
+    //             dateOfCheckMeasurement: officerModel.dateOfCheckMeasurement,
+    //             certificate: officerModel.certificate,
+    //             signatureWithDate: officerModel.signatureWithDate
+    //           });
+    //           this.EEForm1.patchValue({
+    //             billPassedFor: officerModel.billPassedFor,
+    //             billPayFor: officerModel.billPayFor,
+    //             signatureWithDate: officerModel.signatureWithDate
+    //           });
+    //           this.revieweddate = officerModel.approvalDate;
+    //         }
+    //         break;
+
+    //       case 'DA':
+    //         this.DivisionalAccountantForm.patchValue({
+    //           billPassedFor: officerModel.billPassedFor,
+    //           billPayFor: officerModel.billPayFor,
+    //           signatureWithDate: officerModel.signatureWithDate,
+    //           certificate: officerModel.certificate
+    //         });
+    //         this.revieweddate = officerModel.approvalDate;
+    //         break;
+    //       case 'Assistant':
+
+    //         this.revieweddate = "2023-09-16";
+    //         break;
+
+
+    //       default:
+
+    //         break;
+    //     }
+    //   }
+    // }, error => {
+    //   console.error(error);
+    // });
 
   }
   openFile(filePath: string): string {

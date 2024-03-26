@@ -12,3 +12,8 @@
     background-color: #161f6d;
     color: #ffffff;
 }
+
+.mat-table th {
+    background-color: #5D0E41;
+    color: #ffffff;
+}

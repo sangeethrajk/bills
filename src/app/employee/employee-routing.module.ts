@@ -12,6 +12,7 @@ import { BankAccountsComponent } from './bank-accounts/bank-accounts.component';
 import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
 import { AddWorkComponent } from './add-work/add-work.component';
 import { ViewEditWorkComponent } from './view-edit-work/view-edit-work.component';
+import { AllPaymentsComponent } from './all-payments/all-payments.component';
 
 const routes: Routes = [
     {
@@ -27,9 +28,10 @@ const routes: Routes = [
             { path: 'projects-list', component: ProjectsListComponent },
             { path: 'project/:id', component: ProjectViewComponent },
             { path: 'bank-accounts', component: BankAccountsComponent },
-            { path: 'works-list', component: ViewAllWorksComponent },
+            { path: 'work-list', component: ViewAllWorksComponent },
             { path: 'add-work', component: AddWorkComponent },
-            { path: 'edit-work/:id', component: ViewEditWorkComponent }
+            { path: 'work/:mode/:id', component: ViewEditWorkComponent },
+            { path: 'all-payments', component: AllPaymentsComponent }
         ],
     },
 ];

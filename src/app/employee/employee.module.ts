@@ -17,6 +17,8 @@ import { BankDetailsDialogComponent } from './bank-details-dialog/bank-details-d
 import { ViewAllWorksComponent } from './view-all-works/view-all-works.component';
 import { AddWorkComponent } from './add-work/add-work.component';
 import { ViewEditWorkComponent } from './view-edit-work/view-edit-work.component';
+import { LcFormatContentComponent } from './lc-format-content/lc-format-content.component';
+import { AllPaymentsComponent } from './all-payments/all-payments.component';
 
 
 
@@ -37,7 +39,9 @@ import { ViewEditWorkComponent } from './view-edit-work/view-edit-work.component
     ViewAllWorksComponent,
     AddWorkComponent,
     ViewEditWorkComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    LcFormatContentComponent,
+    AllPaymentsComponent
   ],
   imports: [
     CommonModule,

@@ -9,57 +9,112 @@
         </nav>
     </section>
 
-    <section class="section">
-
-        <div>
-            <h4 style="font-size: 1.2rem;font-weight: bold;text-align: center;">Pending Payments</h4>
+    <section>
+        <div class="tabs">
+            <button class="tab-button" (click)="activeTab = 'tab1'" [class.active]="activeTab === 'tab1'">Pending
+                Bills</button>
+            <button class="tab-button" (click)="activeTab = 'tab2'" [class.active]="activeTab === 'tab2'">Processed by
+                MD</button>
         </div>
 
-        <div style="width:100%;">
+        <div class="section" *ngIf="activeTab === 'tab1'">
+            <div style="width:100%;">
 
-            <mat-table [dataSource]="dataSource" class="mat-elevation-z8 matTable">
+                <mat-table [dataSource]="dataSource" class="mat-elevation-z8 matTable">
 
-                <!-- Sl. No Column -->
-                <ng-container matColumnDef="slNo">
-                    <mat-header-cell *matHeaderCellDef> Sl. No </mat-header-cell>
-                    <mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </mat-cell>
-                </ng-container>
+                    <!-- Sl. No Column -->
+                    <ng-container matColumnDef="slNo">
+                        <mat-header-cell *matHeaderCellDef> Sl. No </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </mat-cell>
+                    </ng-container>
 
-                <!-- Name Column -->
-                <ng-container matColumnDef="nameOfTheWork">
-                    <mat-header-cell *matHeaderCellDef> Name of the Work </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.nameOfTheWork }} </mat-cell>
-                </ng-container>
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="nameOfTheWork">
+                        <mat-header-cell *matHeaderCellDef> Name of the Work </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.nameOfTheWork }} </mat-cell>
+                    </ng-container>
 
-                <!-- Worked Column -->
-                <ng-container matColumnDef="billTotal">
-                    <mat-header-cell *matHeaderCellDef> Bill Total </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.billTotal}} </mat-cell>
-                </ng-container>
+                    <!-- Worked Column -->
+                    <ng-container matColumnDef="billTotal">
+                        <mat-header-cell *matHeaderCellDef> Bill Total </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.billTotal}} </mat-cell>
+                    </ng-container>
 
-                <ng-container matColumnDef="billCreationDate">
-                    <mat-header-cell *matHeaderCellDef> Bill Date </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.billCreationDate }} </mat-cell>
-                </ng-container>
+                    <ng-container matColumnDef="billCreationDate">
+                        <mat-header-cell *matHeaderCellDef> Bill Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.billCreationDate }} </mat-cell>
+                    </ng-container>
 
-                <ng-container matColumnDef="action">
-                    <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
-                        <button mat-icon-button (click)="goto(element.id)"
-                            style="display: flex;justify-content: center;align-items: center;">
-                            <mat-icon>visibility</mat-icon>
-                        </button>
-                    </mat-cell>
-                </ng-container>
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="goto(element.id,'false')"
+                                style="display: flex;justify-content: center;align-items: center;">
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
 
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-                <tr class="mat-row" *matNoDataRow>
-                    <td class="mat-cell" colspan="4">No data</td>
-                </tr>
-            </mat-table>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" colspan="4">No data</td>
+                    </tr>
+                </mat-table>
 
+            </div>
         </div>
+
+        <div class="section" *ngIf="activeTab === 'tab2'">
+            <div style="width:100%;">
+
+                <mat-table [dataSource]="dataSource2" class="mat-elevation-z8 matTable">
+
+                    <!-- Sl. No Column -->
+                    <ng-container matColumnDef="slNo">
+                        <mat-header-cell *matHeaderCellDef> Sl. No </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index"> {{ i + 1 }} </mat-cell>
+                    </ng-container>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="nameOfTheWork">
+                        <mat-header-cell *matHeaderCellDef> Name of the Work </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.nameOfTheWork }} </mat-cell>
+                    </ng-container>
+
+                    <!-- Worked Column -->
+                    <ng-container matColumnDef="billTotal">
+                        <mat-header-cell *matHeaderCellDef> Bill Total </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{element.billTotal}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="billCreationDate">
+                        <mat-header-cell *matHeaderCellDef> Bill Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element"> {{ element.billCreationDate }} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
+                        <mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="goto(element.id,'true')"
+                                style="display: flex;justify-content: center;align-items: center;">
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" colspan="4">No data</td>
+                    </tr>
+                </mat-table>
+
+            </div>
+        </div>
+
     </section>
+
 </main>

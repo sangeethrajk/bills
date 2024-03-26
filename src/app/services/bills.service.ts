@@ -20,47 +20,6 @@ export class BillsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  // getPendingWith(role: string): Observable<any> {
-  //   return this.httpClient.post(`${this.baseUrl}/getPendingwith`, { role });
-  // }
-
-  getReviewedWith(role: string): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/reviewedBills`, { role });
-  }
-  getAll(id: any): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/getAll`, { id });
-  }
-
-  getapplbyid(nId: number): Observable<any> {
-    const url = `${this.baseUrl}/getBynId`;
-    const requestData = { nId: nId };
-
-    return this.httpClient.post(url, requestData).pipe(
-      catchError((error: any) => {
-        console.error('Error occurred:', error);
-        throw error;
-      })
-    );
-  }
-
-  saveNewBill(data: any): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-    return this.httpClient.post(`${this.baseUrl}/saveNewBill`, data, httpOptions);
-  }
-
-  getTotalBills(id: number): Observable<any> {
-    const requestBody = { id };
-    return this.httpClient.post(`${this.baseUrl}/getTotalBill`, requestBody);
-  }
-
-
-
-
-
   //New APIs
 
   //Works API in EE Logins
@@ -70,7 +29,7 @@ export class BillsService {
   }
 
   addWork(data: any): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/api/v1/bill/add-work`, data);
+    return this.httpClient.post(`${this.baseUrl}/api/v1/bill/add-work`, data, this.headers);
   }
 
   getAllWorks(division: any): Observable<any> {
@@ -112,7 +71,11 @@ export class BillsService {
   }
 
   editBankAccount(data: any, id: any): Observable<any> {
-    return this.httpClient.post(`${this.baseUrl}/api/v1/edit/${id}`, data, this.headers);
+    return this.httpClient.put(`${this.baseUrl}/api/v1/bankAccount/edit/${id}`, data, this.headers);
+  }
+
+  deleteBankAccount(id: any): Observable<any> {
+    return this.httpClient.delete(`${this.baseUrl}/api/v1/bankAccount/delete/${id}`, this.headers);
   }
 
   getAllBankAccounts(): Observable<any> {
@@ -140,8 +103,28 @@ export class BillsService {
     return this.httpClient.put(`${this.baseUrl}/api/v1/bill/updateBill/${role}/${id}`, data, this.headers);
   }
 
-  //get all bills for SE
+  //get all bills using username
   getAllBillsForUsername(username: string, role: string): Observable<any> {
     return this.httpClient.post(`${this.baseUrl}/api/v1/bill/getAllBillsForUsername/${username}/${role}`, { id: 1 }, this.headers);
+  }
+
+  //get all bills processed by MD
+  getAllBillsProcessedByMD(): Observable<any> {
+    return this.httpClient.get(`${this.baseUrl}/api/v1/bill/billsProcessedByMD`, this.headers);
+  }
+
+  //save utr and user ref number
+  saveUtrUserRefInBill(id: number, utrNumber: string, userRefNumber: string): Observable<any> {
+    const url = `${this.baseUrl}/api/v1/bill/${id}/save-utr-user-ref`;
+    const data = {
+      utrNumber: utrNumber,
+      userRefNumber: userRefNumber,
+      billStatus: "Processed"
+    }
+    return this.httpClient.post<any>(url, data, this.headers);
+  }
+
+  getAllProcessedBills(): Observable<any> {
+    return this.httpClient.get(`${this.baseUrl}/api/v1/bill/processedBills`, this.headers);
   }
 }

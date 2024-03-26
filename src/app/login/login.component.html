@@ -12,7 +12,7 @@
                     <input type="text" class="form-control" id="username" formControlName="username" required>
                     <div *ngIf="form.get('username')?.touched && form.get('username')?.hasError('required')"
                         class="text-danger">
-                        Email is required
+                        Username is required
                     </div>
                 </div>
                 <div class="mb-3">
@@ -22,16 +22,17 @@
                         class="text-danger">
                         Password is required
                     </div>
-                    <div *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')"
+                    <div *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minLength')"
                         class="text-danger">
-                        Password must be at least 6 characters long
+                        Password must be at least 8 characters long
                     </div>
                 </div>
                 <div class="mb-2">
-                    <a href="" style="text-decoration: none;">Forgot Password?</a>
+                    <a href="" style="text-decoration: none;" routerLink="/forgot-password">Forgot Password?</a>
                 </div>
                 <div class="mb-2">
-                    <button type="submit" class="btn btn-primary" (click)="checkLogin()">Login</button>
+                    <button type="submit" class="btn btn-primary" (click)="checkLogin()"
+                        [disabled]="loginDisable">Login</button>
                 </div>
             </section>
         </div>

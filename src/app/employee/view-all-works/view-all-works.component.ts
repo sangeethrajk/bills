@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { BillsService } from '../../services/bills.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { ToastService } from '../../services/toast.service';
 
 export interface WorkDetail {
   nameOfWork: string;
@@ -29,8 +30,6 @@ export class ViewAllWorksComponent implements OnInit {
     'agreementDate',
     'commencementDate',
     'completionDate',
-    'assignedAE',
-    'assignedAEE',
     'creationTime',
     'action'
   ];
@@ -39,7 +38,8 @@ export class ViewAllWorksComponent implements OnInit {
 
   constructor(
     private billsService: BillsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private toastService: ToastService,
   ) { }
 
   ngOnInit() {
@@ -54,7 +54,8 @@ export class ViewAllWorksComponent implements OnInit {
         this.dataSource.data = response;
       },
       (error: any) => {
-        console.error('Error in fetching  all works : ', error);
+        console.error('Error in fetching all works : ', error);
+        this.toastService.showToast('error', 'Error in fetching all works', '');
       }
     );
   }
@@ -80,7 +81,8 @@ export class ViewAllWorksComponent implements OnInit {
             this.getAllWorks();
           },
           (error: any) => {
-            console.error('Error in deleting scheme data. Please try again later.', error);
+            console.error('Error in deleting the work', error);
+            this.toastService.showToast('error', 'Error in deleting the work', '');
           }
         );
       }

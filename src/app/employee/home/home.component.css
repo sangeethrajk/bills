@@ -2,6 +2,13 @@
     padding: 2rem;
 }
 
+.chart {
+    background-color: #ffffff;
+    border-radius: .5rem;
+    border: #888 solid 1px;
+    padding: 2rem;
+}
+
 .welcome-msg {
     padding: 1rem;
 }

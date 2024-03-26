@@ -2,14 +2,15 @@
     padding: 2rem;
 }
 
-.matTable th {
-    background-color: #7743DB;
+.mat-table th {
+    background-color: #A0153E;
     color: #ffffff;
 }
 
 /* Tab CSS - Start   */
 .tabs {
     display: flex;
+    column-gap: 1rem;
     margin-bottom: 2rem;
 }
 
@@ -18,15 +19,14 @@
     background-color: #f0f0f0;
     border: none;
     cursor: pointer;
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px;
 }
 
 .tab-button.active {
-    background-color: #ffffff;
+    background-color: #A0153E;
+    color: #ffffff;
 }
 
 .tab-content.active {
     display: block;
 }
-
-/* Tab CSS - End   */
