@@ -13,14 +13,15 @@
         <div class="tabs">
             <button class="tab-button" (click)="activeTab = 'tab1'" [class.active]="activeTab === 'tab1'">Pending
                 Bills</button>
-            <button class="tab-button" (click)="activeTab = 'tab2'" [class.active]="activeTab === 'tab2'">Processed by
+            <button class="tab-button" (click)="activeTab = 'tab2'" [class.active]="activeTab === 'tab2'"
+                *ngIf="role === 'DCAO'">Processed by
                 MD</button>
         </div>
 
         <div class="section" *ngIf="activeTab === 'tab1'">
             <div style="width:100%;">
 
-                <mat-table [dataSource]="dataSource" class="mat-elevation-z8 matTable">
+                <mat-table [dataSource]="dataSource" class="mat-elevation-z8 mat-table">
 
                     <!-- Sl. No Column -->
                     <ng-container matColumnDef="slNo">
@@ -69,7 +70,7 @@
         <div class="section" *ngIf="activeTab === 'tab2'">
             <div style="width:100%;">
 
-                <mat-table [dataSource]="dataSource2" class="mat-elevation-z8 matTable">
+                <mat-table [dataSource]="dataSource2" class="mat-elevation-z8 mat-table">
 
                     <!-- Sl. No Column -->
                     <ng-container matColumnDef="slNo">

@@ -19,6 +19,7 @@ export class AllPaymentsComponent {
 
   displayedColumns: string[] = ['sno', 'nameOfTheWork', 'billTotal', 'billPayFor', 'billCreationDate', 'billStatus', 'action'];
   dataSource = new MatTableDataSource<any>();
+  displayedColumns2: string[] = ['sno', 'nameOfTheWork', 'billTotal', 'billPayFor', 'billCreationDate', 'billStatus'];
   dataSource2 = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -33,6 +34,7 @@ export class AllPaymentsComponent {
 
   ngOnInit() {
     this.getAllProcessedBills();
+    this.getAllPaidBills();
   }
 
   ngAfterViewInit() {
@@ -65,6 +67,21 @@ export class AllPaymentsComponent {
       }
     );
   }
+
+  getAllPaidBills() {
+    this.billsService.getAllProcessedBills().subscribe(
+      (response: any) => {
+        console.log(response);
+        this.dataSource2 = response.data.filter((item: { billStatus: any }) => {
+          return item.billStatus === "Completed"; // Added return statement here
+        });
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
+  }
+
 
   checkStatus(billData: any) {
     console.log(billData);

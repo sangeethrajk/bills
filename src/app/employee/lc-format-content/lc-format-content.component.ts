@@ -1,26 +1,28 @@
-import { Component, ElementRef, EventEmitter, Inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import html2canvas from 'html2canvas';
 import jspdf from 'jspdf';
+import { BillsService } from '../../services/bills.service';
 
 @Component({
   selector: 'app-lc-format-content',
   templateUrl: './lc-format-content.component.html',
-  styleUrl: './lc-format-content.component.css'
+  styleUrls: ['./lc-format-content.component.css']
 })
 export class LcFormatContentComponent {
 
   @ViewChild('lcSection') lcSection!: ElementRef;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private billsService: BillsService) { }
 
   generateUniqueFileName() {
-    const timestamp = new Date().toISOString().replace(/:/g, '-'); // Replace colons with dashes
+    const now = new Date();
+    const timestamp = now.toLocaleString().replace(/\/|,|:|\s/g, '-'); // Replace special characters with dashes
     const randomChars = Math.random().toString(36).substring(7); // Generate random characters
     return `lc_${timestamp}_${randomChars}.pdf`;
   }
 
-  generateLC() {
+  generateLC(id: any, email: any) {
     const data = this.lcSection.nativeElement;
     const fileName = this.generateUniqueFileName();
 
@@ -39,7 +41,25 @@ export class LcFormatContentComponent {
       // Adjust y position to position content closer to the top
       pdf.addImage(contentDataURL, 'PNG', (pdfWidth - width) / 2, 10, width, height);
       pdf.save(fileName);
+      this.sendPdfToBackend(pdf.output('blob'), fileName, id, email); // Pass the blob instead of fileName
     });
+  }
+
+  sendPdfToBackend(fileBlob: Blob, fileName: string, id: any, email: any) {
+    const formData = new FormData();
+    formData.append('file', fileBlob, fileName);
+    formData.append('billId', id.toString());
+    formData.append('billStatus', "Completed");
+    formData.append('email', email);
+
+    this.billsService.saveLCPdf(formData).subscribe(
+      (response: any) => {
+        console.log(response);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
   }
 
 }

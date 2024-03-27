@@ -90,6 +90,8 @@ export class PendingApplicationComponent {
   maxCertificateCharacters: number = 1000;
   dcaoBankFields: boolean = false;
 
+  baseCode = [581, 582, 583, 584, 585, 586, 587, 588, 589, 590, 591, 592, 593, 594, 595, 596, 597, 599, 600, 601, 602, 603, 604, 607];
+
   constructor(
     private formBuilder: FormBuilder,
     private billService: BillsService,
@@ -384,7 +386,7 @@ export class PendingApplicationComponent {
       withheldValue: [''],
       eotCode: ['190'],
       eotValue: [''],
-      otherRecoveriesCode: [''],
+      otherRecoveriesCode: ['762'],
       otherRecoveriesValue: [''],
       otherRecoveriesRemarks: [''],
       totalDeduction: [0],
@@ -1255,7 +1257,7 @@ export class PendingApplicationComponent {
   }
 
   payVendor() {
-    if (this.getSingleBillDataResponse.billPayFor < this.bankBalanceResponse.netBalance) {
+    if (parseInt(this.getSingleBillDataResponse.billPayFor) < parseInt(this.bankBalanceResponse.netBalance)) {
       if (this.getSingleBillDataResponse.tnhbBankName === 'Canara Bank') {
         console.log("clicked");
         const data = {

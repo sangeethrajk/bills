@@ -571,9 +571,7 @@
                             <label for="baseValue" class="form-label">
                                 <small class="accCode">
                                     <select formControlName="baseValueCode">
-                                        <option value="xxx">xxx</option>
-                                        <option value="yyy">yyy</option>
-                                        <option value="zzz">zzz</option>
+                                        <option *ngFor="let code of baseCode" [value]="code">{{code}}</option>
                                     </select>
                                 </small>
                                 Base Value
@@ -643,7 +641,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="otherRecoveries" class="form-label"><small class="accCode">Cr. :</small>Other
+                            <label for="otherRecoveries" class="form-label"><small class="accCode">Cr. 762:</small>Other
                                 Recoveries</label>
                             <input [readOnly]="AssistantFormReadOnly" type="text" class="form-control" id="eotfine"
                                 formControlName="otherRecoveriesValue">

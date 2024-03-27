@@ -5,6 +5,7 @@ import { BillsService } from '../../services/bills.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-project-view',
@@ -26,7 +27,7 @@ export class ProjectViewComponent {
     private billsService: BillsService,
     private dialog: MatDialog,
     private router: Router,
-    private snackBar: MatSnackBar
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -74,26 +75,25 @@ export class ProjectViewComponent {
   verifyProject(id: number): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '300px',
-      data: 'Are you sure you want to verify this project?'
+      data: {
+        message: 'Are you sure you want to verify this project?',
+        confirmText: 'Yes',
+        cancelText: 'No'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.billsService.verifyProjectById(id).subscribe(
           (response: any) => {
-            // Show snackbar message
-            this.snackBar.open('Project verified successfully', 'Close', {
-              duration: 3000 // milliseconds
-            });
-            // Navigate to /project-list
-            this.router.navigate(['/project-list']);
+            this.toastService.showToast('success', 'Project verified successfully', '');
+            setTimeout(() => {
+              this.router.navigate(['/employee/work-list']);
+            }, 3000);
           },
           (error: any) => {
             console.log(error);
-            // Handle error
-            this.snackBar.open('An error occurred', 'Close', {
-              duration: 3000 // milliseconds
-            });
+            this.toastService.showToast('error', 'Failed to verify project', '');
           }
         );
       }

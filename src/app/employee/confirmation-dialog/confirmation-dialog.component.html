@@ -4,9 +4,8 @@
         <p>{{ data.message }}</p>
     </div>
     <div mat-dialog-actions class="dialog-buttons">
-        <button mat-button [style.background-color]="data.confirmBackgroundColor" [style.color]="data.confirmTextColor"
-            (click)="onConfirmClick()">{{ data.confirmText }}</button>
-        <button mat-button [style.background-color]="data.cancelBackgroundColor" [style.color]="data.cancelTextColor"
-            style="margin-left: 0.5rem;" (click)="onCancelClick()">{{ data.cancelText }}</button>
+        <button class="btn btn-primary" (click)="onConfirmClick()">{{ data.confirmText }}</button>
+        <button class="btn btn-light" style="margin-left: 0.5rem;" (click)="onCancelClick()">{{ data.cancelText
+            }}</button>
     </div>
 </div>

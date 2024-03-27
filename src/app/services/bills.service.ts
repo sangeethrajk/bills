@@ -127,4 +127,9 @@ export class BillsService {
   getAllProcessedBills(): Observable<any> {
     return this.httpClient.get(`${this.baseUrl}/api/v1/bill/processedBills`, this.headers);
   }
+
+  saveLCPdf(data: FormData): Observable<any> {
+    return this.httpClient.post(`${this.baseUrl}/api/v1/bill/saveLCPdf`, data, this.headers);
+  }
+
 }

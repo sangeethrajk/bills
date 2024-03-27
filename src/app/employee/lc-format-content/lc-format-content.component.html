@@ -43,11 +43,11 @@
             </tr>
             <tr>
                 <td>Transaction ID</td>
-                <td>{{data.transactionId}}</td>
+                <td>{{data.utrNumber}}</td>
             </tr>
         </table>
     </section>
     <section>
-        <button mat-raised-button color="primary" (click)="generateLC()">Generate LC</button>
+        <button mat-raised-button color="primary" (click)="generateLC(data.id,data.email)">Generate LC</button>
     </section>
 </main>
